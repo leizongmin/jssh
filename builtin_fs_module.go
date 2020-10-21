@@ -18,7 +18,7 @@ func fileInfoToMap(s os.FileInfo) typeutil.H {
 	}
 }
 
-func jsFunctionFsReaddir(global typeutil.H) scriptx.JSFunction {
+func JsFnFsReaddir(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readdir: missing dir name")
@@ -40,7 +40,7 @@ func jsFunctionFsReaddir(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionFsReadfile(global typeutil.H) scriptx.JSFunction {
+func JsFnFsReadfile(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readfile: missing path name")
@@ -59,7 +59,7 @@ func jsFunctionFsReadfile(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionFsStat(global typeutil.H) scriptx.JSFunction {
+func JsFnFsStat(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.stat: missing path name")
@@ -78,7 +78,7 @@ func jsFunctionFsStat(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionFsWritefile(global typeutil.H) scriptx.JSFunction {
+func JsFnFsWritefile(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.writefile: missing file name")
@@ -112,7 +112,7 @@ func jsFunctionFsWritefile(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionFsAppendfile(global typeutil.H) scriptx.JSFunction {
+func JsFnFsAppendfile(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.appendfile: missing file name")

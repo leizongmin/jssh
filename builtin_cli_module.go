@@ -14,7 +14,7 @@ func init() {
 	parsedCliArgs = cliargs.Parse(os.Args[2:])
 }
 
-func jsFunctionCliGet(global typeutil.H) scriptx.JSFunction {
+func JsFnCliGet(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("cli.get: missing index or flag name")
@@ -39,7 +39,7 @@ func jsFunctionCliGet(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionCliBool(global typeutil.H) scriptx.JSFunction {
+func JsFnCliBool(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("cli.bool: missing flag name")
@@ -60,13 +60,13 @@ func jsFunctionCliBool(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionCliArgs(global typeutil.H) scriptx.JSFunction {
+func JsFnCliArgs(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		return scriptx.AnyToJSValue(ctx, parsedCliArgs.Args)
 	}
 }
 
-func jsFunctionCliOpts(global typeutil.H) scriptx.JSFunction {
+func JsFnCliOpts(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		opts := make(typeutil.H)
 		for n, v := range parsedCliArgs.Options {

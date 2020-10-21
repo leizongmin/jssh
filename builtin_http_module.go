@@ -19,7 +19,7 @@ func init() {
 	httpGlobalHeaders["user-agent"] = fmt.Sprintf("%s/%s", cmdName, cmdVersion)
 }
 
-func jsFunctionHttpTimeout(global typeutil.H) scriptx.JSFunction {
+func JsFnHttpTimeout(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.timeout: missing timeout millisecond")
@@ -33,7 +33,7 @@ func jsFunctionHttpTimeout(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionHttpRequest(global typeutil.H) scriptx.JSFunction {
+func JsFnHttpRequest(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.request: missing request method")

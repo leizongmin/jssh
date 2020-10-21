@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func jsFunctionExit(global typeutil.H) scriptx.JSFunction {
+func JsFnExit(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			os.Exit(0)
@@ -27,7 +27,7 @@ func jsFunctionExit(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionSet(global typeutil.H) scriptx.JSFunction {
+func JsFnSet(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("set: missing name")
@@ -48,7 +48,7 @@ func jsFunctionSet(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionLog(global typeutil.H) scriptx.JSFunction {
+func JsFnLog(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) > 0 {
 			s, err := scriptx.JSValueToAny(args[0])
@@ -75,7 +75,7 @@ func jsFunctionLog(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionPrint(global typeutil.H) scriptx.JSFunction {
+func JsFnPrint(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) > 0 {
 			s, err := scriptx.JSValueToAny(args[0])
@@ -102,7 +102,7 @@ func jsFunctionPrint(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionPrintln(global typeutil.H) scriptx.JSFunction {
+func JsFnPrintln(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		ret := global["print"].(scriptx.JSFunction)(ctx, this, args)
 		fmt.Println()
@@ -110,7 +110,7 @@ func jsFunctionPrintln(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionSetenv(global typeutil.H) scriptx.JSFunction {
+func JsFnSetenv(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("setenv: missing env name")
@@ -137,7 +137,7 @@ func jsFunctionSetenv(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
+func JsFnExec(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("exec: missing exec command")
@@ -248,7 +248,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionSleep(global typeutil.H) scriptx.JSFunction {
+func JsFnSleep(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sleep: missing millisecond argument")
@@ -270,7 +270,7 @@ func jsFunctionSleep(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionChdir(global typeutil.H) scriptx.JSFunction {
+func JsFnChdir(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("chdir: missing dir name")
@@ -287,7 +287,7 @@ func jsFunctionChdir(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionCwd(global typeutil.H) scriptx.JSFunction {
+func JsFnCwd(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		dir, err := os.Getwd()
 		if err != nil {

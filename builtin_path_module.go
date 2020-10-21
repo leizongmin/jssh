@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func jsFunctionPathJoin(global typeutil.H) scriptx.JSFunction {
+func JsFnPathJoin(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.String("")
@@ -20,7 +20,7 @@ func jsFunctionPathJoin(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionPathAbs(global typeutil.H) scriptx.JSFunction {
+func JsFnPathAbs(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.abs: missing path name")
@@ -38,7 +38,7 @@ func jsFunctionPathAbs(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionPathBase(global typeutil.H) scriptx.JSFunction {
+func JsFnPathBase(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.base: missing path name")
@@ -52,7 +52,7 @@ func jsFunctionPathBase(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionPathExt(global typeutil.H) scriptx.JSFunction {
+func JsFnPathExt(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.ext: missing path name")
@@ -66,7 +66,7 @@ func jsFunctionPathExt(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionPathDir(global typeutil.H) scriptx.JSFunction {
+func JsFnPathDir(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.dir: missing path name")

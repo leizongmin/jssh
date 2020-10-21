@@ -60,7 +60,7 @@ func main() {
 	global := make(typeutil.H)
 
 	global["__version"] = cmdVersion
-	global["__bin"] = os.Args[0]
+	global["__bin"], _ = filepath.Abs(os.Args[0])
 	global["__pid"] = os.Getpid()
 	global["__tmpdir"] = os.TempDir()
 	global["__homedir"], _ = os.UserHomeDir()
@@ -73,45 +73,45 @@ func main() {
 	global["__outputbytes"] = 0
 	global["__code"] = 0
 
-	global["set"] = jsFunctionSet(global)
-	global["log"] = jsFunctionLog(global)
-	global["print"] = jsFunctionPrint(global)
-	global["println"] = jsFunctionPrintln(global)
-	global["setenv"] = jsFunctionSetenv(global)
-	global["exec"] = jsFunctionExec(global)
-	global["sleep"] = jsFunctionSleep(global)
-	global["chdir"] = jsFunctionChdir(global)
-	global["cd"] = jsFunctionChdir(global)
-	global["cwd"] = jsFunctionCwd(global)
-	global["pwd"] = jsFunctionCwd(global)
-	global["exit"] = jsFunctionExit(global)
+	global["set"] = JsFnSet(global)
+	global["log"] = JsFnLog(global)
+	global["print"] = JsFnPrint(global)
+	global["println"] = JsFnPrintln(global)
+	global["setenv"] = JsFnSetenv(global)
+	global["exec"] = JsFnExec(global)
+	global["sleep"] = JsFnSleep(global)
+	global["chdir"] = JsFnChdir(global)
+	global["cd"] = JsFnChdir(global)
+	global["cwd"] = JsFnCwd(global)
+	global["pwd"] = JsFnCwd(global)
+	global["exit"] = JsFnExit(global)
 
 	fsModule := make(typeutil.H)
-	fsModule["readdir"] = jsFunctionFsReaddir(global)
-	fsModule["readfile"] = jsFunctionFsReadfile(global)
-	fsModule["stat"] = jsFunctionFsStat(global)
-	fsModule["writefile"] = jsFunctionFsWritefile(global)
-	fsModule["appendfile"] = jsFunctionFsAppendfile(global)
+	fsModule["readdir"] = JsFnFsReaddir(global)
+	fsModule["readfile"] = JsFnFsReadfile(global)
+	fsModule["stat"] = JsFnFsStat(global)
+	fsModule["writefile"] = JsFnFsWritefile(global)
+	fsModule["appendfile"] = JsFnFsAppendfile(global)
 	global["fs"] = fsModule
 
 	pathModule := make(typeutil.H)
-	pathModule["join"] = jsFunctionPathJoin(global)
-	pathModule["abs"] = jsFunctionPathAbs(global)
-	pathModule["base"] = jsFunctionPathBase(global)
-	pathModule["ext"] = jsFunctionPathExt(global)
-	pathModule["dir"] = jsFunctionPathDir(global)
+	pathModule["join"] = JsFnPathJoin(global)
+	pathModule["abs"] = JsFnPathAbs(global)
+	pathModule["base"] = JsFnPathBase(global)
+	pathModule["ext"] = JsFnPathExt(global)
+	pathModule["dir"] = JsFnPathDir(global)
 	global["path"] = pathModule
 
 	cliModule := make(typeutil.H)
-	cliModule["get"] = jsFunctionCliGet(global)
-	cliModule["bool"] = jsFunctionCliBool(global)
-	cliModule["args"] = jsFunctionCliArgs(global)
-	cliModule["opts"] = jsFunctionCliOpts(global)
+	cliModule["get"] = JsFnCliGet(global)
+	cliModule["bool"] = JsFnCliBool(global)
+	cliModule["args"] = JsFnCliArgs(global)
+	cliModule["opts"] = JsFnCliOpts(global)
 	global["cli"] = cliModule
 
 	httpModule := make(typeutil.H)
-	httpModule["timeout"] = jsFunctionHttpTimeout(global)
-	httpModule["request"] = jsFunctionHttpRequest(global)
+	httpModule["timeout"] = JsFnHttpTimeout(global)
+	httpModule["request"] = JsFnHttpRequest(global)
 	global["http"] = httpModule
 
 	jsRuntime := scriptx.NewJSRuntime()
