@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
@@ -25,6 +26,12 @@ const (
 	codeFileError
 	codeScriptError
 )
+
+var mainStdin *bufio.Reader
+
+func init() {
+	mainStdin = bufio.NewReader(os.Stdin)
+}
 
 func haveCliOption(a *cliargs.CliArgs, names ...string) bool {
 	for _, n := range names {
@@ -258,7 +265,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		go func() {
 			if _, err := io.Copy(os.Stdout, stdout); err != nil {
 				if err != os.ErrClosed {
-					log.Printf("exec: %s", err)
+					log.Printf("exec: [stdout] %s", err)
 				}
 			}
 			wg.Done()
@@ -266,15 +273,15 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		go func() {
 			if _, err := io.Copy(os.Stderr, stderr); err != nil {
 				if err != os.ErrClosed {
-					log.Printf("exec: %s", err)
+					log.Printf("exec: [stderr] %s", err)
 				}
 			}
 			wg.Done()
 		}()
 		go func() {
-			if _, err := io.Copy(stdin, os.Stdin); err != nil {
+			if _, err := io.Copy(stdin, mainStdin); err != nil {
 				if err != os.ErrClosed {
-					log.Printf("exec: %s", err)
+					log.Printf("exec: [stdin] %s", err)
 				}
 			}
 			wg.Done()
@@ -286,13 +293,13 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		wg.Wait()
 
 		if err := stdin.Close(); err != nil {
-			log.Printf("exec: %s", err)
+			log.Printf("exec: [stdin] %s", err)
 		}
 		if err := stdout.Close(); err != nil {
-			log.Printf("exec: %s", err)
+			log.Printf("exec: [stdout] %s", err)
 		}
 		if err := stderr.Close(); err != nil {
-			log.Printf("exec: %s", err)
+			log.Printf("exec: [stderr] %s", err)
 		}
 		if err := sh.Wait(); err != nil {
 			log.Printf("exec: %s", err)
