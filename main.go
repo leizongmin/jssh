@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -55,9 +56,6 @@ func main() {
 		printExitMessage(err.Error(), codeFileError)
 	}
 	dir := filepath.Dir(file)
-	if err := os.Chdir(dir); err != nil {
-		printExitMessage(err.Error(), codeSystem)
-	}
 
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
@@ -78,6 +76,10 @@ func main() {
 	global["setenv"] = jsFunctionSetenv(global)
 	global["exec"] = jsFunctionExec(global)
 	global["sleep"] = jsFunctionSleep(global)
+	global["chdir"] = jsFunctionChdir(global)
+	global["cd"] = jsFunctionChdir(global)
+	global["cwd"] = jsFunctionCwd(global)
+	global["pwd"] = jsFunctionCwd(global)
 
 	jsRuntime := scriptx.NewJSRuntime()
 	defer jsRuntime.Free()
@@ -249,19 +251,17 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		if err != nil {
 			return ctx.ThrowError(err)
 		}
-		go func() {
-			if _, err := io.Copy(stdin, os.Stdin); err != nil {
-				if err != os.ErrClosed {
-					log.Printf("exec: %s", err)
-				}
-			}
-		}()
+
+		var wg sync.WaitGroup
+		wg.Add(3)
+
 		go func() {
 			if _, err := io.Copy(os.Stdout, stdout); err != nil {
 				if err != os.ErrClosed {
 					log.Printf("exec: %s", err)
 				}
 			}
+			wg.Done()
 		}()
 		go func() {
 			if _, err := io.Copy(os.Stderr, stderr); err != nil {
@@ -269,13 +269,35 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 					log.Printf("exec: %s", err)
 				}
 			}
+			wg.Done()
 		}()
+		go func() {
+			if _, err := io.Copy(stdin, os.Stdin); err != nil {
+				if err != os.ErrClosed {
+					log.Printf("exec: %s", err)
+				}
+			}
+			wg.Done()
+		}()
+
 		if err := sh.Start(); err != nil {
 			return ctx.ThrowError(err)
 		}
-		if err := sh.Wait(); err != nil {
-			return ctx.ThrowError(err)
+		wg.Wait()
+
+		if err := stdin.Close(); err != nil {
+			log.Printf("exec: %s", err)
 		}
+		if err := stdout.Close(); err != nil {
+			log.Printf("exec: %s", err)
+		}
+		if err := stderr.Close(); err != nil {
+			log.Printf("exec: %s", err)
+		}
+		if err := sh.Wait(); err != nil {
+			log.Printf("exec: %s", err)
+		}
+
 		code := sh.ProcessState.ExitCode()
 		return scriptx.AnyToJSValue(ctx, code)
 	}
@@ -300,6 +322,33 @@ func jsFunctionSleep(global typeutil.H) scriptx.JSFunction {
 
 		time.Sleep(time.Millisecond * time.Duration(ms))
 		return scriptx.AnyToJSValue(ctx, ms)
+	}
+}
+
+func jsFunctionChdir(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("chdir: missing dir name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("chdir: first argument expected string type")
+		}
+		dir := args[0].String()
+
+		if err := os.Chdir(dir); err != nil {
+			return ctx.ThrowError(err)
+		}
+		return ctx.Bool(true)
+	}
+}
+
+func jsFunctionCwd(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		dir, err := os.Getwd()
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		return ctx.String(dir)
 	}
 }
 
