@@ -18,3 +18,11 @@ exec("pwd", {}, true)
 log("%f %f %s", __code, __outputBytes, __output)
 
 // exec("node")
+
+if (exec(`ls -al ${__homedir}`, {}, true) === 0) {
+    __output.split("\n").forEach(line => log(line))
+}
+
+readdir(__homedir).forEach(f => log(JSON.stringify(f)))
+log(readfile(`${__homedir}/.gitconfig`))
+log(JSON.stringify(readstat(`${__homedir}/.gitconfig`)))

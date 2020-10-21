@@ -89,6 +89,16 @@ func main() {
 	global["cd"] = jsFunctionChdir(global)
 	global["cwd"] = jsFunctionCwd(global)
 	global["pwd"] = jsFunctionCwd(global)
+	global["readdir"] = jsFunctionReaddir(global)
+	global["readfile"] = jsFunctionReadfile(global)
+	global["readstat"] = jsFunctionReadstat(global)
+
+	//filepathModule := make(typeutil.H)
+	//filepathModule["join"] = jsFunctionFilepathJoin(global)
+	//filepathModule["abs"] = jsFunctionFilepathJoin(global)
+	//filepathModule["basename"] = jsFunctionFilepathJoin(global)
+	//filepathModule["extname"] = jsFunctionFilepathAbs(global)
+	//global["filepath"] = filepathModule
 
 	jsRuntime := scriptx.NewJSRuntime()
 	defer jsRuntime.Free()
@@ -376,5 +386,75 @@ func jsFunctionCwd(global typeutil.H) scriptx.JSFunction {
 			return ctx.ThrowError(err)
 		}
 		return ctx.String(dir)
+	}
+}
+
+func fileInfoToMap(s os.FileInfo) typeutil.H {
+	return typeutil.H{
+		"name":    s.Name(),
+		"isDir":   s.IsDir(),
+		"mode":    uint32(s.Mode()),
+		"modTime": s.ModTime().Unix(),
+		"size":    s.Size(),
+	}
+}
+
+func jsFunctionReaddir(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("readdir: missing dir name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("readdir: first argument expected string type")
+		}
+		dir := args[0].String()
+
+		list, err := ioutil.ReadDir(dir)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		retList := make([]typeutil.H, 0)
+		for _, item := range list {
+			retList = append(retList, fileInfoToMap(item))
+		}
+		return scriptx.AnyToJSValue(ctx, retList)
+	}
+}
+
+func jsFunctionReadfile(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("readfile: missing dir name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("readfile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.String(string(b))
+	}
+}
+
+func jsFunctionReadstat(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("readstat: missing dir name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("readstat: first argument expected string type")
+		}
+		file := args[0].String()
+
+		info, err := os.Stat(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return scriptx.AnyToJSValue(ctx, fileInfoToMap(info))
 	}
 }

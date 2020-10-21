@@ -159,19 +159,21 @@ func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
 	case "int64":
 		return ctx.Int64(value.(int64))
 	case "uint":
-		return ctx.Int32(int32(value.(uint)))
+		return ctx.Int64(int64(value.(uint)))
 	case "uint8":
 		return ctx.Int32(int32(value.(uint8)))
 	case "uint16":
 		return ctx.Int32(int32(value.(uint16)))
-	case "unit32":
+	case "uint32":
 		return ctx.Int64(int64(value.(uint32)))
-	case "unit64":
+	case "uint64":
 		return ctx.BigUint64(value.(uint64))
 	case "float32":
 		return ctx.Float64(float64(value.(float32)))
 	case "float64":
 		return ctx.Float64(value.(float64))
+	case "func":
+		return ctx.Function(value.(JSFunction))
 	default:
 		return ctx.Undefined()
 	}
