@@ -111,7 +111,7 @@ func main() {
 
 	jsRuntime := scriptx.NewJSRuntime()
 	defer jsRuntime.Free()
-	ret, err := scriptx.EvalJS(jsRuntime, content, global)
+	ret, err := scriptx.EvalJSFile(jsRuntime, content, file, global)
 	if err != nil {
 		printExitMessage(err.Error(), codeScriptError, false)
 	}

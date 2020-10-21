@@ -42,6 +42,13 @@ func EvalJS(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (quickjs.Va
 	return ctx.Eval(code)
 }
 
+func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars typeutil.H) (quickjs.Value, error) {
+	ctx := jsRuntime.NewContext()
+	defer ctx.Free()
+	MergeMapToJSObject(ctx, ctx.Globals(), vars)
+	return ctx.EvalFile(code, filename)
+}
+
 func EvalJSAndGetResult(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (interface{}, error) {
 	ret, err := EvalJS(jsRuntime, code, vars)
 	if err != nil {
