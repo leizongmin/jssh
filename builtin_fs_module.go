@@ -1,0 +1,156 @@
+package main
+
+import (
+	"github.com/leizongmin/go/typeutil"
+	"github.com/leizongmin/jssh/internal/scriptx"
+	"io/ioutil"
+	"log"
+	"os"
+)
+
+func fileInfoToMap(s os.FileInfo) typeutil.H {
+	return typeutil.H{
+		"name":    s.Name(),
+		"isDir":   s.IsDir(),
+		"mode":    uint32(s.Mode()),
+		"modTime": s.ModTime().Unix(),
+		"size":    s.Size(),
+	}
+}
+
+func jsFunctionFsReaddir(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.readdir: missing dir name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.readdir: first argument expected string type")
+		}
+		dir := args[0].String()
+
+		list, err := ioutil.ReadDir(dir)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		retList := make([]typeutil.H, 0)
+		for _, item := range list {
+			retList = append(retList, fileInfoToMap(item))
+		}
+		return scriptx.AnyToJSValue(ctx, retList)
+	}
+}
+
+func jsFunctionFsReadfile(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.readfile: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.readfile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.String(string(b))
+	}
+}
+
+func jsFunctionFsReadstat(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.readstat: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.readstat: first argument expected string type")
+		}
+		file := args[0].String()
+
+		info, err := os.Stat(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return scriptx.AnyToJSValue(ctx, fileInfoToMap(info))
+	}
+}
+
+func jsFunctionFsWritefile(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.writefile: missing file name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.writefile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		if len(args) < 2 {
+			return ctx.ThrowSyntaxError("fs.writefile: missing data")
+		}
+		if !args[1].IsString() {
+			return ctx.ThrowTypeError("fs.writefile: second argument expected string type")
+		}
+		data := args[1].String()
+
+		perm := int64(0666)
+		if len(args) >= 3 {
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("fs.writefile: third argument expected number type")
+			}
+			perm = args[2].Int64()
+		}
+
+		if err := ioutil.WriteFile(file, []byte(data), os.FileMode(perm)); err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.Bool(true)
+	}
+}
+
+func jsFunctionFsAppendfile(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.appendfile: missing file name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.appendfile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		if len(args) < 2 {
+			return ctx.ThrowSyntaxError("fs.appendfile: missing data")
+		}
+		if !args[1].IsString() {
+			return ctx.ThrowTypeError("fs.appendfile: second argument expected string type")
+		}
+		data := args[1].String()
+
+		perm := int64(0644)
+		if len(args) >= 3 {
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("fs.appendfile: third argument expected number type")
+			}
+			perm = args[2].Int64()
+		}
+
+		f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, os.FileMode(perm))
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		defer func() {
+			if err := f.Close(); err != nil {
+				log.Printf("fs.appendfile: %s", err)
+			}
+		}()
+		if _, err := f.WriteString(data); err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.Bool(true)
+	}
+}

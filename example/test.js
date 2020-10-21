@@ -23,23 +23,23 @@ if (exec(`ls -al ${__homedir}`, {}, true) === 0) {
     __output.split("\n").forEach(line => log(line))
 }
 
-readdir(__homedir).forEach(f => log(JSON.stringify(f)))
-log(readfile(`${__homedir}/.gitconfig`))
-log(JSON.stringify(readstat(`${__homedir}/.gitconfig`)))
+fs.readdir(__homedir).forEach(f => log(JSON.stringify(f)))
+log(fs.readfile(`${__homedir}/.gitconfig`))
+log(JSON.stringify(fs.readstat(`${__homedir}/.gitconfig`)))
 
 set("xyz", 12345)
 log("xyz = %f", xyz)
 
 const file = `${__tmpdir}/${Date.now()}-${Math.random()}.txt`
-log(writefile(file, "hello"))
-log(appendfile(file, "world"))
-log(readfile(file))
+log(fs.writefile(file, "hello"))
+log(fs.appendfile(file, "world"))
+log(fs.readfile(file))
 
-log(filepath.abs("."))
-log(filepath.base(file))
-log(filepath.dir(file))
-log(filepath.ext(file))
-log(filepath.join("a", "b", "c"))
-log(filepath.abs(filepath.join("a", "b", "c")))
+log(path.abs("."))
+log(path.base(file))
+log(path.dir(file))
+log(path.ext(file))
+log(path.join("a", "b", "c"))
+log(path.abs(path.join("a", "b", "c")))
 
 exit(123)
