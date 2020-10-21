@@ -11,9 +11,9 @@ import (
 func fileInfoToMap(s os.FileInfo) typeutil.H {
 	return typeutil.H{
 		"name":    s.Name(),
-		"isDir":   s.IsDir(),
+		"isdir":   s.IsDir(),
 		"mode":    uint32(s.Mode()),
-		"modTime": s.ModTime().Unix(),
+		"modtime": s.ModTime().Unix(),
 		"size":    s.Size(),
 	}
 }
@@ -59,13 +59,13 @@ func jsFunctionFsReadfile(global typeutil.H) scriptx.JSFunction {
 	}
 }
 
-func jsFunctionFsReadstat(global typeutil.H) scriptx.JSFunction {
+func jsFunctionFsStat(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("fs.readstat: missing path name")
+			return ctx.ThrowSyntaxError("fs.stat: missing path name")
 		}
 		if !args[0].IsString() {
-			return ctx.ThrowTypeError("fs.readstat: first argument expected string type")
+			return ctx.ThrowTypeError("fs.stat: first argument expected string type")
 		}
 		file := args[0].String()
 

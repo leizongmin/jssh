@@ -229,7 +229,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 				log.Printf("exec: %s", err)
 			}
 			global["__output"] = ""
-			global["__outputBytes"] = 0
+			global["__outputbytes"] = 0
 		} else {
 
 			out, err := sh.CombinedOutput()
@@ -237,7 +237,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 				log.Printf("exec: %s", err)
 			}
 			global["__output"] = string(out)
-			global["__outputBytes"] = len(out)
+			global["__outputbytes"] = len(out)
 		}
 
 		code := sh.ProcessState.ExitCode()

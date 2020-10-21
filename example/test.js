@@ -12,10 +12,10 @@ log(cd(__dirname))
 log(cwd())
 
 exec("pwd")
-log("%f %f %s", __code, __outputBytes, __output)
+log("%f %f %s", __code, __outputbytes, __output)
 
 exec("pwd", {}, true)
-log("%f %f %s", __code, __outputBytes, __output)
+log("%f %f %s", __code, __outputbytes, __output)
 
 // exec("node")
 
@@ -25,7 +25,7 @@ if (exec(`ls -al ${__homedir}`, {}, true) === 0) {
 
 fs.readdir(__homedir).forEach(f => log(JSON.stringify(f)))
 log(fs.readfile(`${__homedir}/.gitconfig`))
-log(JSON.stringify(fs.readstat(`${__homedir}/.gitconfig`)))
+log(JSON.stringify(fs.stat(`${__homedir}/.gitconfig`)))
 
 set("xyz", 12345)
 log("xyz = %f", xyz)

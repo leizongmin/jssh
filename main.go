@@ -67,10 +67,10 @@ func main() {
 	global["__hostname"], _ = os.Hostname()
 	global["__dirname"] = dir
 	global["__filename"] = file
-	global["__args"] = os.Args[2:]
+	global["__args"] = os.Args[:]
 	global["__env"] = getEnvMap()
 	global["__output"] = ""
-	global["__outputBytes"] = 0
+	global["__outputbytes"] = 0
 	global["__code"] = 0
 
 	global["set"] = jsFunctionSet(global)
@@ -89,7 +89,7 @@ func main() {
 	fsModule := make(typeutil.H)
 	fsModule["readdir"] = jsFunctionFsReaddir(global)
 	fsModule["readfile"] = jsFunctionFsReadfile(global)
-	fsModule["readstat"] = jsFunctionFsReadstat(global)
+	fsModule["stat"] = jsFunctionFsStat(global)
 	fsModule["writefile"] = jsFunctionFsWritefile(global)
 	fsModule["appendfile"] = jsFunctionFsAppendfile(global)
 	global["fs"] = fsModule
