@@ -102,6 +102,13 @@ func main() {
 	pathModule["dir"] = jsFunctionPathDir(global)
 	global["path"] = pathModule
 
+	cliModule := make(typeutil.H)
+	cliModule["get"] = jsFunctionCliGet(global)
+	cliModule["bool"] = jsFunctionCliBool(global)
+	cliModule["args"] = jsFunctionCliArgs(global)
+	cliModule["opts"] = jsFunctionCliOpts(global)
+	global["cli"] = cliModule
+
 	jsRuntime := scriptx.NewJSRuntime()
 	defer jsRuntime.Free()
 	ret, err := scriptx.EvalJS(jsRuntime, content, global)

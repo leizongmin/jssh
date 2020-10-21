@@ -42,4 +42,6 @@ log(path.ext(file))
 log(path.join("a", "b", "c"))
 log(path.abs(path.join("a", "b", "c")))
 
+log("%s, %s, %v, %v, %s, %s", cli.get(0), cli.get("n"), cli.bool("n"), cli.bool("x"), JSON.stringify(cli.args()), JSON.stringify(cli.opts()))
+
 exit(123)
