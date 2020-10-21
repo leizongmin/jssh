@@ -92,6 +92,7 @@ func main() {
 	global["readdir"] = jsFunctionReaddir(global)
 	global["readfile"] = jsFunctionReadfile(global)
 	global["readstat"] = jsFunctionReadstat(global)
+	global["exit"] = jsFunctionExit(global)
 
 	//filepathModule := make(typeutil.H)
 	//filepathModule["join"] = jsFunctionFilepathJoin(global)
@@ -424,7 +425,7 @@ func jsFunctionReaddir(global typeutil.H) scriptx.JSFunction {
 func jsFunctionReadfile(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("readfile: missing dir name")
+			return ctx.ThrowSyntaxError("readfile: missing path name")
 		}
 		if !args[0].IsString() {
 			return ctx.ThrowTypeError("readfile: first argument expected string type")
@@ -443,7 +444,7 @@ func jsFunctionReadfile(global typeutil.H) scriptx.JSFunction {
 func jsFunctionReadstat(global typeutil.H) scriptx.JSFunction {
 	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("readstat: missing dir name")
+			return ctx.ThrowSyntaxError("readstat: missing path name")
 		}
 		if !args[0].IsString() {
 			return ctx.ThrowTypeError("readstat: first argument expected string type")
@@ -456,5 +457,20 @@ func jsFunctionReadstat(global typeutil.H) scriptx.JSFunction {
 		}
 
 		return scriptx.AnyToJSValue(ctx, fileInfoToMap(info))
+	}
+}
+
+func jsFunctionExit(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			os.Exit(0)
+			return ctx.Int32(0)
+		}
+		if !args[0].IsNumber() {
+			return ctx.ThrowTypeError("exit: first argument expected number type")
+		}
+		code := args[0].Int32()
+		os.Exit(int(code))
+		return ctx.Int32(code)
 	}
 }

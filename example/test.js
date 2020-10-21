@@ -26,3 +26,5 @@ if (exec(`ls -al ${__homedir}`, {}, true) === 0) {
 readdir(__homedir).forEach(f => log(JSON.stringify(f)))
 log(readfile(`${__homedir}/.gitconfig`))
 log(JSON.stringify(readstat(`${__homedir}/.gitconfig`)))
+
+exit(123)
