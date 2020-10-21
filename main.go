@@ -14,10 +14,10 @@ const cmdName = "jssh"
 const cmdVersion = "v1.0"
 
 const (
-	codeOK = 0
-	codeSystem
-	codeFileError
-	codeScriptError
+	codeOK          = 0
+	codeSystem      = 1
+	codeFileError   = 2
+	codeScriptError = 3
 )
 
 func haveCliOption(a *cliargs.CliArgs, names ...string) bool {
@@ -37,23 +37,23 @@ func main() {
 		return
 	}
 	if haveCliOption(a, "v", "version") {
-		printExitMessage(fmt.Sprintf("%s %s", cmdName, cmdVersion), codeOK)
+		printExitMessage(fmt.Sprintf("%s %s", cmdName, cmdVersion), codeOK, false)
 		return
 	}
 
 	file := a.GetArg(0)
 	if len(file) < 1 {
-		printExitMessage("Missing input script file!", codeFileError)
+		printExitMessage("Missing input script file!", codeFileError, true)
 	}
 	file, err := filepath.Abs(file)
 	if err != nil {
-		printExitMessage(err.Error(), codeFileError)
+		printExitMessage(err.Error(), codeFileError, false)
 	}
 	dir := filepath.Dir(file)
 
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
-		printExitMessage(err.Error(), codeFileError)
+		printExitMessage(err.Error(), codeFileError, false)
 	}
 	content := string(buf)
 
@@ -113,7 +113,7 @@ func main() {
 	defer jsRuntime.Free()
 	ret, err := scriptx.EvalJS(jsRuntime, content, global)
 	if err != nil {
-		printExitMessage(err.Error(), codeScriptError)
+		printExitMessage(err.Error(), codeScriptError, false)
 	}
 	defer ret.Free()
 }
@@ -124,8 +124,12 @@ func printUsage(code int) {
 	os.Exit(code)
 }
 
-func printExitMessage(message string, code int) {
+func printExitMessage(message string, code int, usage bool) {
 	fmt.Println(message)
-	fmt.Println()
-	printUsage(code)
+	if usage {
+		fmt.Println()
+		printUsage(code)
+	} else {
+		os.Exit(code)
+	}
 }
