@@ -109,6 +109,11 @@ func main() {
 	cliModule["opts"] = jsFunctionCliOpts(global)
 	global["cli"] = cliModule
 
+	httpModule := make(typeutil.H)
+	httpModule["timeout"] = jsFunctionHttpTimeout(global)
+	httpModule["request"] = jsFunctionHttpRequest(global)
+	global["http"] = httpModule
+
 	jsRuntime := scriptx.NewJSRuntime()
 	defer jsRuntime.Free()
 	ret, err := scriptx.EvalJSFile(jsRuntime, content, file, global)

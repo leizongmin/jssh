@@ -141,6 +141,11 @@ declare var path: PathModule;
  */
 declare var cli: CliModule;
 
+/**
+ * HTTP相关操作模块
+ */
+declare var http: HttpModule;
+
 interface FsModule {
     /**
      * 读取目录
@@ -263,4 +268,32 @@ interface CliModule {
      * @return 参数Map
      */
     opts(): Record<string, string>;
+}
+
+interface HttpModule {
+    /**
+     * 设置HTTP请求的超时时间
+     * @param millisecond 毫秒
+     * @return 毫秒
+     */
+    timeout(millisecond: number): number;
+
+    /**
+     * 发送HTTP请求
+     * @param method 请求方法
+     * @param url 请求URL
+     * @param headers 请求头
+     * @param body 请求体
+     * @return 响应结果
+     */
+    request(method: string, url: String, headers?: Record<string, string>, body?: string): HttpResponse;
+}
+
+interface HttpResponse {
+    /** 状态码 */
+    status: number;
+    /** 响应头 */
+    headers: Record<string, string | string[]>;
+    /** 响应体 */
+    body: string;
 }

@@ -46,4 +46,6 @@ log("%s, %s, %v, %v, %s, %s", cli.get(0), cli.get("n"), cli.bool("n"), cli.bool(
 
 log(new Error().stack)
 
+log(JSON.stringify(http.request("GET", "http://baidu.com")))
+
 exit(123)

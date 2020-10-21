@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/leizongmin/go/typeutil"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -23,4 +24,17 @@ func cloneMap(a typeutil.H) typeutil.H {
 		b[n] = v
 	}
 	return b
+}
+
+func getHeaderMap(header http.Header) typeutil.H {
+	ret := make(typeutil.H)
+	for name, values := range header {
+		name = strings.ToLower(name)
+		if len(values) > 1 {
+			ret[name] = values
+		} else {
+			ret[name] = values[0]
+		}
+	}
+	return ret
 }
