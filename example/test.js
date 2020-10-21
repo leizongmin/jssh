@@ -27,4 +27,7 @@ readdir(__homedir).forEach(f => log(JSON.stringify(f)))
 log(readfile(`${__homedir}/.gitconfig`))
 log(JSON.stringify(readstat(`${__homedir}/.gitconfig`)))
 
+set("xyz", 12345)
+log("xyz = %f", xyz)
+
 exit(123)

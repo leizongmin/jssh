@@ -79,6 +79,7 @@ func main() {
 	global["__outputBytes"] = 0
 	global["__code"] = 0
 
+	global["set"] = jsFunctionSet(global)
 	global["log"] = jsFunctionLog(global)
 	global["print"] = jsFunctionPrint(global)
 	global["println"] = jsFunctionPrintln(global)
@@ -139,6 +140,27 @@ func cloneMap(a typeutil.H) typeutil.H {
 		b[n] = v
 	}
 	return b
+}
+
+func jsFunctionSet(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("set: missing name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("set: first argument expected string type")
+		}
+		name := args[0].String()
+
+		if len(args) < 2 {
+			return ctx.ThrowSyntaxError("set: missing value")
+		}
+		value := args[1]
+
+		ctx.Globals().Set(name, value)
+
+		return ctx.Bool(true)
+	}
 }
 
 func jsFunctionLog(global typeutil.H) scriptx.JSFunction {
