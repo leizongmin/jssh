@@ -97,12 +97,13 @@ func main() {
 	global["appendfile"] = jsFunctionAppendfile(global)
 	global["exit"] = jsFunctionExit(global)
 
-	//filepathModule := make(typeutil.H)
-	//filepathModule["join"] = jsFunctionFilepathJoin(global)
-	//filepathModule["abs"] = jsFunctionFilepathJoin(global)
-	//filepathModule["basename"] = jsFunctionFilepathJoin(global)
-	//filepathModule["extname"] = jsFunctionFilepathAbs(global)
-	//global["filepath"] = filepathModule
+	filepathModule := make(typeutil.H)
+	filepathModule["join"] = jsFunctionFilepathJoin(global)
+	filepathModule["abs"] = jsFunctionFilepathAbs(global)
+	filepathModule["base"] = jsFunctionFilepathBase(global)
+	filepathModule["ext"] = jsFunctionFilepathExt(global)
+	filepathModule["dir"] = jsFunctionFilepathDir(global)
+	global["filepath"] = filepathModule
 
 	jsRuntime := scriptx.NewJSRuntime()
 	defer jsRuntime.Free()
@@ -573,5 +574,79 @@ func jsFunctionExit(global typeutil.H) scriptx.JSFunction {
 		code := args[0].Int32()
 		os.Exit(int(code))
 		return ctx.Int32(code)
+	}
+}
+
+func jsFunctionFilepathJoin(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.String("")
+		}
+		list := make([]string, 0)
+		for _, item := range args {
+			list = append(list, item.String())
+		}
+
+		return ctx.String(filepath.Join(list...))
+	}
+}
+
+func jsFunctionFilepathAbs(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("filepath.abs: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("filepath.abs: first argument expected string type")
+		}
+		file := args[0].String()
+
+		ret, err := filepath.Abs(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		return ctx.String(ret)
+	}
+}
+
+func jsFunctionFilepathBase(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("filepath.base: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("filepath.base: first argument expected string type")
+		}
+		file := args[0].String()
+
+		return ctx.String(filepath.Base(file))
+	}
+}
+
+func jsFunctionFilepathExt(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("filepath.ext: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("filepath.ext: first argument expected string type")
+		}
+		file := args[0].String()
+
+		return ctx.String(filepath.Ext(file))
+	}
+}
+
+func jsFunctionFilepathDir(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("filepath.dir: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("filepath.dir: first argument expected string type")
+		}
+		file := args[0].String()
+
+		return ctx.String(filepath.Dir(file))
 	}
 }

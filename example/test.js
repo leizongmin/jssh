@@ -35,4 +35,11 @@ log(writefile(file, "hello"))
 log(appendfile(file, "world"))
 log(readfile(file))
 
+log(filepath.abs("."))
+log(filepath.base(file))
+log(filepath.dir(file))
+log(filepath.ext(file))
+log(filepath.join("a", "b", "c"))
+log(filepath.abs(filepath.join("a", "b", "c")))
+
 exit(123)
