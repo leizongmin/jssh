@@ -1,11 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/scriptx"
+	"github.com/leizongmin/jssh/internal/scriptx"
 	"io"
 	"io/ioutil"
 	"log"
@@ -26,12 +25,6 @@ const (
 	codeFileError
 	codeScriptError
 )
-
-var mainStdin *bufio.Reader
-
-func init() {
-	mainStdin = bufio.NewReader(os.Stdin)
-}
 
 func haveCliOption(a *cliargs.CliArgs, names ...string) bool {
 	for _, n := range names {
@@ -73,6 +66,10 @@ func main() {
 	global := make(typeutil.H)
 	global["__version"] = cmdVersion
 	global["__bin"] = os.Args[0]
+	global["__pid"] = os.Getpid()
+	global["__tmpdir"] = os.TempDir()
+	global["__homedir"], _ = os.UserHomeDir()
+	global["__hostname"], _ = os.Hostname()
 	global["__dirname"] = dir
 	global["__filename"] = file
 	global["__args"] = os.Args[2:]
@@ -246,10 +243,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		for n, v := range env {
 			sh.Env = append(sh.Env, fmt.Sprintf("%s=%s", n, v))
 		}
-		stdin, err := sh.StdinPipe()
-		if err != nil {
-			return ctx.ThrowError(err)
-		}
+		sh.Stdin = os.Stdin
 		stdout, err := sh.StdoutPipe()
 		if err != nil {
 			return ctx.ThrowError(err)
@@ -260,7 +254,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		}
 
 		var wg sync.WaitGroup
-		wg.Add(3)
+		wg.Add(2)
 
 		go func() {
 			if _, err := io.Copy(os.Stdout, stdout); err != nil {
@@ -278,23 +272,12 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 			}
 			wg.Done()
 		}()
-		go func() {
-			if _, err := io.Copy(stdin, mainStdin); err != nil {
-				if err != os.ErrClosed {
-					log.Printf("exec: [stdin] %s", err)
-				}
-			}
-			wg.Done()
-		}()
 
 		if err := sh.Start(); err != nil {
 			return ctx.ThrowError(err)
 		}
 		wg.Wait()
 
-		if err := stdin.Close(); err != nil {
-			log.Printf("exec: [stdin] %s", err)
-		}
 		if err := stdout.Close(); err != nil {
 			log.Printf("exec: [stdout] %s", err)
 		}
