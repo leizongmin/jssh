@@ -12,4 +12,9 @@ log(cd(__dirname))
 log(cwd())
 
 exec("pwd")
-exec("node")
+log("%f %f %s", __code, __outputBytes, __output)
+
+exec("pwd", {}, true)
+log("%f %f %s", __code, __outputBytes, __output)
+
+// exec("node")

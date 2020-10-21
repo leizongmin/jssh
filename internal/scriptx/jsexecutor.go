@@ -17,24 +17,28 @@ func NewJSRuntime() JSRuntime {
 	return quickjs.NewRuntime()
 }
 
-func isFunction(f interface{}) bool {
+func IsGoFunction(f interface{}) bool {
 	if reflect.TypeOf(f).Kind().String() == "func" {
 		return true
 	}
 	return false
 }
 
+func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars typeutil.H) quickjs.Value {
+	for n, v := range vars {
+		if IsGoFunction(v) {
+			obj.SetFunction(n, v.(JSFunction))
+		} else {
+			obj.Set(n, AnyToJSValue(ctx, v))
+		}
+	}
+	return obj
+}
+
 func EvalJS(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
 	defer ctx.Free()
-	globals := ctx.Globals()
-	for n, v := range vars {
-		if isFunction(v) {
-			globals.SetFunction(n, v.(JSFunction))
-		} else {
-			globals.Set(n, AnyToJSValue(ctx, v))
-		}
-	}
+	MergeMapToJSObject(ctx, ctx.Globals(), vars)
 	return ctx.Eval(code)
 }
 

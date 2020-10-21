@@ -64,6 +64,7 @@ func main() {
 	content := string(buf)
 
 	global := make(typeutil.H)
+
 	global["__version"] = cmdVersion
 	global["__bin"] = os.Args[0]
 	global["__pid"] = os.Getpid()
@@ -74,6 +75,10 @@ func main() {
 	global["__filename"] = file
 	global["__args"] = os.Args[2:]
 	global["__env"] = getEnvMap()
+	global["__output"] = ""
+	global["__outputBytes"] = 0
+	global["__code"] = 0
+
 	global["log"] = jsFunctionLog(global)
 	global["print"] = jsFunctionPrint(global)
 	global["println"] = jsFunctionPrintln(global)
@@ -92,7 +97,6 @@ func main() {
 		printExitMessage(err.Error(), codeScriptError)
 	}
 	defer ret.Free()
-	fmt.Printf("%+v", ret)
 }
 
 func printUsage(code int) {
@@ -116,6 +120,14 @@ func getEnvMap() typeutil.H {
 		env[k] = v
 	}
 	return env
+}
+
+func cloneMap(a typeutil.H) typeutil.H {
+	b := make(typeutil.H)
+	for n, v := range a {
+		b[n] = v
+	}
+	return b
 }
 
 func jsFunctionLog(global typeutil.H) scriptx.JSFunction {
@@ -201,9 +213,8 @@ func jsFunctionSetenv(global typeutil.H) scriptx.JSFunction {
 		env := global["__env"].(typeutil.H)
 		env[name] = value
 		global["__env"] = env
+		scriptx.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
-		g := ctx.Globals()
-		g.Set("__env", scriptx.AnyToJSValue(ctx, env))
 		return ctx.Bool(true)
 	}
 }
@@ -219,7 +230,7 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 		cmd := args[0].String()
 
 		env := cloneMap(global["__env"].(typeutil.H))
-		if len(args) > 1 {
+		if len(args) >= 2 {
 			if args[1].IsNull() || args[1].IsUndefined() {
 			} else {
 				if !args[1].IsObject() {
@@ -239,56 +250,82 @@ func jsFunctionExec(global typeutil.H) scriptx.JSFunction {
 			}
 		}
 
+		pipeOutput := true
+		if len(args) >= 3 {
+			if !args[2].IsBool() {
+				return ctx.ThrowTypeError("exec: third argument expected boolean type")
+			}
+			if args[2].Bool() {
+				pipeOutput = false
+			}
+		}
+
 		sh := exec.Command("sh", "-c", cmd)
 		for n, v := range env {
 			sh.Env = append(sh.Env, fmt.Sprintf("%s=%s", n, v))
 		}
-		sh.Stdin = os.Stdin
-		stdout, err := sh.StdoutPipe()
-		if err != nil {
-			return ctx.ThrowError(err)
-		}
-		stderr, err := sh.StderrPipe()
-		if err != nil {
-			return ctx.ThrowError(err)
-		}
 
-		var wg sync.WaitGroup
-		wg.Add(2)
-
-		go func() {
-			if _, err := io.Copy(os.Stdout, stdout); err != nil {
-				if err != os.ErrClosed {
-					log.Printf("exec: [stdout] %s", err)
-				}
+		if pipeOutput {
+			sh.Stdin = os.Stdin
+			stdout, err := sh.StdoutPipe()
+			if err != nil {
+				return ctx.ThrowError(err)
 			}
-			wg.Done()
-		}()
-		go func() {
-			if _, err := io.Copy(os.Stderr, stderr); err != nil {
-				if err != os.ErrClosed {
-					log.Printf("exec: [stderr] %s", err)
-				}
+			stderr, err := sh.StderrPipe()
+			if err != nil {
+				return ctx.ThrowError(err)
 			}
-			wg.Done()
-		}()
 
-		if err := sh.Start(); err != nil {
-			return ctx.ThrowError(err)
-		}
-		wg.Wait()
+			var wg sync.WaitGroup
+			wg.Add(2)
 
-		if err := stdout.Close(); err != nil {
-			log.Printf("exec: [stdout] %s", err)
-		}
-		if err := stderr.Close(); err != nil {
-			log.Printf("exec: [stderr] %s", err)
-		}
-		if err := sh.Wait(); err != nil {
-			log.Printf("exec: %s", err)
+			go func() {
+				if _, err := io.Copy(os.Stdout, stdout); err != nil {
+					if err != os.ErrClosed {
+						log.Printf("exec: [stdout] %s", err)
+					}
+				}
+				wg.Done()
+			}()
+			go func() {
+				if _, err := io.Copy(os.Stderr, stderr); err != nil {
+					if err != os.ErrClosed {
+						log.Printf("exec: [stderr] %s", err)
+					}
+				}
+				wg.Done()
+			}()
+
+			if err := sh.Start(); err != nil {
+				return ctx.ThrowError(err)
+			}
+			wg.Wait()
+
+			if err := stdout.Close(); err != nil {
+				log.Printf("exec: [stdout] %s", err)
+			}
+			if err := stderr.Close(); err != nil {
+				log.Printf("exec: [stderr] %s", err)
+			}
+			if err := sh.Wait(); err != nil {
+				log.Printf("exec: %s", err)
+			}
+			global["__output"] = ""
+			global["__outputBytes"] = 0
+		} else {
+
+			out, err := sh.CombinedOutput()
+			if err != nil {
+				log.Printf("exec: %s", err)
+			}
+			global["__output"] = string(out)
+			global["__outputBytes"] = len(out)
 		}
 
 		code := sh.ProcessState.ExitCode()
+		global["__code"] = code
+		scriptx.MergeMapToJSObject(ctx, ctx.Globals(), global)
+
 		return scriptx.AnyToJSValue(ctx, code)
 	}
 }
@@ -340,12 +377,4 @@ func jsFunctionCwd(global typeutil.H) scriptx.JSFunction {
 		}
 		return ctx.String(dir)
 	}
-}
-
-func cloneMap(a typeutil.H) typeutil.H {
-	b := make(typeutil.H)
-	for n, v := range a {
-		b[n] = v
-	}
-	return b
 }
