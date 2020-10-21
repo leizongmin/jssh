@@ -30,4 +30,9 @@ log(JSON.stringify(readstat(`${__homedir}/.gitconfig`)))
 set("xyz", 12345)
 log("xyz = %f", xyz)
 
+const file = `${__tmpdir}/${Date.now()}-${Math.random()}.txt`
+log(writefile(file, "hello"))
+log(appendfile(file, "world"))
+log(readfile(file))
+
 exit(123)

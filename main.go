@@ -93,6 +93,8 @@ func main() {
 	global["readdir"] = jsFunctionReaddir(global)
 	global["readfile"] = jsFunctionReadfile(global)
 	global["readstat"] = jsFunctionReadstat(global)
+	global["writefile"] = jsFunctionWritefile(global)
+	global["appendfile"] = jsFunctionAppendfile(global)
 	global["exit"] = jsFunctionExit(global)
 
 	//filepathModule := make(typeutil.H)
@@ -479,6 +481,83 @@ func jsFunctionReadstat(global typeutil.H) scriptx.JSFunction {
 		}
 
 		return scriptx.AnyToJSValue(ctx, fileInfoToMap(info))
+	}
+}
+
+func jsFunctionWritefile(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("writefile: missing file name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("writefile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		if len(args) < 2 {
+			return ctx.ThrowSyntaxError("writefile: missing data")
+		}
+		if !args[1].IsString() {
+			return ctx.ThrowTypeError("writefile: second argument expected string type")
+		}
+		data := args[1].String()
+
+		perm := int64(0666)
+		if len(args) >= 3 {
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("writefile: third argument expected number type")
+			}
+			perm = args[2].Int64()
+		}
+
+		if err := ioutil.WriteFile(file, []byte(data), os.FileMode(perm)); err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.Bool(true)
+	}
+}
+
+func jsFunctionAppendfile(global typeutil.H) scriptx.JSFunction {
+	return func(ctx *scriptx.JSContext, this scriptx.JSValue, args []scriptx.JSValue) scriptx.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("appendfile: missing file name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("appendfile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		if len(args) < 2 {
+			return ctx.ThrowSyntaxError("appendfile: missing data")
+		}
+		if !args[1].IsString() {
+			return ctx.ThrowTypeError("appendfile: second argument expected string type")
+		}
+		data := args[1].String()
+
+		perm := int64(0644)
+		if len(args) >= 3 {
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("appendfile: third argument expected number type")
+			}
+			perm = args[2].Int64()
+		}
+
+		f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, os.FileMode(perm))
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		defer func() {
+			if err := f.Close(); err != nil {
+				log.Printf("appendfile: %s", err)
+			}
+		}()
+		if _, err := f.WriteString(data); err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.Bool(true)
 	}
 }
 
