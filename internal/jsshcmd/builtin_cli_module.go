@@ -2,22 +2,10 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"os"
 	"strings"
 )
-
-var parsedCliArgs *cliargs.CliArgs
-
-func init() {
-	if len(os.Args) > 2 {
-		parsedCliArgs = cliargs.Parse(os.Args[2:])
-	} else {
-		parsedCliArgs = cliargs.Parse([]string{})
-	}
-}
 
 func JsFnCliGet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {

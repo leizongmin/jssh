@@ -20,37 +20,37 @@ const (
 	codeScriptError = 3
 )
 
-func haveCliOption(a *cliargs.CliArgs, names ...string) bool {
-	for _, n := range names {
-		if a.GetOptionOrDefault(n, "false").Value != "false" {
-			return true
-		}
-	}
-	return false
-}
+var parsedCliArgs *cliargs.CliArgs
 
 func Main() {
 	runtime.LockOSThread()
-	a := cliargs.Parse(os.Args[1:])
 
-	if haveCliOption(a, "h", "help") {
+	if len(os.Args) < 2 {
 		printUsage(codeOK)
 		return
 	}
-	if haveCliOption(a, "v", "version") {
-		printExitMessage(fmt.Sprintf("%s %s", pkginfo.Name, pkginfo.LongVersion), codeOK, false)
+	first := os.Args[1]
+
+	if first == "-h" || first == "--help" {
+		printUsage(codeOK)
+		return
+	}
+	if first == "-v" || first == "--version" {
+		fmt.Printf("%s %s", pkginfo.Name, pkginfo.LongVersion)
 		return
 	}
 
-	file := a.GetArg(0)
-	if len(file) < 1 {
-		if haveCliOption(a, "c") {
-			run("", a.GetOption("c").Value)
+	if first == "-c" {
+		if len(os.Args) < 3 {
+			printUsage(codeFileError)
 			return
 		}
-		printExitMessage("Missing input script file!", codeFileError, true)
+		parsedCliArgs = cliargs.Parse(os.Args[3:])
+		run("", os.Args[2])
+		return
 	}
-	file, err := filepath.Abs(file)
+
+	file, err := filepath.Abs(first)
 	if err != nil {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
@@ -60,6 +60,7 @@ func Main() {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
 	content := string(buf)
+	parsedCliArgs = cliargs.Parse(os.Args[2:])
 	run(file, content)
 }
 
@@ -75,6 +76,10 @@ func run(file string, content string) {
 }
 
 func printUsage(code int) {
+	fmt.Printf("%s %s\n", pkginfo.Name, pkginfo.LongVersion)
+	fmt.Println("Author:  leizongmin@gmail.com")
+	fmt.Println("Project: https://github.com/leizongmin/jssh")
+	fmt.Println()
 	fmt.Println("Example usage:")
 	fmt.Printf("  %s script_file.js [arg1] [arg2] [...]\n", pkginfo.Name)
 	fmt.Printf("  %s -c=\"script\" [arg1] [arg2] [...]\n", pkginfo.Name)
