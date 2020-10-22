@@ -7,8 +7,10 @@ import (
 	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"os"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -225,6 +227,7 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 		cmd = strings.Join(envLines, "\n") + "\n" + cmd
 
 		var output []byte
+		var code int
 		if pipeOutput {
 			session.Stdin = os.Stdin
 			stdout, err := session.StdoutPipe()
@@ -262,13 +265,21 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 			wg.Wait()
 
 			if err := session.Wait(); err != nil {
-				stdLog.Printf("ssh.exec: %s", err)
+				if err2, ok := err.(*ssh.ExitError); ok {
+					code = err2.ExitStatus()
+				} else {
+					stdLog.Printf("ssh.exec: %s", err)
+				}
 			}
 		} else {
 
 			out, err := session.CombinedOutput(cmd)
 			if err != nil {
-				stdLog.Printf("ssh.exec: %s", err)
+				if err2, ok := err.(*ssh.ExitError); ok {
+					code = err2.ExitStatus()
+				} else {
+					stdLog.Printf("ssh.exec: %s", err)
+				}
 			}
 			output = out
 		}
@@ -280,8 +291,19 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 		}
 
 		return jsexecutor.AnyToJSValue(ctx, typeutil.H{
+			"code":        code,
 			"output":      string(output),
 			"outputbytes": len(output),
 		})
 	}
+}
+
+var matchStatusFromSshExecErrorRegExp *regexp.Regexp
+
+func init() {
+	r, err := regexp.Compile("Process exited with status (\\d+)")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	matchStatusFromSshExecErrorRegExp = r
 }

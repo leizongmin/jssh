@@ -405,6 +405,10 @@ interface SshModule {
 
 interface SshExecResult {
     /**
+     * 进程退出code
+     */
+    code?: number;
+    /**
      * 进程输出内容，仅当combineOutput=true时有效
      */
     output?: string;
