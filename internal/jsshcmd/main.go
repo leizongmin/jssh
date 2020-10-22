@@ -88,14 +88,24 @@ func run(file string, content string, interactive bool) {
 		fmt.Println("Type ;; in the end of the line to eval.")
 		fmt.Println()
 
-		line := liner.NewLiner()
-		defer line.Close()
-		line.SetCtrlCAborts(true)
+		repl := liner.NewLiner()
+		defer repl.Close()
+		repl.SetCtrlCAborts(true)
 		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
+
+		historyFile := filepath.Join(global["__homedir"].(string), fmt.Sprintf(".%s_history", pkginfo.Name))
+		historyFd, err := os.OpenFile(historyFile, os.O_RDWR|os.O_CREATE, 0644)
+		if err != nil {
+			fmt.Println(color.FgRed.Render(historyFile))
+		} else {
+			if _, err := repl.ReadHistory(historyFd); err != nil {
+				fmt.Println(color.FgRed.Render(err))
+			}
+		}
 
 		bufLines := make([]string, 0)
 		for {
-			code, err := line.Prompt(prompt)
+			code, err := repl.Prompt(prompt)
 			if err != nil {
 				if err == liner.ErrPromptAborted {
 					fmt.Println(color.FgRed.Render("Aborted"))
@@ -105,7 +115,7 @@ func run(file string, content string, interactive bool) {
 				}
 			}
 			bufLines = append(bufLines, code)
-			line.AppendHistory(code)
+			repl.AppendHistory(code)
 
 			if strings.HasSuffix(code, ";;") {
 				content := strings.Join(bufLines, "\n")
@@ -137,7 +147,17 @@ func run(file string, content string, interactive bool) {
 				}
 			}
 		}
+
+		if historyFd != nil {
+			if _, err := repl.WriteHistory(historyFd); err != nil {
+				fmt.Println(color.FgRed.Render(err))
+			}
+			if err := historyFd.Close(); err != nil {
+				fmt.Println(color.FgRed.Render(err))
+			}
+		}
 	} else {
+
 		if ret, err := ctx.EvalFile(content, file); err != nil {
 			printExitMessage(err.Error(), codeScriptError, false)
 		} else {
