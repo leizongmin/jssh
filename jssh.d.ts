@@ -1,20 +1,20 @@
 /** JSSH版本号 */
-declare var __version: string;
+declare const __version: string;
 
 /** JSSH二进制文件路径 */
-declare var __bin: string;
+declare const __bin: string;
 
 /** 当前进程PID */
-declare var __pid: number;
+declare const __pid: number;
 
 /** 临时文件目录 */
-declare var __tmpdir: string;
+declare const __tmpdir: string;
 
 /** 当前用户HOME目录 */
-declare var __homedir: string;
+declare const __homedir: string;
 
 /** 当前主机名 */
-declare var __hostname: string;
+declare const __hostname: string;
 
 /** 当前脚本目录名 */
 declare var __dirname: string;
@@ -23,19 +23,19 @@ declare var __dirname: string;
 declare var __filename: string;
 
 /** 当前命令行参数 */
-declare var __args: string[];
+declare const __args: string[];
 
 /** 当前环境变量 */
-declare var __env: Record<string, string>;
+declare const __env: Record<string, string>;
 
 /** 最近一次执行命令输出的内容 */
-declare var __output: string;
+declare const __output: string;
 
 /** 最近一次执行命令输出内容的字节数 */
-declare var __outputbytes: number;
+declare const __outputbytes: number;
 
 /** 最近一次执行命令进程退出code */
-declare var __code: number;
+declare const __code: number;
 
 
 /**
@@ -70,50 +70,6 @@ declare function print(format: any, ...args: any[]): boolean;
  */
 declare function println(format: any, ...args: any[]): boolean;
 
-/**
- * 设置环境变量
- * @param name 环境变量名称
- * @param value 环境变量值
- * @return 是否成功
- */
-declare function setenv(name: string, value: string): boolean;
-
-/**
- * 执行命令
- * @param cmd 命令
- * @param env 额外的环境变量
- * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
- * @return 进程信息
- */
-declare function exec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): ExecResult;
-
-/**
- * 后台执行命令
- * @param cmd 命令
- * @param env 额外的环境变量
- * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
- * @return 进程信息
- */
-declare function bgexec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): ExecResult;
-
-interface ExecResult {
-    /**
-     * 进程PID
-     */
-    pid: number;
-    /**
-     * 进程退出code
-     */
-    code?: number;
-    /**
-     * 进程输出内容，仅当combineOutput=true时有效
-     */
-    output?: string;
-    /**
-     * 进出输出内容字节数，仅当combineOutput=true时有效
-     */
-    outputbytes?: number;
-}
 
 /**
  * 睡眠
@@ -123,61 +79,40 @@ interface ExecResult {
 declare function sleep(milliseconds: number): number;
 
 /**
- * 改变当前工作目录
- * @param dir 目录路径
- * @return 是否成功
- */
-declare function chdir(dir: string): boolean;
-
-/**
- * 改变当前工作目录
- * @param dir 目录路径
- * @return 是否成功
- */
-declare function cd(dir: string): boolean;
-
-/**
- * 获取当前工作目录
- * @return 当前工作目录路径
- */
-declare function cwd(): string;
-
-/**
- * 获取当前工作目录
- * @return 当前工作目录路径
- */
-declare function pwd(): string;
-
-/**
  * 退出进程
  * @param code 进程退出code
  */
 declare function exit(code?: number): void;
 
 /**
+ * Shell相关操作模块
+ */
+declare const sh: ShModule
+
+/**
  * 文件相关操作模块
  */
-declare var fs: FsModule;
+declare const fs: FsModule;
 
 /**
  * 文件路径相关操作模块
  */
-declare var path: PathModule;
+declare const path: PathModule;
 
 /**
  * 命令行参数相关操作模块
  */
-declare var cli: CliModule;
+declare const cli: CliModule;
 
 /**
  * HTTP相关操作模块
  */
-declare var http: HttpModule;
+declare const http: HttpModule;
 
 /**
  * 日志相关操作模块
  */
-declare var log: LogModule;
+declare const log: LogModule;
 
 interface FsModule {
     /**
@@ -347,4 +282,77 @@ interface LogModule {
      * @return 是否成功
      */
     error(format: any, ...args: any[]): boolean;
+}
+
+interface ShModule {
+    /**
+     * 设置环境变量
+     * @param name 环境变量名称
+     * @param value 环境变量值
+     * @return 是否成功
+     */
+    setenv(name: string, value: string): boolean;
+
+    /**
+     * 执行命令
+     * @param cmd 命令
+     * @param env 额外的环境变量
+     * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
+     * @return 进程信息
+     */
+    exec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): ExecResult;
+
+    /**
+     * 后台执行命令
+     * @param cmd 命令
+     * @param env 额外的环境变量
+     * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
+     * @return 进程信息
+     */
+    bgexec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): ExecResult;
+
+    /**
+     * 改变当前工作目录
+     * @param dir 目录路径
+     * @return 是否成功
+     */
+    chdir(dir: string): boolean;
+
+    /**
+     * 改变当前工作目录
+     * @param dir 目录路径
+     * @return 是否成功
+     */
+    cd(dir: string): boolean;
+
+    /**
+     * 获取当前工作目录
+     * @return 当前工作目录路径
+     */
+    cwd(): string;
+
+    /**
+     * 获取当前工作目录
+     * @return 当前工作目录路径
+     */
+    pwd(): string;
+}
+
+interface ExecResult {
+    /**
+     * 进程PID
+     */
+    pid: number;
+    /**
+     * 进程退出code
+     */
+    code?: number;
+    /**
+     * 进程输出内容，仅当combineOutput=true时有效
+     */
+    output?: string;
+    /**
+     * 进出输出内容字节数，仅当combineOutput=true时有效
+     */
+    outputbytes?: number;
 }

@@ -77,20 +77,22 @@ func Main() {
 	global["__code"] = 0
 
 	global["set"] = JsFnSet(global)
-	global["setenv"] = JsFnSetenv(global)
 	global["sleep"] = JsFnSleep(global)
-	global["chdir"] = JsFnChdir(global)
-	global["cd"] = JsFnChdir(global)
-	global["cwd"] = JsFnCwd(global)
-	global["pwd"] = JsFnCwd(global)
 	global["exit"] = JsFnExit(global)
-
-	global["exec"] = JsFnExec(global)
-	global["bgexec"] = JsFnBgexec(global)
 
 	global["format"] = JsFnFormat(global)
 	global["print"] = JsFnPrint(global)
 	global["println"] = JsFnPrintln(global)
+
+	shModule := make(typeutil.H)
+	shModule["setenv"] = JsFnShSetenv(global)
+	shModule["chdir"] = JsFnShChdir(global)
+	shModule["cd"] = JsFnShChdir(global)
+	shModule["cwd"] = JsFnShCwd(global)
+	shModule["pwd"] = JsFnShCwd(global)
+	shModule["exec"] = JsFnShExec(global)
+	shModule["bgexec"] = JsFnShBgexec(global)
+	global["sh"] = shModule
 
 	logModule := make(typeutil.H)
 	logModule["info"] = JsFnLogInfo(global)

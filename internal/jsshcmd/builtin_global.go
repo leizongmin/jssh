@@ -43,33 +43,6 @@ func JsFnSet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSetenv(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("setenv: missing env name")
-		}
-		if !args[0].IsString() {
-			return ctx.ThrowTypeError("setenv: first argument expected string type")
-		}
-		name := args[0].String()
-
-		if len(args) < 2 {
-			return ctx.ThrowSyntaxError("setenv: missing env value")
-		}
-		if !args[1].IsString() {
-			return ctx.ThrowTypeError("setenv: second argument expected string type")
-		}
-		value := args[1].String()
-
-		env := global["__env"].(typeutil.H)
-		env[name] = value
-		global["__env"] = env
-		jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
-
-		return ctx.Bool(true)
-	}
-}
-
 func JsFnSleep(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
@@ -89,32 +62,5 @@ func JsFnSleep(global typeutil.H) jsexecutor.JSFunction {
 
 		time.Sleep(time.Millisecond * time.Duration(ms))
 		return jsexecutor.AnyToJSValue(ctx, ms)
-	}
-}
-
-func JsFnChdir(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("chdir: missing dir name")
-		}
-		if !args[0].IsString() {
-			return ctx.ThrowTypeError("chdir: first argument expected string type")
-		}
-		dir := args[0].String()
-
-		if err := os.Chdir(dir); err != nil {
-			return ctx.ThrowError(err)
-		}
-		return ctx.Bool(true)
-	}
-}
-
-func JsFnCwd(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		dir, err := os.Getwd()
-		if err != nil {
-			return ctx.ThrowError(err)
-		}
-		return ctx.String(dir)
 	}
 }
