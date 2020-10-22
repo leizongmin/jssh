@@ -4,10 +4,14 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/leizongmin/go/httputil"
+	"github.com/leizongmin/go/randutil"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
 	"io"
+	"math"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -108,5 +112,62 @@ func JsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 		}
 		ret["body"] = string(b)
 		return jsexecutor.AnyToJSValue(ctx, ret)
+	}
+}
+
+func JsFnHttpDownload(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("http.download: missing request url")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("http.download: first argument expected string type")
+		}
+		url := args[0].String()
+
+		var filename string
+		if len(args) >= 2 {
+			if !args[1].IsString() {
+				return ctx.ThrowTypeError("http.download: second argument expected string type")
+			}
+			filename = args[1].String()
+		}
+		if len(filename) < 1 {
+			filename = filepath.Join(os.TempDir(), fmt.Sprintf("jssh-http-download-%d-%d", time.Now().Unix(), randutil.Int63n(math.MaxInt64)))
+		}
+
+		req := httputil.Request()
+		req.Method = "GET"
+		req.URL = url
+		for n, v := range httpGlobalHeaders {
+			req.SetHeader(n, v)
+		}
+		req.Timeout = time.Millisecond * time.Duration(httpGlobalTimeout)
+
+		res, err := req.Send()
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		defer func() {
+			if err := res.Close(); err != nil {
+				stdLog.Printf("http.download: %s", err)
+			}
+		}()
+
+		f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		if _, err := io.Copy(f, res.Origin().Body); err != nil {
+			return ctx.ThrowError(err)
+		}
+		if err := res.Origin().Body.Close(); err != nil {
+			stdLog.Printf("http.download: %s", err)
+		}
+		if err := f.Close(); err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.String(filename)
 	}
 }

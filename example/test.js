@@ -79,4 +79,7 @@ if (cli.bool("ssh")) {
 log.info("prompt: %s", cli.prompt())
 log.info("prompt: %s", cli.prompt("what's your name: "))
 
+log.info("download: %s", http.download("https://gitee.com/leizongmin/jssh/raw/main/main.go"))
+log.info("download: %s", http.download("https://gitee.com/leizongmin/jssh/raw/main/main.go", path.join(__tmpdir, "test-download")))
+
 exit(123)

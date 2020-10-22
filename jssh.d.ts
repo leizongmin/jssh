@@ -268,6 +268,14 @@ interface HttpModule {
      * @return 响应结果
      */
     request(method: string, url: String, headers?: Record<string, string>, body?: string): HttpResponse;
+
+    /**
+     * 通过HTTP下载文件
+     * @param url 文件地址
+     * @param filename 目标文件名，如果未指定则创建临时文件
+     * @return 存储的文件名
+     */
+    download(url: string, filename?: string): string;
 }
 
 interface HttpResponse {
