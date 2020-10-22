@@ -9,6 +9,8 @@ export GOPROXY=https://goproxy.cn
 
 mkdir -p release/osx
 mkdir -p release/linux
-GOARCH=amd64 GOOS=darwin ./scripts/go-mini-build.sh github.com/leizongmin/jssh release/osx
-GOARCH=amd64 GOOS=linux ./scripts/go-mini-build.sh github.com/leizongmin/jssh release/linux
+export mini_build=./scripts/go-mini-build.sh
+export main_package=github.com/leizongmin/jssh
+CGO_ENABLED=1 GOARCH=amd64 GOOS=darwin $mini_build $main_package release/osx
+CGO_ENABLED=1 GOARCH=amd64 GOOS=linux $mini_build $main_package release/linux
 ls -alh release
