@@ -124,6 +124,22 @@ func getJsGlobal(file string) typeutil.H {
 	shModule["bgexec"] = JsFnShBgexec(global)
 	global["sh"] = shModule
 
+	sshModule := make(typeutil.H)
+	sshModule["set"] = JsFnSshSet(global)
+	sshModule["open"] = JsFnSshOpen(global)
+	sshModule["close"] = JsFnSshClose(global)
+	sshModule["setenv"] = JsFnSshSetenv(global)
+	sshModule["exec"] = JsFnSshExec(global)
+	global["ssh"] = sshModule
+	global["__ssh_config"] = typeutil.H{
+		"user":    "root",
+		"auth":    "key",
+		"key":     filepath.Join(global["__homedir"].(string), ".ssh/id_rsa"),
+		"keypass": "",
+		"port":    22,
+		"timeout": 60_000,
+	}
+
 	logModule := make(typeutil.H)
 	logModule["info"] = JsFnLogInfo(global)
 	logModule["error"] = JsFnLogError(global)

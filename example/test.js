@@ -63,4 +63,13 @@ log.info(JSON.stringify(loadconfig("config.toml")))
 log.info(JSON.stringify(loadconfig("config.yaml")))
 log.info(JSON.stringify(loadconfig("config.txt", "toml")))
 
+
+log.info(JSON.stringify(__ssh_config))
+ssh.open("192.168.2.50")
+ssh.setenv("a", "123")
+log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"})))
+log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"}, true)))
+ssh.exec("htop")
+ssh.close()
+
 exit(123)

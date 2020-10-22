@@ -99,35 +99,26 @@ declare function exit(code?: number): void;
  */
 declare function loadconfig(file: string, format?: "json" | "yaml" | "toml"): any;
 
-/**
- * Shell相关操作模块
- */
+/** Shell相关操作模块 */
 declare const sh: ShModule
 
-/**
- * 文件相关操作模块
- */
+/** 文件相关操作模块 */
 declare const fs: FsModule;
 
-/**
- * 文件路径相关操作模块
- */
+/** 文件路径相关操作模块 */
 declare const path: PathModule;
 
-/**
- * 命令行参数相关操作模块
- */
+/** 命令行参数相关操作模块 */
 declare const cli: CliModule;
 
-/**
- * HTTP相关操作模块
- */
+/** HTTP相关操作模块 */
 declare const http: HttpModule;
 
-/**
- * 日志相关操作模块
- */
+/** 日志相关操作模块 */
 declare const log: LogModule;
+
+/** SSH相关操作模块 */
+declare const ssh: SshModule;
 
 interface FsModule {
     /**
@@ -362,6 +353,57 @@ interface ExecResult {
      * 进程退出code
      */
     code?: number;
+    /**
+     * 进程输出内容，仅当combineOutput=true时有效
+     */
+    output?: string;
+    /**
+     * 进出输出内容字节数，仅当combineOutput=true时有效
+     */
+    outputbytes?: number;
+}
+
+interface SshModule {
+    /**
+     * 设置SSH配置
+     * @param name 配置名
+     * @param value 配置值
+     * @return 是否成功
+     */
+    set(name: "user" | "password" | "key" | "keypass" | "auth" | "timeout" | "port", value: any): boolean;
+
+    /**
+     * 连接到指定服务器
+     * @param host 服务器地址
+     * @return 是否成功
+     */
+    open(host: string): boolean;
+
+    /**
+     * 关闭服务器连接
+     * @return 是否成功
+     */
+    close(): boolean;
+
+    /**
+     * 设置环境变量
+     * @param name 环境变量名称
+     * @param value 环境变量值
+     * @return 是否成功
+     */
+    setenv(name: string, value: string): boolean;
+
+    /**
+     * 执行命令
+     * @param cmd 命令
+     * @param env 额外的环境变量
+     * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
+     * @return 进程信息
+     */
+    exec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): SshExecResult;
+}
+
+interface SshExecResult {
     /**
      * 进程输出内容，仅当combineOutput=true时有效
      */

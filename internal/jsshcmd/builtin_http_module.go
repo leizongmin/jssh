@@ -6,6 +6,7 @@ import (
 	"github.com/leizongmin/go/httputil"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"io"
 	"strings"
 	"time"
 )
@@ -100,7 +101,9 @@ func JsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 		ret["headers"] = getHeaderMap(res.Header())
 		b, err := res.Body()
 		if err != nil {
-			return ctx.ThrowError(err)
+			if err != io.EOF {
+				return ctx.ThrowError(err)
+			}
 		}
 		ret["body"] = string(b)
 		return jsexecutor.AnyToJSValue(ctx, ret)
