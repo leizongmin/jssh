@@ -6,7 +6,6 @@ import (
 	"github.com/leizongmin/go/httputil"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"log"
 	"strings"
 	"time"
 )
@@ -92,7 +91,7 @@ func JsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 		}
 		defer func() {
 			if err := res.Close(); err != nil {
-				log.Printf("http.request: %s", err)
+				stdLog.Printf("http.request: %s", err)
 			}
 		}()
 

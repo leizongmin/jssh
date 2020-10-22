@@ -4,7 +4,6 @@ import (
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -144,7 +143,7 @@ func JsFnFsAppendfile(global typeutil.H) jsexecutor.JSFunction {
 		}
 		defer func() {
 			if err := f.Close(); err != nil {
-				log.Printf("fs.appendfile: %s", err)
+				stdLog.Printf("fs.appendfile: %s", err)
 			}
 		}()
 		if _, err := f.WriteString(data); err != nil {

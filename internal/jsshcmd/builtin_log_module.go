@@ -6,7 +6,12 @@ import (
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"log"
+	"os"
 )
+
+var logPrefix = fmt.Sprintf("[%s] ", cmdName)
+var stdLog = log.New(os.Stdout, logPrefix, log.LstdFlags)
+var errLog = log.New(os.Stderr, logPrefix, log.LstdFlags)
 
 func JsFnPrint(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
@@ -61,10 +66,10 @@ func JsFnLogInfo(global typeutil.H) jsexecutor.JSFunction {
 				a = append(a, v2)
 			}
 			if ok {
-				log.Printf(green(format), a...)
+				stdLog.Printf(green(format), a...)
 			} else {
 				a = append([]interface{}{s}, a...)
-				log.Println(green(a))
+				stdLog.Println(green(a))
 			}
 		}
 		return ctx.Bool(true)
@@ -89,10 +94,10 @@ func JsFnLogError(global typeutil.H) jsexecutor.JSFunction {
 				a = append(a, v2)
 			}
 			if ok {
-				log.Printf(red(format), a...)
+				errLog.Printf(red(format), a...)
 			} else {
 				a = append([]interface{}{s}, a...)
-				log.Println(red(a))
+				errLog.Println(red(a))
 			}
 		}
 		return ctx.Bool(true)

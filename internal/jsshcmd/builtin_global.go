@@ -5,7 +5,6 @@ import (
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"sync"
@@ -138,7 +137,7 @@ func JsFnExec(global typeutil.H) jsexecutor.JSFunction {
 			go func() {
 				if _, err := io.Copy(os.Stdout, stdout); err != nil {
 					if err != os.ErrClosed {
-						log.Printf("exec: [stdout] %s", err)
+						stdLog.Printf("exec: [stdout] %s", err)
 					}
 				}
 				wg.Done()
@@ -146,7 +145,7 @@ func JsFnExec(global typeutil.H) jsexecutor.JSFunction {
 			go func() {
 				if _, err := io.Copy(os.Stderr, stderr); err != nil {
 					if err != os.ErrClosed {
-						log.Printf("exec: [stderr] %s", err)
+						stdLog.Printf("exec: [stderr] %s", err)
 					}
 				}
 				wg.Done()
@@ -158,13 +157,13 @@ func JsFnExec(global typeutil.H) jsexecutor.JSFunction {
 			wg.Wait()
 
 			if err := stdout.Close(); err != nil {
-				log.Printf("exec: [stdout] %s", err)
+				stdLog.Printf("exec: [stdout] %s", err)
 			}
 			if err := stderr.Close(); err != nil {
-				log.Printf("exec: [stderr] %s", err)
+				stdLog.Printf("exec: [stderr] %s", err)
 			}
 			if err := sh.Wait(); err != nil {
-				log.Printf("exec: %s", err)
+				stdLog.Printf("exec: %s", err)
 			}
 			global["__output"] = ""
 			global["__outputbytes"] = 0
@@ -172,7 +171,7 @@ func JsFnExec(global typeutil.H) jsexecutor.JSFunction {
 
 			out, err := sh.CombinedOutput()
 			if err != nil {
-				log.Printf("exec: %s", err)
+				stdLog.Printf("exec: %s", err)
 			}
 			global["__output"] = string(out)
 			global["__outputbytes"] = len(out)
