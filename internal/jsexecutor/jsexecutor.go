@@ -121,7 +121,7 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 	return nil, fmt.Errorf("unexpected JS value: %+v", value)
 }
 
-func MapToJSValue(ctx *quickjs.Context, m typeutil.H) quickjs.Value {
+func mapToJSValue(ctx *quickjs.Context, m typeutil.H) quickjs.Value {
 	obj := ctx.Object()
 	for n, v := range m {
 		obj.Set(n, AnyToJSValue(ctx, v))
@@ -134,7 +134,17 @@ func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
 	vt := v.Type()
 	switch vt.Kind().String() {
 	case "map":
-		return MapToJSValue(ctx, value.(map[string]interface{}))
+		if m, ok := value.(map[string]interface{}); ok {
+			return mapToJSValue(ctx, m)
+		}
+		if m, ok := value.(map[interface{}]interface{}); ok {
+			m2 := make(typeutil.H)
+			for k, v := range m {
+				m2[fmt.Sprintf("%v", k)] = v
+			}
+			return mapToJSValue(ctx, m2)
+		}
+		return ctx.ThrowTypeError("AnyToJSValue: unsupported map type: %+v", value)
 	case "slice":
 		{
 			arr := ctx.Array()

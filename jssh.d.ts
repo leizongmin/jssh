@@ -92,6 +92,14 @@ declare function sleep(milliseconds: number): number;
 declare function exit(code?: number): void;
 
 /**
+ * 加载配置文件，支持*.json,*.yaml,*.toml格式
+ * @param file 文件名
+ * @param format 格式，如果没有指定则自动根据文件后缀名判断
+ * @return 配置内容
+ */
+declare function loadconfig(file: string, format?: "json" | "yaml" | "toml"): any;
+
+/**
  * Shell相关操作模块
  */
 declare const sh: ShModule

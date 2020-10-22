@@ -106,12 +106,13 @@ func getJsGlobal(file string) typeutil.H {
 
 	global["set"] = JsFnSet(global)
 	global["get"] = JsFnGet(global)
-	global["sleep"] = JsFnSleep(global)
-	global["exit"] = JsFnExit(global)
-
 	global["format"] = JsFnFormat(global)
 	global["print"] = JsFnPrint(global)
 	global["println"] = JsFnPrintln(global)
+
+	global["sleep"] = JsFnSleep(global)
+	global["exit"] = JsFnExit(global)
+	global["loadconfig"] = JsFnLoadconfig(global)
 
 	shModule := make(typeutil.H)
 	shModule["setenv"] = JsFnShSetenv(global)

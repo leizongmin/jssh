@@ -46,12 +46,21 @@ log.info("%s, %s, %v, %v, %s, %s", cli.get(0), cli.get("n"), cli.bool("n"), cli.
 
 log.error(new Error().stack)
 
-log.info(JSON.stringify(http.request("GET", "http://baidu.com")))
-log.info(format("%s-%s", "aaa", "bbb"))
+if (cli.bool("request")) {
+    log.info(JSON.stringify(http.request("GET", "http://baidu.com")))
+    log.info(format("%s-%s", "aaa", "bbb"))
+}
 
-log.info("bgexec: pid=%v", sh.bgexec("ping qq.com -c 60"))
-log.info("bgexec: pid=%v", sh.bgexec("ping baidu.com -c 60"))
-log.info("tail: %s", JSON.stringify(sh.exec(`tail ${__filename}`, {}, true)))
-sleep(10000)
+if (cli.bool("bgexec")) {
+    log.info("bgexec: pid=%v", sh.bgexec("ping qq.com -c 60"))
+    log.info("bgexec: pid=%v", sh.bgexec("ping baidu.com -c 60"))
+    log.info("tail: %s", JSON.stringify(sh.exec(`tail ${__filename}`, {}, true)))
+    sleep(3000)
+}
+
+log.info(JSON.stringify(loadconfig("config.json")))
+log.info(JSON.stringify(loadconfig("config.toml")))
+log.info(JSON.stringify(loadconfig("config.yaml")))
+log.info(JSON.stringify(loadconfig("config.txt", "toml")))
 
 exit(123)
