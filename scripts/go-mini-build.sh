@@ -28,9 +28,13 @@ export PREFIX="go-mini-build"
 echo "$PREFIX> package:\t$PACKAGE"
 echo "$PREFIX> output: \t$OUTPUT"
 
+#go build -v -ldflags "-s -w" -o $OUTPUT $PACKAGE && \
+#echo "$PREFIX> original size:\t$(file_size $OUTPUT)" && \
+#gzexe "$OUTPUT" && \
+#rm -f "$OUTPUT~" && \
+#echo "$PREFIX> final size:\t$(file_size $OUTPUT)" && \
+#echo "$PREFIX> done."
+
 go build -v -ldflags "-s -w" -o $OUTPUT $PACKAGE && \
 echo "$PREFIX> original size:\t$(file_size $OUTPUT)" && \
-gzexe "$OUTPUT" && \
-rm -f "$OUTPUT~" && \
-echo "$PREFIX> final size:\t$(file_size $OUTPUT)" && \
 echo "$PREFIX> done."
