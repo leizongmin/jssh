@@ -44,6 +44,10 @@ func Main() {
 
 	file := a.GetArg(0)
 	if len(file) < 1 {
+		if haveCliOption(a, "c") {
+			run("", a.GetOption("c").Value)
+			return
+		}
 		printExitMessage("Missing input script file!", codeFileError, true)
 	}
 	file, err := filepath.Abs(file)
@@ -56,7 +60,10 @@ func Main() {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
 	content := string(buf)
+	run(file, content)
+}
 
+func run(file string, content string) {
 	global := getJsGlobal(file)
 	jsRuntime := jsexecutor.NewJSRuntime()
 	defer jsRuntime.Free()
@@ -68,8 +75,10 @@ func Main() {
 }
 
 func printUsage(code int) {
-	fmt.Printf("Example usage:\n")
-	fmt.Printf("  %s <script.js> [arg1] [arg2] [...]\n", pkginfo.Name)
+	fmt.Println("Example usage:")
+	fmt.Printf("  %s script_file.js [arg1] [arg2] [...]\n", pkginfo.Name)
+	fmt.Printf("  %s -c=\"script\" [arg1] [arg2] [...]\n", pkginfo.Name)
+	fmt.Println()
 	os.Exit(code)
 }
 
