@@ -6,6 +6,7 @@ import (
 	"github.com/leizongmin/go/httputil"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/pkginfo"
 	"io"
 	"strings"
 	"time"
@@ -16,7 +17,7 @@ var httpGlobalTimeout int64 = 60_000
 
 func init() {
 	httpGlobalHeaders = make(map[string]string)
-	httpGlobalHeaders["user-agent"] = fmt.Sprintf("%s/%s", cmdName, cmdVersion)
+	httpGlobalHeaders["user-agent"] = fmt.Sprintf("%s/%s", pkginfo.Name, pkginfo.LongVersion)
 }
 
 func JsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {

@@ -5,11 +5,12 @@ import (
 	"github.com/gookit/color"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/pkginfo"
 	"log"
 	"os"
 )
 
-var logPrefix = fmt.Sprintf("[%s] ", cmdName)
+var logPrefix = fmt.Sprintf("[%s] ", pkginfo.Name)
 var stdLog = log.New(os.Stdout, logPrefix, log.LstdFlags)
 var errLog = log.New(os.Stderr, logPrefix, log.LstdFlags)
 

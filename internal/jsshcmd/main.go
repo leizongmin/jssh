@@ -6,14 +6,12 @@ import (
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/pkginfo"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
 )
-
-const cmdName = "jssh"
-const cmdVersion = "v1.0"
 
 const (
 	codeOK          = 0
@@ -40,7 +38,7 @@ func Main() {
 		return
 	}
 	if haveCliOption(a, "v", "version") {
-		printExitMessage(fmt.Sprintf("%s %s", cmdName, cmdVersion), codeOK, false)
+		printExitMessage(fmt.Sprintf("%s %s", pkginfo.Name, pkginfo.LongVersion), codeOK, false)
 		return
 	}
 
@@ -71,7 +69,7 @@ func Main() {
 
 func printUsage(code int) {
 	fmt.Printf("Example usage:\n")
-	fmt.Printf("  %s <script.js> [arg1] [arg2] [...]\n", cmdName)
+	fmt.Printf("  %s <script.js> [arg1] [arg2] [...]\n", pkginfo.Name)
 	os.Exit(code)
 }
 
@@ -90,7 +88,7 @@ func getJsGlobal(file string) typeutil.H {
 
 	global := make(typeutil.H)
 
-	global["__version"] = cmdVersion
+	global["__version"] = pkginfo.LongVersion
 	global["__bin"], _ = filepath.Abs(os.Args[0])
 	global["__pid"] = os.Getpid()
 	global["__tmpdir"] = os.TempDir()
