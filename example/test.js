@@ -76,10 +76,27 @@ if (cli.bool("ssh")) {
     ssh.close()
 }
 
-log.info("prompt: %s", cli.prompt())
-log.info("prompt: %s", cli.prompt("what's your name: "))
+if (cli.bool("prompt")) {
+    log.info("prompt: %s", cli.prompt())
+    log.info("prompt: %s", cli.prompt("what's your name: "))
+}
 
 log.info("download: %s", http.download("https://gitee.com/leizongmin/jssh/raw/main/main.go"))
 log.info("download: %s", http.download("https://gitee.com/leizongmin/jssh/raw/main/main.go", path.join(__tmpdir, "test-download")))
+
+socket.timeout(2_000)
+log.info("socket: %v", socket.tcptest("baidu.com", 80))
+log.info("socket: %v", socket.tcptest("baidu.com", 81))
+const rawReq = [
+    "GET /search?q=test HTTP/1.1",
+    "Host: baidu.com",
+    "User-Agent: jssh",
+    "Accept: */*",
+    "Connection: close",
+    "", ""
+].join("\r\n");
+println(rawReq)
+log.info("socket: %v", socket.tcpsend("baidu.com", 80, rawReq))
+log.info("socket: %v", socket.tcpsend("baidu.com", 81, rawReq))
 
 exit(123)

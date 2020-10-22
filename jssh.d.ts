@@ -120,6 +120,9 @@ declare const log: LogModule;
 /** SSH相关操作模块 */
 declare const ssh: SshModule;
 
+/** Socket相关操作模块 */
+declare const socket: SocketModule;
+
 interface FsModule {
     /**
      * 读取目录
@@ -431,4 +434,30 @@ interface SshExecResult {
      * 进出输出内容字节数，仅当combineOutput=true时有效
      */
     outputbytes?: number;
+}
+
+interface SocketModule {
+    /**
+     * 设置超时时间
+     * @param milliseconds 毫秒
+     * @return 毫秒
+     */
+    timeout(milliseconds: number): number;
+
+    /**
+     * TCP发送消息
+     * @param host 地址
+     * @param port 端口
+     * @param data 数据
+     * @return 服务器返回的内容
+     */
+    tcpsend(host: string, port: number, data: string): string;
+
+    /**
+     * TCP端口连接测试
+     * @param host 地址
+     * @param port 端口
+     * @return 是否成功
+     */
+    tcptest(host: string, port: number): boolean;
 }

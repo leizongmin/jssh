@@ -182,5 +182,11 @@ func getJsGlobal(file string) typeutil.H {
 	httpModule["download"] = JsFnHttpDownload(global)
 	global["http"] = httpModule
 
+	socketModule := make(typeutil.H)
+	socketModule["timeout"] = JsFnSocketTimeout(global)
+	socketModule["tcpsend"] = JsFnSocketTcpsend(global)
+	socketModule["tcptest"] = JsFnSocketTcptest(global)
+	global["socket"] = socketModule
+
 	return global
 }
