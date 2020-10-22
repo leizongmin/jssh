@@ -2,6 +2,7 @@ package jsshcmd
 
 import (
 	"fmt"
+	"github.com/gookit/color"
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
@@ -74,9 +75,6 @@ func Main() {
 	global["__code"] = 0
 
 	global["set"] = JsFnSet(global)
-	global["log"] = JsFnLog(global)
-	global["print"] = JsFnPrint(global)
-	global["println"] = JsFnPrintln(global)
 	global["setenv"] = JsFnSetenv(global)
 	global["exec"] = JsFnExec(global)
 	global["sleep"] = JsFnSleep(global)
@@ -85,6 +83,14 @@ func Main() {
 	global["cwd"] = JsFnCwd(global)
 	global["pwd"] = JsFnCwd(global)
 	global["exit"] = JsFnExit(global)
+
+	global["print"] = JsFnPrint(global)
+	global["println"] = JsFnPrintln(global)
+
+	logModule := make(typeutil.H)
+	logModule["info"] = JsFnLogInfo(global)
+	logModule["error"] = JsFnLogError(global)
+	global["log"] = logModule
 
 	fsModule := make(typeutil.H)
 	fsModule["readdir"] = JsFnFsReaddir(global)
@@ -130,7 +136,7 @@ func printUsage(code int) {
 }
 
 func printExitMessage(message string, code int, usage bool) {
-	fmt.Println(message)
+	fmt.Println(color.FgRed.Render(message))
 	if usage {
 		fmt.Println()
 		printUsage(code)

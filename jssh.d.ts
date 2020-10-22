@@ -47,14 +47,6 @@ declare var __code: number;
 declare function set(name: string, value: any): boolean;
 
 /**
- * 日志输出到控制台
- * @param format 模板，支持%s等格式
- * @param args 参数列表
- * @return 是否成功
- */
-declare function log(format: any, ...args: any[]): boolean;
-
-/**
  * 输出到控制台
  * @param format 模板，支持%s等格式
  * @param args 参数列表
@@ -89,10 +81,10 @@ declare function exec(cmd: string, env?: Record<string, string>, combineOutput?:
 
 /**
  * 睡眠
- * @param millisecond 毫秒
+ * @param milliseconds 毫秒
  * @return 毫秒
  */
-declare function sleep(millisecond: number): number;
+declare function sleep(milliseconds: number): number;
 
 /**
  * 改变当前工作目录
@@ -146,6 +138,11 @@ declare var cli: CliModule;
  */
 declare var http: HttpModule;
 
+/**
+ * 日志相关操作模块
+ */
+declare var log: LogModule;
+
 interface FsModule {
     /**
      * 读取目录
@@ -166,7 +163,7 @@ interface FsModule {
      * @param path 路径
      * @return 文件信息
      */
-    readstat(path: string): FileStat;
+    stat(path: string): FileStat;
 
     /**
      * 写入文件
@@ -273,10 +270,10 @@ interface CliModule {
 interface HttpModule {
     /**
      * 设置HTTP请求的超时时间
-     * @param millisecond 毫秒
+     * @param milliseconds 毫秒
      * @return 毫秒
      */
-    timeout(millisecond: number): number;
+    timeout(milliseconds: number): number;
 
     /**
      * 发送HTTP请求
@@ -296,4 +293,22 @@ interface HttpResponse {
     headers: Record<string, string | string[]>;
     /** 响应体 */
     body: string;
+}
+
+interface LogModule {
+    /**
+     * 日志输出到控制台
+     * @param format 模板，支持%s等格式
+     * @param args 参数列表
+     * @return 是否成功
+     */
+    info(format: any, ...args: any[]): boolean;
+
+    /**
+     * 日志输出到控制台
+     * @param format 模板，支持%s等格式
+     * @param args 参数列表
+     * @return 是否成功
+     */
+    error(format: any, ...args: any[]): boolean;
 }

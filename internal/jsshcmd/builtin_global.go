@@ -48,68 +48,6 @@ func JsFnSet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnLog(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) > 0 {
-			s, err := jsexecutor.JSValueToAny(args[0])
-			if err != nil {
-				return ctx.ThrowError(err)
-			}
-			format, ok := s.(string)
-			a := make([]interface{}, 0)
-			for _, v := range args[1:] {
-				v2, err := jsexecutor.JSValueToAny(v)
-				if err != nil {
-					return ctx.ThrowError(err)
-				}
-				a = append(a, v2)
-			}
-			if ok {
-				log.Printf(format, a...)
-			} else {
-				a = append([]interface{}{s}, a...)
-				log.Println(a)
-			}
-		}
-		return ctx.Bool(true)
-	}
-}
-
-func JsFnPrint(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) > 0 {
-			s, err := jsexecutor.JSValueToAny(args[0])
-			if err != nil {
-				return ctx.ThrowError(err)
-			}
-			format, ok := s.(string)
-			a := make([]interface{}, 0)
-			for _, v := range args[1:] {
-				v2, err := jsexecutor.JSValueToAny(v)
-				if err != nil {
-					return ctx.ThrowError(err)
-				}
-				a = append(a, v2)
-			}
-			if ok {
-				fmt.Printf(format, a...)
-			} else {
-				a = append([]interface{}{s}, a...)
-				fmt.Println(a)
-			}
-		}
-		return ctx.Bool(true)
-	}
-}
-
-func JsFnPrintln(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		ret := global["print"].(jsexecutor.JSFunction)(ctx, this, args)
-		fmt.Println()
-		return ret
-	}
-}
-
 func JsFnSetenv(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
