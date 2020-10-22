@@ -1,3 +1,5 @@
+#!/usr/bin/env go run github.com/leizongmin/jssh
+
 log.info("aaa: %s %s %s", __bin, __dirname, __filename)
 log.error(JSON.stringify(__args))
 println(JSON.stringify(__env))
@@ -48,5 +50,9 @@ log.error(new Error().stack)
 
 log.info(JSON.stringify(http.request("GET", "http://baidu.com")))
 log.info(format("%s-%s", "aaa", "bbb"))
+
+log.info("bgexec: pid=%v", bgexec("ping qq.com -c 60"))
+log.info("bgexec: pid=%v", bgexec("ping baidu.com -c 60"))
+sleep(10000)
 
 exit(123)

@@ -76,13 +76,15 @@ func Main() {
 
 	global["set"] = JsFnSet(global)
 	global["setenv"] = JsFnSetenv(global)
-	global["exec"] = JsFnExec(global)
 	global["sleep"] = JsFnSleep(global)
 	global["chdir"] = JsFnChdir(global)
 	global["cd"] = JsFnChdir(global)
 	global["cwd"] = JsFnCwd(global)
 	global["pwd"] = JsFnCwd(global)
 	global["exit"] = JsFnExit(global)
+
+	global["exec"] = JsFnExec(global)
+	global["bgexec"] = JsFnBgexec(global)
 
 	global["format"] = JsFnFormat(global)
 	global["print"] = JsFnPrint(global)
