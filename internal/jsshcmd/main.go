@@ -91,7 +91,6 @@ func run(file string, content string, interactive bool) {
 		line := liner.NewLiner()
 		defer line.Close()
 		line.SetCtrlCAborts(true)
-		line.SetMultiLineMode(true)
 		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
 
 		bufLines := make([]string, 0)
@@ -118,18 +117,19 @@ func run(file string, content string, interactive bool) {
 						s := ret.String()
 						if s != "[object Object]" {
 							fmt.Println(color.FgLightBlue.Render(s))
+						} else {
+							a, err := jsexecutor.JSValueToAny(ret)
+							if err != nil {
+								fmt.Println(color.FgRed.Render(err))
+								continue
+							}
+							s, err = jsoniter.MarshalToString(a)
+							if err != nil {
+								fmt.Println(color.FgRed.Render(err))
+								continue
+							}
+							fmt.Println(color.FgLightBlue.Render(s))
 						}
-						a, err := jsexecutor.JSValueToAny(ret)
-						if err != nil {
-							fmt.Println(color.FgRed.Render(err))
-							continue
-						}
-						s, err = jsoniter.MarshalToString(a)
-						if err != nil {
-							fmt.Println(color.FgRed.Render(err))
-							continue
-						}
-						fmt.Println(color.FgLightBlue.Render(s))
 					} else {
 						fmt.Println(color.FgLightBlue.Render(ret.String()))
 					}
