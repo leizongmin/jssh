@@ -1,5 +1,5 @@
 package pkginfo
 
 const Name = "jssh"
-const Version = "1.0"
-const LongVersion = Version + "-commit-55b2a39-build-202010221750"
+const Version = "0.1"
+const LongVersion = Version + "-commit-d7ba4e2-build-202010221822"
