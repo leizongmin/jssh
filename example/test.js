@@ -71,7 +71,7 @@ ssh.open("192.168.2.200")
 ssh.setenv("a", "123")
 log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"})))
 log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"}, true)))
-log.info(JSON.stringify(ssh.exec("htop")))
+log.info(JSON.stringify(ssh.exec("pwd")))
 ssh.close()
 
 exit(123)

@@ -7,10 +7,8 @@ import (
 	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
-	"log"
 	"net"
 	"os"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -296,14 +294,4 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 			"outputbytes": len(output),
 		})
 	}
-}
-
-var matchStatusFromSshExecErrorRegExp *regexp.Regexp
-
-func init() {
-	r, err := regexp.Compile("Process exited with status (\\d+)")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	matchStatusFromSshExecErrorRegExp = r
 }
