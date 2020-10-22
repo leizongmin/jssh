@@ -83,18 +83,37 @@ declare function setenv(name: string, value: string): boolean;
  * @param cmd 命令
  * @param env 额外的环境变量
  * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
- * @return 进程退出code
+ * @return 进程信息
  */
-declare function exec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): number;
+declare function exec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): ExecResult;
 
 /**
  * 后台执行命令
  * @param cmd 命令
  * @param env 额外的环境变量
  * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
- * @return 进程退出code
+ * @return 进程信息
  */
-declare function bgexec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): number;
+declare function bgexec(cmd: string, env?: Record<string, string>, combineOutput?: boolean): ExecResult;
+
+interface ExecResult {
+    /**
+     * 进程PID
+     */
+    pid: number;
+    /**
+     * 进程退出code
+     */
+    code?: number;
+    /**
+     * 进程输出内容，仅当combineOutput=true时有效
+     */
+    output?: string;
+    /**
+     * 进出输出内容字节数，仅当combineOutput=true时有效
+     */
+    outputbytes?: number;
+}
 
 /**
  * 睡眠

@@ -113,11 +113,21 @@ func JsFnExec(global typeutil.H) jsexecutor.JSFunction {
 			global["__outputbytes"] = len(out)
 		}
 
+		pid := 0
+		if sh.Process != nil {
+			pid = sh.Process.Pid
+		}
+
 		code := sh.ProcessState.ExitCode()
 		global["__code"] = code
 		jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
-		return jsexecutor.AnyToJSValue(ctx, code)
+		return jsexecutor.AnyToJSValue(ctx, typeutil.H{
+			"pid":         pid,
+			"code":        code,
+			"output":      global["__output"],
+			"outputbytes": global["__outputbytes"],
+		})
 	}
 }
 
@@ -224,9 +234,10 @@ func JsFnBgexec(global typeutil.H) jsexecutor.JSFunction {
 			}()
 		}
 
-		if sh.Process == nil {
-			return ctx.Int32(0)
+		pid := 0
+		if sh.Process != nil {
+			pid = sh.Process.Pid
 		}
-		return ctx.Int32(int32(sh.Process.Pid))
+		return jsexecutor.AnyToJSValue(ctx, typeutil.H{"pid": pid})
 	}
 }

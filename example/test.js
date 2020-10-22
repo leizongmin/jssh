@@ -53,6 +53,7 @@ log.info(format("%s-%s", "aaa", "bbb"))
 
 log.info("bgexec: pid=%v", bgexec("ping qq.com -c 60"))
 log.info("bgexec: pid=%v", bgexec("ping baidu.com -c 60"))
+log.info("tail: %s", JSON.stringify(exec(`tail ${__filename}`, {}, true)))
 sleep(10000)
 
 exit(123)

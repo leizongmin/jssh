@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 const cmdName = "jssh"
@@ -31,6 +32,7 @@ func haveCliOption(a *cliargs.CliArgs, names ...string) bool {
 }
 
 func Main() {
+	runtime.LockOSThread()
 	a := cliargs.Parse(os.Args[1:])
 
 	if haveCliOption(a, "h", "help") {
