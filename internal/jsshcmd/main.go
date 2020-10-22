@@ -84,6 +84,7 @@ func Main() {
 	global["pwd"] = JsFnCwd(global)
 	global["exit"] = JsFnExit(global)
 
+	global["format"] = JsFnFormat(global)
 	global["print"] = JsFnPrint(global)
 	global["println"] = JsFnPrintln(global)
 

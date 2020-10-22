@@ -47,6 +47,14 @@ declare var __code: number;
 declare function set(name: string, value: any): boolean;
 
 /**
+ * 格式化文本内容
+ * @param format 模板，支持%s等格式
+ * @param args 参数列表
+ * @return 格式化后的文本内容
+ */
+declare function format(format: any, ...args: any[]): string;
+
+/**
  * 输出到控制台
  * @param format 模板，支持%s等格式
  * @param args 参数列表

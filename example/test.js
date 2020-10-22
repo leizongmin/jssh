@@ -47,5 +47,6 @@ log.info("%s, %s, %v, %v, %s, %s", cli.get(0), cli.get("n"), cli.bool("n"), cli.
 log.error(new Error().stack)
 
 log.info(JSON.stringify(http.request("GET", "http://baidu.com")))
+log.info(format("%s-%s", "aaa", "bbb"))
 
 exit(123)
