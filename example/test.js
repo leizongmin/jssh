@@ -28,7 +28,7 @@ log.info(fs.readfile(`${__homedir}/.gitconfig`))
 log.info(JSON.stringify(fs.stat(`${__homedir}/.gitconfig`)))
 
 set("xyz", 12345)
-log.info("xyz = %f", xyz)
+log.info("xyz = %f", get("xyz"))
 
 const file = `${__tmpdir}/${Date.now()}-${Math.random()}.txt`
 log.info(fs.writefile(file, "hello"))

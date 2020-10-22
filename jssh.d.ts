@@ -47,6 +47,13 @@ declare const __code: number;
 declare function set(name: string, value: any): boolean;
 
 /**
+ * 获取全局变量
+ * @param name 变量名
+ * @return 值
+ */
+declare function get(name: string): any;
+
+/**
  * 格式化文本内容
  * @param format 模板，支持%s等格式
  * @param args 参数列表

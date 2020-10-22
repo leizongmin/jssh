@@ -22,6 +22,20 @@ func JsFnExit(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
+func JsFnGet(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("get: missing name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("get: first argument expected string type")
+		}
+		name := args[0].String()
+
+		return ctx.Globals().Get(name)
+	}
+}
+
 func JsFnSet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {

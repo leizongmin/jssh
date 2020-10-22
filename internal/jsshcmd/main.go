@@ -105,6 +105,7 @@ func getJsGlobal(file string) typeutil.H {
 	global["__code"] = 0
 
 	global["set"] = JsFnSet(global)
+	global["get"] = JsFnGet(global)
 	global["sleep"] = JsFnSleep(global)
 	global["exit"] = JsFnExit(global)
 
