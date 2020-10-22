@@ -1,6 +1,7 @@
 package jsshcmd
 
 import (
+	"fmt"
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
@@ -77,5 +78,26 @@ func JsFnCliOpts(global typeutil.H) jsexecutor.JSFunction {
 			opts[n] = v.Value
 		}
 		return jsexecutor.AnyToJSValue(ctx, opts)
+	}
+}
+
+func JsFnCliPrompt(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) >= 1 {
+			if !args[0].IsString() {
+				return ctx.ThrowTypeError("cli.bool: first argument expected string type")
+			}
+			msg := args[0].String()
+			if len(msg) > 0 {
+				fmt.Print(msg)
+			}
+		}
+
+		var line string
+		_, err := fmt.Scanln(&line)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		return ctx.String(line)
 	}
 }

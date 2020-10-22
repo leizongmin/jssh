@@ -173,6 +173,7 @@ func getJsGlobal(file string) typeutil.H {
 	cliModule["bool"] = JsFnCliBool(global)
 	cliModule["args"] = JsFnCliArgs(global)
 	cliModule["opts"] = JsFnCliOpts(global)
+	cliModule["prompt"] = JsFnCliPrompt(global)
 	global["cli"] = cliModule
 
 	httpModule := make(typeutil.H)

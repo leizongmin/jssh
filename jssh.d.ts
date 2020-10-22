@@ -242,6 +242,13 @@ interface CliModule {
      * @return 参数Map
      */
     opts(): Record<string, string>;
+
+    /**
+     * 等待用户输入一行，按Enter确认
+     * @param message 提示
+     * @return 输入的内容
+     */
+    prompt(message?: string): string;
 }
 
 interface HttpModule {
