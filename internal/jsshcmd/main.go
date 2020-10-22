@@ -39,7 +39,7 @@ func Main() {
 		return
 	}
 	if first == "-v" || first == "--version" {
-		fmt.Printf("%s %s", pkginfo.Name, pkginfo.LongVersion)
+		fmt.Printf("%s %s\n", pkginfo.Name, pkginfo.LongVersion)
 		return
 	}
 
@@ -177,8 +177,10 @@ func printUsage(code int) {
 	printAuthorInfo()
 	fmt.Println("Example usage:")
 	fmt.Printf("  %s script_file.js [arg1] [arg2] [...]     Run script file\n", pkginfo.Name)
-	fmt.Printf("  %s -c=\"script\" [arg1] [arg2] [...]        Run script from argument\n", pkginfo.Name)
+	fmt.Printf("  %s -c \"script\" [arg1] [arg2] [...]        Run script from argument\n", pkginfo.Name)
 	fmt.Printf("  %s -i                                     Start REPL\n", pkginfo.Name)
+	fmt.Printf("  %s -h                                     Show usage\n", pkginfo.Name)
+	fmt.Printf("  %s -v                                     Show version\n", pkginfo.Name)
 	fmt.Println()
 	os.Exit(code)
 }
