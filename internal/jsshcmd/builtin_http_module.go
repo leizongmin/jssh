@@ -34,6 +34,8 @@ func JsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {
 		}
 
 		httpGlobalTimeout = args[0].Int64()
+		httputil.GetClient().Timeout = time.Millisecond * time.Duration(httpGlobalTimeout)
+
 		return ctx.Int64(httpGlobalTimeout)
 	}
 }
@@ -62,7 +64,6 @@ func JsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 		for n, v := range httpGlobalHeaders {
 			req.SetHeader(n, v)
 		}
-		req.Timeout = time.Millisecond * time.Duration(httpGlobalTimeout)
 
 		if len(args) >= 3 {
 			if !args[2].IsObject() {
@@ -142,7 +143,6 @@ func JsFnHttpDownload(global typeutil.H) jsexecutor.JSFunction {
 		for n, v := range httpGlobalHeaders {
 			req.SetHeader(n, v)
 		}
-		req.Timeout = time.Millisecond * time.Duration(httpGlobalTimeout)
 
 		res, err := req.Send()
 		if err != nil {
