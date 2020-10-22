@@ -1,7 +1,16 @@
 # jssh
 使用 JavaScript 编写运维脚本。
 
-## 使用v0.1版本
+## 安装
+
+通过 Go 命令行工具安装：
+
+```bash
+export GOPROXY=https://goproxy.cn
+go get -u github.com/leizongmin/jssh
+```
+
+试用v0.1版本：
 
 - macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/osx/jssh
 - Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/linux/jssh
