@@ -3,14 +3,17 @@ package jsshcmd
 import (
 	"fmt"
 	"github.com/gookit/color"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
+	"github.com/peterh/liner"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 const (
@@ -40,13 +43,19 @@ func Main() {
 		return
 	}
 
+	if first == "-i" {
+		parsedCliArgs = cliargs.Parse(os.Args[2:])
+		run("", os.Args[1], true)
+		return
+	}
+
 	if first == "-c" {
 		if len(os.Args) < 3 {
 			printUsage(codeFileError)
 			return
 		}
 		parsedCliArgs = cliargs.Parse(os.Args[3:])
-		run("", os.Args[2])
+		run("", os.Args[2], false)
 		return
 	}
 
@@ -61,28 +70,95 @@ func Main() {
 	}
 	content := string(buf)
 	parsedCliArgs = cliargs.Parse(os.Args[2:])
-	run(file, content)
+	run(file, content, false)
 }
 
-func run(file string, content string) {
+func run(file string, content string, interactive bool) {
 	global := getJsGlobal(file)
 	jsRuntime := jsexecutor.NewJSRuntime()
 	defer jsRuntime.Free()
-	ret, err := jsexecutor.EvalJSFile(jsRuntime, content, file, global)
-	if err != nil {
-		printExitMessage(err.Error(), codeScriptError, false)
+
+	ctx := jsRuntime.NewContext()
+	defer ctx.Free()
+	jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
+
+	if interactive {
+		printAuthorInfo()
+		fmt.Println("Press Ctrl+C to exit the REPL.")
+		fmt.Println("Type ;; in the end of the line to eval.")
+		fmt.Println()
+
+		line := liner.NewLiner()
+		defer line.Close()
+		line.SetCtrlCAborts(true)
+		line.SetMultiLineMode(true)
+		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
+
+		bufLines := make([]string, 0)
+		for {
+			code, err := line.Prompt(prompt)
+			if err != nil {
+				if err == liner.ErrPromptAborted {
+					fmt.Println(color.FgRed.Render("Aborted"))
+					break
+				} else {
+					fmt.Println(color.FgRed.Render("Error reading line: %s", err))
+				}
+			}
+			bufLines = append(bufLines, code)
+			line.AppendHistory(code)
+
+			if strings.HasSuffix(code, ";;") {
+				content := strings.Join(bufLines, "\n")
+				bufLines = make([]string, 0)
+				if ret, err := ctx.Eval(content); err != nil {
+					fmt.Println(color.FgRed.Render(err))
+				} else {
+					if ret.IsObject() {
+						s := ret.String()
+						if s != "[object Object]" {
+							fmt.Println(color.FgLightBlue.Render(s))
+						}
+						a, err := jsexecutor.JSValueToAny(ret)
+						if err != nil {
+							fmt.Println(color.FgRed.Render(err))
+							continue
+						}
+						s, err = jsoniter.MarshalToString(a)
+						if err != nil {
+							fmt.Println(color.FgRed.Render(err))
+							continue
+						}
+						fmt.Println(color.FgLightBlue.Render(s))
+					} else {
+						fmt.Println(color.FgLightBlue.Render(ret.String()))
+					}
+					ret.Free()
+				}
+			}
+		}
+	} else {
+		if ret, err := ctx.EvalFile(content, file); err != nil {
+			printExitMessage(err.Error(), codeScriptError, false)
+		} else {
+			ret.Free()
+		}
 	}
-	defer ret.Free()
 }
 
-func printUsage(code int) {
-	fmt.Printf("%s %s\n", pkginfo.Name, pkginfo.LongVersion)
+func printAuthorInfo() {
+	fmt.Printf("Welcome to %s %s\n", pkginfo.Name, pkginfo.LongVersion)
 	fmt.Println("Author:  leizongmin@gmail.com")
 	fmt.Println("Project: https://github.com/leizongmin/jssh")
 	fmt.Println()
+}
+
+func printUsage(code int) {
+	printAuthorInfo()
 	fmt.Println("Example usage:")
-	fmt.Printf("  %s script_file.js [arg1] [arg2] [...]\n", pkginfo.Name)
-	fmt.Printf("  %s -c=\"script\" [arg1] [arg2] [...]\n", pkginfo.Name)
+	fmt.Printf("  %s script_file.js [arg1] [arg2] [...]     Run script file\n", pkginfo.Name)
+	fmt.Printf("  %s -c=\"script\" [arg1] [arg2] [...]        Run script from argument\n", pkginfo.Name)
+	fmt.Printf("  %s -i                                     Start REPL\n", pkginfo.Name)
 	fmt.Println()
 	os.Exit(code)
 }
