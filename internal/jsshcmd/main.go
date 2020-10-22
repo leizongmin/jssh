@@ -52,13 +52,41 @@ func Main() {
 	if err != nil {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
-	dir := filepath.Dir(file)
 
 	buf, err := ioutil.ReadFile(file)
 	if err != nil {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
 	content := string(buf)
+
+	global := getJsGlobal(file)
+	jsRuntime := jsexecutor.NewJSRuntime()
+	defer jsRuntime.Free()
+	ret, err := jsexecutor.EvalJSFile(jsRuntime, content, file, global)
+	if err != nil {
+		printExitMessage(err.Error(), codeScriptError, false)
+	}
+	defer ret.Free()
+}
+
+func printUsage(code int) {
+	fmt.Printf("Example usage:\n")
+	fmt.Printf("  %s <script.js> [arg1] [arg2] [...]\n", cmdName)
+	os.Exit(code)
+}
+
+func printExitMessage(message string, code int, usage bool) {
+	fmt.Println(color.FgRed.Render(message))
+	if usage {
+		fmt.Println()
+		printUsage(code)
+	} else {
+		os.Exit(code)
+	}
+}
+
+func getJsGlobal(file string) typeutil.H {
+	dir := filepath.Dir(file)
 
 	global := make(typeutil.H)
 
@@ -127,27 +155,5 @@ func Main() {
 	httpModule["request"] = JsFnHttpRequest(global)
 	global["http"] = httpModule
 
-	jsRuntime := jsexecutor.NewJSRuntime()
-	defer jsRuntime.Free()
-	ret, err := jsexecutor.EvalJSFile(jsRuntime, content, file, global)
-	if err != nil {
-		printExitMessage(err.Error(), codeScriptError, false)
-	}
-	defer ret.Free()
-}
-
-func printUsage(code int) {
-	fmt.Printf("Example usage:\n")
-	fmt.Printf("  %s <script.js> [arg1] [arg2] [...]\n", cmdName)
-	os.Exit(code)
-}
-
-func printExitMessage(message string, code int, usage bool) {
-	fmt.Println(color.FgRed.Render(message))
-	if usage {
-		fmt.Println()
-		printUsage(code)
-	} else {
-		os.Exit(code)
-	}
+	return global
 }
