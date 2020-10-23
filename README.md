@@ -15,6 +15,10 @@ go get -u github.com/leizongmin/jssh
 - macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/osx/jssh
 - Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/linux/jssh
 
+```bash
+curl -o /usr/local/bin/jssh https://cdn.itoutiao.co/jssh/v0.1/linux/jssh && chmod +x /usr/local/bin/jssh
+```
+
 ## 参考文档
 
 TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/jssh/blob/main/jssh.d.ts)。
