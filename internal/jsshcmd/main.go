@@ -99,9 +99,30 @@ func run(file string, content string, interactive bool) {
 		fmt.Println("Type ;; in the end of the line to eval.")
 		fmt.Println()
 
+		jsGlobals := ctx.Globals()
 		repl := liner.NewLiner()
 		defer repl.Close()
 		repl.SetCtrlCAborts(true)
+		repl.SetCompleter(func(line string) (c []string) {
+			if names, err := jsGlobals.PropertyNames(); err != nil {
+				fmt.Println(color.FgRed.Render(err))
+			} else {
+				line := strings.ToLower(line)
+				for _, n := range names {
+					a := jsGlobals.GetByAtom(n.Atom)
+					s := n.String()
+					if a.IsFunction() {
+						s += "("
+					}
+					if strings.HasPrefix(s, line) {
+						c = append(c, s)
+					}
+					a.Free()
+				}
+			}
+			c = append(c, replCompleter(line)...)
+			return c
+		})
 		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
 
 		historyFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_history", pkginfo.Name))
