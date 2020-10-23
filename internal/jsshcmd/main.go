@@ -45,17 +45,23 @@ func Main() {
 
 	if first == "-i" {
 		parsedCliArgs = cliargs.Parse(os.Args[2:])
-		run("", os.Args[1], true)
+		run("", os.Args[1], true, nil)
 		return
 	}
 
-	if first == "-c" {
+	if first == "-c" || first == "-x" {
 		if len(os.Args) < 3 {
 			printUsage(codeFileError)
 			return
 		}
 		parsedCliArgs = cliargs.Parse(os.Args[3:])
-		run("", os.Args[2], false)
+		run("", os.Args[2], false, func(ret jsexecutor.JSValue) {
+			if first == "-x" {
+				if !ret.IsUndefined() && !ret.IsNull() {
+					fmt.Println(ret.String())
+				}
+			}
+		})
 		return
 	}
 
@@ -70,10 +76,10 @@ func Main() {
 	}
 	content := string(buf)
 	parsedCliArgs = cliargs.Parse(os.Args[2:])
-	run(file, content, false)
+	run(file, content, false, nil)
 }
 
-func run(file string, content string, interactive bool) {
+func run(file string, content string, interactive bool, onEnd func(ret jsexecutor.JSValue)) {
 	global := getJsGlobal(file)
 	jsRuntime := jsexecutor.NewJSRuntime()
 	defer jsRuntime.Free()
@@ -180,6 +186,9 @@ func run(file string, content string, interactive bool) {
 					} else {
 						fmt.Println(color.FgLightBlue.Render(ret.String()))
 					}
+					if onEnd != nil {
+						onEnd(ret)
+					}
 					ret.Free()
 				}
 			}
@@ -201,43 +210,16 @@ func run(file string, content string, interactive bool) {
 		if ret, err := ctx.EvalFile(content, file); err != nil {
 			printExitMessage(err.Error(), codeScriptError, false)
 		} else {
+			if onEnd != nil {
+				onEnd(ret)
+			}
 			ret.Free()
 		}
 	}
 }
 
-func printAuthorInfo() {
-	fmt.Printf("Welcome to %s %s\n", pkginfo.Name, pkginfo.LongVersion)
-	fmt.Println("Author:  leizongmin@gmail.com")
-	fmt.Println("Project: https://github.com/leizongmin/jssh")
-	fmt.Println()
-}
-
-func printUsage(code int) {
-	printAuthorInfo()
-	fmt.Println("Example usage:")
-	fmt.Printf("  %s script_file.js [arg1] [arg2] [...]     Run script file\n", pkginfo.Name)
-	fmt.Printf("  %s -c \"script\" [arg1] [arg2] [...]        Run script from argument\n", pkginfo.Name)
-	fmt.Printf("  %s -i                                     Start REPL\n", pkginfo.Name)
-	fmt.Printf("  %s -h                                     Show usage\n", pkginfo.Name)
-	fmt.Printf("  %s -v                                     Show version\n", pkginfo.Name)
-	fmt.Println()
-	os.Exit(code)
-}
-
-func printExitMessage(message string, code int, usage bool) {
-	fmt.Println(color.FgRed.Render(message))
-	if usage {
-		fmt.Println()
-		printUsage(code)
-	} else {
-		os.Exit(code)
-	}
-}
-
 func getJsGlobal(file string) typeutil.H {
 	dir := filepath.Dir(file)
-
 	global := make(typeutil.H)
 
 	global["__version"] = pkginfo.LongVersion
