@@ -84,7 +84,8 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 - `fs.readdir(dir)`：读取指定目录下的文件列表；
 - `fs.readfile(filename)`：读取文件内容；
-- `fs.stat(filename)`：读取文件属性信息；
+- `fs.stat(filepath)`：读取文件属性信息；
+- `fs.exist(filepath)`：判断文件是否存在；
 - `fs.writefile(filename, data)`：覆盖写入文件；
 - `fs.appendfile(filename, data)`：追加内容到文件末尾；
 

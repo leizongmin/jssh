@@ -150,6 +150,13 @@ interface FsModule {
   stat(path: string): FileStat;
 
   /**
+   * 判断文件是否存在
+   * @param path 路径
+   * @return 是否存在
+   */
+  exist(path: string): boolean;
+
+  /**
    * 写入文件
    * @param path 路径
    * @param data 内容

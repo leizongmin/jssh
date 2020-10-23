@@ -274,6 +274,7 @@ func getJsGlobal(file string) typeutil.H {
 	fsModule["readdir"] = JsFnFsReaddir(global)
 	fsModule["readfile"] = JsFnFsReadfile(global)
 	fsModule["stat"] = JsFnFsStat(global)
+	fsModule["exist"] = JsFnFsExist(global)
 	fsModule["writefile"] = JsFnFsWritefile(global)
 	fsModule["appendfile"] = JsFnFsAppendfile(global)
 	global["fs"] = fsModule

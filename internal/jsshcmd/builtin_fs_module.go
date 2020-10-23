@@ -5,6 +5,7 @@ import (
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func fileInfoToMap(s os.FileInfo) typeutil.H {
@@ -55,6 +56,26 @@ func JsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
 		}
 
 		return ctx.String(string(b))
+	}
+}
+
+func JsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.exist: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.exist: first argument expected string type")
+		}
+		file := args[0].String()
+
+		if _, err := os.Stat(file); err != nil {
+			if strings.HasSuffix(err.Error(), "no such file or directory") {
+				return ctx.Bool(false)
+			}
+			return ctx.ThrowError(err)
+		}
+		return ctx.Bool(true)
 	}
 }
 
