@@ -94,11 +94,12 @@ func run(file string, content string, interactive bool) {
 		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
 
 		historyFile := filepath.Join(global["__homedir"].(string), fmt.Sprintf(".%s_history", pkginfo.Name))
-		historyFd, err := os.OpenFile(historyFile, os.O_RDWR|os.O_CREATE, 0644)
-		if err != nil {
-			fmt.Println(color.FgRed.Render(historyFile))
-		} else {
-			if _, err := repl.ReadHistory(historyFd); err != nil {
+
+		if f, err := os.Open(historyFile); err == nil {
+			if _, err := repl.ReadHistory(f); err != nil {
+				fmt.Println(color.FgRed.Render(err))
+			}
+			if err := f.Close(); err != nil {
 				fmt.Println(color.FgRed.Render(err))
 			}
 		}
@@ -148,12 +149,15 @@ func run(file string, content string, interactive bool) {
 			}
 		}
 
-		if historyFd != nil {
-			if _, err := repl.WriteHistory(historyFd); err != nil {
+		if f, err := os.Create(historyFile); err != nil {
+			fmt.Println(color.FgRed.Render(err))
+		} else {
+			if _, err := repl.WriteHistory(f); err != nil {
 				fmt.Println(color.FgRed.Render(err))
-			}
-			if err := historyFd.Close(); err != nil {
-				fmt.Println(color.FgRed.Render(err))
+			} else {
+				if err := f.Close(); err != nil {
+					fmt.Println(color.FgRed.Render(err))
+				}
 			}
 		}
 	} else {
