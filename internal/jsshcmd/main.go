@@ -82,7 +82,7 @@ func run(file string, content string, interactive bool) {
 	defer ctx.Free()
 	jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
-	commonFile := filepath.Join(global["__homedir"].(string), fmt.Sprintf(".%src.js", pkginfo.Name))
+	commonFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%src.js", pkginfo.Name))
 	if b, err := ioutil.ReadFile(commonFile); err != nil {
 		if !strings.HasSuffix(err.Error(), "no such file or directory") {
 			fmt.Println(color.FgRed.Render(err))
@@ -104,7 +104,7 @@ func run(file string, content string, interactive bool) {
 		repl.SetCtrlCAborts(true)
 		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
 
-		historyFile := filepath.Join(global["__homedir"].(string), fmt.Sprintf(".%s_history", pkginfo.Name))
+		historyFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_history", pkginfo.Name))
 
 		if f, err := os.Open(historyFile); err != nil {
 			if !strings.HasSuffix(err.Error(), "no such file or directory") {
@@ -222,8 +222,9 @@ func getJsGlobal(file string) typeutil.H {
 	global["__version"] = pkginfo.LongVersion
 	global["__bin"], _ = filepath.Abs(os.Args[0])
 	global["__pid"] = os.Getpid()
+	global["__user"] = mustGetCurrentUsername()
 	global["__tmpdir"] = os.TempDir()
-	global["__homedir"], _ = os.UserHomeDir()
+	global["__homedir"] = mustGetHomeDir()
 	global["__hostname"], _ = os.Hostname()
 	global["__dirname"] = dir
 	global["__filename"] = file
@@ -260,14 +261,6 @@ func getJsGlobal(file string) typeutil.H {
 	sshModule["setenv"] = JsFnSshSetenv(global)
 	sshModule["exec"] = JsFnSshExec(global)
 	global["ssh"] = sshModule
-	global["__ssh_config"] = typeutil.H{
-		"user":    "root",
-		"auth":    "key",
-		"key":     filepath.Join(global["__homedir"].(string), ".ssh/id_rsa"),
-		"keypass": "",
-		"port":    22,
-		"timeout": 60_000,
-	}
 
 	logModule := make(typeutil.H)
 	logModule["info"] = JsFnLogInfo(global)

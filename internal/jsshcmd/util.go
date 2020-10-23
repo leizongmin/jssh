@@ -4,8 +4,25 @@ import (
 	"github.com/leizongmin/go/typeutil"
 	"net/http"
 	"os"
+	"os/user"
 	"strings"
 )
+
+func mustGetHomeDir() string {
+	dir, err := os.UserHomeDir()
+	if err != nil {
+		errLog.Fatalln(err)
+	}
+	return dir
+}
+
+func mustGetCurrentUsername() string {
+	u, err := user.Current()
+	if err != nil {
+		errLog.Fatalln(err)
+	}
+	return u.Username
+}
 
 func getEnvMap() typeutil.H {
 	env := make(typeutil.H)
