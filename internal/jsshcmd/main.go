@@ -82,6 +82,17 @@ func run(file string, content string, interactive bool) {
 	defer ctx.Free()
 	jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
+	commonFile := filepath.Join(global["__homedir"].(string), fmt.Sprintf(".%src.js", pkginfo.Name))
+	if b, err := ioutil.ReadFile(commonFile); err != nil {
+		if !strings.HasSuffix(err.Error(), "no such file or directory") {
+			fmt.Println(color.FgRed.Render(err))
+		}
+	} else {
+		if _, err := ctx.EvalFile(string(b), commonFile); err != nil {
+			fmt.Println(color.FgRed.Render(err))
+		}
+	}
+
 	if interactive {
 		printAuthorInfo()
 		fmt.Println("Press Ctrl+C to exit the REPL.")
@@ -95,7 +106,11 @@ func run(file string, content string, interactive bool) {
 
 		historyFile := filepath.Join(global["__homedir"].(string), fmt.Sprintf(".%s_history", pkginfo.Name))
 
-		if f, err := os.Open(historyFile); err == nil {
+		if f, err := os.Open(historyFile); err != nil {
+			if !strings.HasSuffix(err.Error(), "no such file or directory") {
+				fmt.Println(color.FgRed.Render(err))
+			}
+		} else {
 			if _, err := repl.ReadHistory(f); err != nil {
 				fmt.Println(color.FgRed.Render(err))
 			}
