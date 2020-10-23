@@ -330,27 +330,19 @@ interface ShModule {
    * 执行命令
    * @param cmd 命令
    * @param env 额外的环境变量
-   * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
+   * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
    * @return 进程信息
    */
-  exec(
-    cmd: string,
-    env?: Record<string, string>,
-    combineOutput?: boolean
-  ): ExecResult;
+  exec(cmd: string, env?: Record<string, string>, mode?: number): ExecResult;
 
   /**
    * 后台执行命令
    * @param cmd 命令
    * @param env 额外的环境变量
-   * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
+   * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
    * @return 进程信息
    */
-  bgexec(
-    cmd: string,
-    env?: Record<string, string>,
-    combineOutput?: boolean
-  ): ExecResult;
+  bgexec(cmd: string, env?: Record<string, string>, mode?: number): ExecResult;
 
   /**
    * 改变当前工作目录
@@ -435,14 +427,10 @@ interface SshModule {
    * 执行命令
    * @param cmd 命令
    * @param env 额外的环境变量
-   * @param combineOutput 是否合并输出，当为true时不直接输出命令执行结果，而存储到__output变量中
+   * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
    * @return 进程信息
    */
-  exec(
-    cmd: string,
-    env?: Record<string, string>,
-    combineOutput?: boolean
-  ): SshExecResult;
+  exec(cmd: string, env?: Record<string, string>, mode?: number): SshExecResult;
 }
 
 interface SshExecResult {

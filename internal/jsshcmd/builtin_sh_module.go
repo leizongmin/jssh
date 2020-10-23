@@ -1,10 +1,10 @@
 package jsshcmd
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"io"
 	"os"
 	"os/exec"
 	"sync"
@@ -95,13 +95,25 @@ func JsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			}
 		}
 
+		saveOutput := false
 		pipeOutput := true
 		if len(args) >= 3 {
-			if !args[2].IsBool() {
-				return ctx.ThrowTypeError("sh.exec: third argument expected boolean type")
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("sh.exec: third argument expected number type")
 			}
-			if args[2].Bool() {
+			mode := args[2].Int32()
+			switch mode {
+			case 0:
+				saveOutput = false
+				pipeOutput = true
+			case 1:
+				saveOutput = true
 				pipeOutput = false
+			case 2:
+				saveOutput = true
+				pipeOutput = true
+			default:
+				return ctx.ThrowTypeError("sh.exec: mode expected one of 0,1,2")
 			}
 		}
 
@@ -124,8 +136,13 @@ func JsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			var wg sync.WaitGroup
 			wg.Add(2)
 
+			var saveBuffer *bytes.Buffer
+			if saveOutput {
+				saveBuffer = bytes.NewBuffer(nil)
+			}
+
 			go func() {
-				if _, err := io.Copy(os.Stdout, stdout); err != nil {
+				if _, err := pipeBufferAndSave(os.Stdout, stdout, saveBuffer); err != nil {
 					if err != os.ErrClosed {
 						stdLog.Printf("sh.exec: [stdout] %s", err)
 					}
@@ -133,7 +150,7 @@ func JsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 				wg.Done()
 			}()
 			go func() {
-				if _, err := io.Copy(os.Stderr, stderr); err != nil {
+				if _, err := pipeBufferAndSave(os.Stderr, stderr, saveBuffer); err != nil {
 					if err != os.ErrClosed {
 						stdLog.Printf("sh.exec: [stderr] %s", err)
 					}
@@ -155,8 +172,13 @@ func JsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			if err := sh.Wait(); err != nil {
 				stdLog.Printf("sh.exec: %s", err)
 			}
-			global["__output"] = ""
-			global["__outputbytes"] = 0
+
+			var output []byte
+			if saveBuffer != nil {
+				output = saveBuffer.Bytes()
+			}
+			global["__output"] = string(output)
+			global["__outputbytes"] = len(output)
 		} else {
 
 			out, err := sh.CombinedOutput()
@@ -216,13 +238,25 @@ func JsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 			}
 		}
 
+		saveOutput := false
 		pipeOutput := true
 		if len(args) >= 3 {
-			if !args[2].IsBool() {
-				return ctx.ThrowTypeError("sh.bgexec: third argument expected boolean type")
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("sh.bgexec: third argument expected number type")
 			}
-			if args[2].Bool() {
+			mode := args[2].Int32()
+			switch mode {
+			case 0:
+				saveOutput = false
+				pipeOutput = true
+			case 1:
+				saveOutput = true
 				pipeOutput = false
+			case 2:
+				saveOutput = true
+				pipeOutput = true
+			default:
+				return ctx.ThrowTypeError("sh.bgexec: mode expected one of 0,1,2")
 			}
 		}
 
@@ -245,8 +279,13 @@ func JsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 			var wg sync.WaitGroup
 			wg.Add(2)
 
+			var saveBuffer *bytes.Buffer
+			if saveOutput {
+				saveBuffer = bytes.NewBuffer(nil)
+			}
+
 			go func() {
-				if _, err := io.Copy(os.Stdout, stdout); err != nil {
+				if _, err := pipeBufferAndSave(os.Stdout, stdout, saveBuffer); err != nil {
 					if err != os.ErrClosed {
 						stdLog.Printf("sh.bgexec: [stdout] %s", err)
 					}
@@ -254,7 +293,7 @@ func JsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 				wg.Done()
 			}()
 			go func() {
-				if _, err := io.Copy(os.Stderr, stderr); err != nil {
+				if _, err := pipeBufferAndSave(os.Stderr, stderr, saveBuffer); err != nil {
 					if err != os.ErrClosed {
 						stdLog.Printf("sh.bgexec: [stderr] %s", err)
 					}

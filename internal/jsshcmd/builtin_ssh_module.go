@@ -1,6 +1,7 @@
 package jsshcmd
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
@@ -224,13 +225,25 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 			}
 		}
 
+		saveOutput := false
 		pipeOutput := true
 		if len(args) >= 3 {
-			if !args[2].IsBool() {
-				return ctx.ThrowTypeError("ssh.exec: third argument expected boolean type")
+			if !args[2].IsNumber() {
+				return ctx.ThrowTypeError("ssh.exec: third argument expected number type")
 			}
-			if args[2].Bool() {
+			mode := args[2].Int32()
+			switch mode {
+			case 0:
+				saveOutput = false
+				pipeOutput = true
+			case 1:
+				saveOutput = true
 				pipeOutput = false
+			case 2:
+				saveOutput = true
+				pipeOutput = true
+			default:
+				return ctx.ThrowTypeError("ssh.exec: mode expected one of 0,1,2")
 			}
 		}
 
@@ -264,8 +277,13 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 			var wg sync.WaitGroup
 			wg.Add(2)
 
+			var saveBuffer *bytes.Buffer
+			if saveOutput {
+				saveBuffer = bytes.NewBuffer(nil)
+			}
+
 			go func() {
-				if _, err := io.Copy(os.Stdout, stdout); err != nil {
+				if _, err := pipeBufferAndSave(os.Stdout, stdout, saveBuffer); err != nil {
 					if err != os.ErrClosed {
 						stdLog.Printf("ssh.exec: [stdout] %s", err)
 					}
@@ -273,7 +291,7 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 				wg.Done()
 			}()
 			go func() {
-				if _, err := io.Copy(os.Stderr, stderr); err != nil {
+				if _, err := pipeBufferAndSave(os.Stderr, stderr, saveBuffer); err != nil {
 					if err != os.ErrClosed {
 						stdLog.Printf("ssh.exec: [stderr] %s", err)
 					}
@@ -292,6 +310,10 @@ func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 				} else {
 					stdLog.Printf("ssh.exec: %s", err)
 				}
+			}
+
+			if saveBuffer != nil {
+				output = saveBuffer.Bytes()
 			}
 		} else {
 

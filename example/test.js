@@ -16,10 +16,10 @@ log.info(sh.cwd());
 sh.exec("pwd");
 log.info("%f %f %s", __code, __outputbytes, __output);
 
-sh.exec("pwd", {}, true);
+sh.exec("pwd", {}, 2);
 log.info("%f %f %s", __code, __outputbytes, __output);
 
-if (sh.exec(`ls -al ${__homedir}`, {}, true).code === 0) {
+if (sh.exec(`ls -al ${__homedir}`, {}, 1).code === 0) {
     __output.split("\n").forEach((line) => log.error(line));
 }
 
@@ -62,7 +62,7 @@ if (cli.bool("request")) {
 if (cli.bool("bgexec")) {
     log.info("bgexec: pid=%v", sh.bgexec("ping qq.com -c 60"));
     log.info("bgexec: pid=%v", sh.bgexec("ping baidu.com -c 60"));
-    log.info("tail: %s", JSON.stringify(sh.exec(`tail ${__filename}`, {}, true)));
+    log.info("tail: %s", JSON.stringify(sh.exec(`tail ${__filename}`, {}, 1)));
     sleep(3000);
 }
 
@@ -78,7 +78,7 @@ if (cli.bool("ssh")) {
     ssh.open("192.168.2.200");
     ssh.setenv("a", "123");
     log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"})));
-    log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"}, true)));
+    log.info(JSON.stringify(ssh.exec("echo $a,$b", {b: "456"}, 1)));
     log.info(JSON.stringify(ssh.exec("pwd")));
     ssh.close();
 }
