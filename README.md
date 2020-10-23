@@ -12,11 +12,14 @@ go get -u github.com/leizongmin/jssh
 
 试用v0.1版本：
 
-- macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/osx/jssh
-- Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/linux/jssh
+- macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
+- Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
 
 ```bash
-curl -o /usr/local/bin/jssh https://cdn.itoutiao.co/jssh/v0.1/linux/jssh && chmod +x /usr/local/bin/jssh
+curl -o jssh-linux.tar.gz https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz && \
+tar -xvf jssh-linux.tar.gz && \
+cp jssh /usr/local/bin/jssh && \
+chmod +x /usr/local/bin/jssh
 ```
 
 ## 参考文档
