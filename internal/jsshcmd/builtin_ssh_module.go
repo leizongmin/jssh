@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -16,6 +17,18 @@ import (
 
 var globalSshClient *ssh.Client
 var globalSshEnv map[string]string
+var globalSshConfig typeutil.H
+
+func init() {
+	globalSshConfig = typeutil.H{
+		"user":    mustGetCurrentUsername(),
+		"auth":    "key",
+		"key":     filepath.Join(mustGetHomeDir(), ".ssh/id_rsa"),
+		"keypass": "",
+		"port":    float64(22),
+		"timeout": float64(60_000),
+	}
+}
 
 func JsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
@@ -32,13 +45,31 @@ func JsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
 		}
 		value := args[1]
 
-		config := ctx.Globals().Get("__ssh_config")
-		if !config.IsObject() || config.IsNull() {
-			return ctx.ThrowInternalError("ssh.set: __ssh_config expected an object")
+		if name == "user" && !value.IsString() {
+			return ctx.ThrowTypeError("ssh.set: [user] expected string type")
+		}
+		if name == "auth" && !value.IsString() {
+			return ctx.ThrowTypeError("ssh.set: [auth] expected string type")
+		}
+		if name == "key" && !value.IsString() {
+			return ctx.ThrowTypeError("ssh.set: [key] expected string type")
+		}
+		if name == "keypass" && !value.IsString() {
+			return ctx.ThrowTypeError("ssh.set: [keypass] expected string type")
+		}
+		if name == "port" && !value.IsNumber() {
+			return ctx.ThrowTypeError("ssh.set: [port] expected string type")
+		}
+		if name == "timeout" && !value.IsNumber() {
+			return ctx.ThrowTypeError("ssh.set: [timeout] expected string type")
 		}
 
-		config.Set(name, value)
-		ctx.Globals().Set("__ssh_config", config)
+		v, err := jsexecutor.JSValueToAny(value)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		globalSshConfig[name] = v
+
 		return ctx.Bool(true)
 	}
 }
@@ -63,55 +94,48 @@ func JsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
 			},
 		}
 
-		sshConfig := ctx.Globals().Get("__ssh_config")
-		if !sshConfig.IsObject() || sshConfig.IsNull() {
-			return ctx.ThrowInternalError("ssh.open: __ssh_config expected an object")
+		if user, ok := globalSshConfig["user"].(string); ok {
+			conf.User = user
 		}
-		if sshConfig.Get("user").IsString() {
-			conf.User = sshConfig.Get("user").String()
-		}
-		if sshConfig.Get("auth").IsString() {
-			auth := strings.ToLower(sshConfig.Get("auth").String())
+		if auth, ok := globalSshConfig["auth"].(string); ok {
 			if auth == "key" {
-				if !sshConfig.Get("key").IsString() {
-					return ctx.ThrowInternalError("ssh.open: __ssh_config.key missing")
+				key, ok := globalSshConfig["key"].(string)
+				if !ok {
+					return ctx.ThrowInternalError("ssh.open: [key] missing")
 				}
-				key := sshConfig.Get("key").String()
 				b, err := ioutil.ReadFile(key)
 				if err != nil {
-					return ctx.ThrowInternalError("ssh.open: read private key from __ssh_config.key fail: %s", err)
+					return ctx.ThrowInternalError("ssh.open: read private key from [key] fail: %s", err)
 				}
-				if sshConfig.Get("keypass").IsString() && sshConfig.Get("keypass").Len() > 0 {
-					keypass := sshConfig.Get("keypass").String()
+				if keypass, ok := globalSshConfig["keypass"].(string); ok && len(keypass) > 0 {
 					signer, err := ssh.ParsePrivateKeyWithPassphrase(b, []byte(keypass))
 					if err != nil {
-						return ctx.ThrowInternalError("ssh.open: parse private key from __ssh_config.key fail: %s", err)
+						return ctx.ThrowInternalError("ssh.open: parse private key from [key] fail: %s", err)
 					}
 					conf.Auth = []ssh.AuthMethod{ssh.PublicKeys(signer)}
 				} else {
 					signer, err := ssh.ParsePrivateKey(b)
 					if err != nil {
-						return ctx.ThrowInternalError("ssh.open: parse private key from __ssh_config.key fail: %s", err)
+						return ctx.ThrowInternalError("ssh.open: parse private key from [key] fail: %s", err)
 					}
 					conf.Auth = []ssh.AuthMethod{ssh.PublicKeys(signer)}
 				}
 			} else if auth == "password" {
-				if !sshConfig.Get("password").IsString() {
-					return ctx.ThrowInternalError("ssh.open: __ssh_config.password missing")
+				password, ok := globalSshConfig["password"].(string)
+				if !ok {
+					return ctx.ThrowInternalError("ssh.open: [password] missing")
 				}
-				password := sshConfig.Get("password").String()
 				conf.Auth = []ssh.AuthMethod{ssh.Password(password)}
 			} else {
-				return ctx.ThrowInternalError("ssh.open: __ssh_config.auth only supported one of key,password")
+				return ctx.ThrowInternalError("ssh.open: [auth] only supported one of key,password")
 			}
 		}
-		if sshConfig.Get("timeout").IsNumber() {
-			timeout := sshConfig.Get("timeout").Int64()
-			conf.Timeout = time.Millisecond * time.Duration(timeout)
+		if timeout, ok := globalSshConfig["timeout"].(float64); ok {
+			conf.Timeout = time.Millisecond * time.Duration(int64(timeout))
 		}
 		port := 22
-		if sshConfig.Get("port").IsNumber() {
-			port = int(sshConfig.Get("port").Int32())
+		if p, ok := globalSshConfig["port"].(float64); ok {
+			port = int(p)
 		}
 
 		addr := fmt.Sprintf("%s:%d", host, port)
