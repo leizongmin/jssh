@@ -166,23 +166,26 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 				if ret, err := ctx.Eval(content); err != nil {
 					fmt.Println(color.FgRed.Render(err))
 				} else {
-					if ret.IsObject() {
-						s := ret.String()
-						if s != "[object Object]" {
-							fmt.Println(color.FgLightBlue.Render(s))
-						} else {
-							a, err := jsexecutor.JSValueToAny(ret)
-							if err != nil {
-								fmt.Println(color.FgRed.Render(err))
-								continue
-							}
-							s, err = jsoniter.MarshalToString(a)
-							if err != nil {
-								fmt.Println(color.FgRed.Render(err))
-								continue
-							}
-							fmt.Println(color.FgLightBlue.Render(s))
+					jsonPrint := false
+					if ret.IsArray() {
+						jsonPrint = true
+					} else if ret.IsObject() {
+						if ret.String() == "[object Object]" {
+							jsonPrint = true
 						}
+					}
+					if jsonPrint {
+						a, err := jsexecutor.JSValueToAny(ret)
+						if err != nil {
+							fmt.Println(color.FgRed.Render(err))
+							continue
+						}
+						s, err := jsoniter.MarshalToString(a)
+						if err != nil {
+							fmt.Println(color.FgRed.Render(err))
+							continue
+						}
+						fmt.Println(color.FgLightBlue.Render(s))
 					} else {
 						fmt.Println(color.FgLightBlue.Render(ret.String()))
 					}
