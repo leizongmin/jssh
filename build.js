@@ -1,5 +1,8 @@
 #!/usr/bin/env jssh
 
+// 在没有jssh的情况下，将第一行改为以下内容：
+// #!/usr/bin/env go run github.com/leizongmin/jssh
+
 const packageName = `github.com/leizongmin/jssh`;
 const binName = `jssh`;
 const goBuild = `go build -v -ldflags "-s -w"`;
