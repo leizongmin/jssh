@@ -3,24 +3,35 @@
 
 ## 安装
 
-通过 Go 命令行工具安装：
+安装 Linux 版本：
 
 ```bash
-export GOPROXY=https://goproxy.cn
-go get -u github.com/leizongmin/jssh
-```
-
-试用v0.1版本：
-
-- macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
-- Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
-
-```bash
-curl -o jssh-linux.tar.gz https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz && \
+curl -O -L https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz && \
 tar -xvf jssh-linux.tar.gz && \
 cp jssh /usr/local/bin/jssh && \
 chmod +x /usr/local/bin/jssh
 ```
+
+安装 macOS 版本：
+
+```bash
+curl -O -L https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz && \
+tar -xvf jssh-osx.tar.gz && \
+cp jssh /usr/local/bin/jssh && \
+chmod +x /usr/local/bin/jssh
+```
+
+通过 Go 命令行工具安装：
+
+```bash
+GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
+```
+
+下载压缩包：
+
+- macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
+- Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
+
 
 ## 参考文档
 
