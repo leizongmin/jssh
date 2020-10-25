@@ -32,6 +32,12 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 - macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
 - Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
 
+## 命令行工具使用
+
+- 执行脚本：`jssh file.js`；
+- 进入 REPL：`jssh -i`；
+- 执行命令行参数指定的脚本代码：`jssh -c "js code"`；
+- 执行命令行参数指定的脚本代码，并将结果作为字符串输出：`jssh -x "js code"`；
 
 ## 参考文档
 
