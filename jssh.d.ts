@@ -80,6 +80,12 @@ declare function print(format: any, ...args: any[]): boolean;
 declare function println(format: any, ...args: any[]): boolean;
 
 /**
+ * 从控制台获取用户一行的字符串输入
+ * @return 用户输入的字符串
+ */
+declare function readline(): string;
+
+/**
  * 睡眠
  * @param milliseconds 毫秒
  * @return 毫秒
@@ -102,6 +108,41 @@ declare function loadconfig(
   file: string,
   format?: "json" | "yaml" | "toml"
 ): any;
+
+/**
+ * base64编码
+ * @param data 原始内容
+ * @return 编码后的内容
+ */
+declare function base64encode(data: string): string;
+
+/**
+ * base64解码
+ * @param data 编码后的内容
+ * @return 原始内容
+ */
+declare function base64decode(data: string): string;
+
+/**
+ * MD5编码
+ * @param data 原始内容
+ * @return 编码后的内容
+ */
+declare function md5(data: string): string;
+
+/**
+ * SHA1编码
+ * @param data 原始内容
+ * @return 编码后的内容
+ */
+declare function sha1(data: string): string;
+
+/**
+ * SAH256编码
+ * @param data 原始内容
+ * @return 编码后的内容
+ */
+declare function sha256(data: string): string;
 
 /** Shell相关操作模块 */
 declare const sh: ShModule;

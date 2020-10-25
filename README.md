@@ -61,10 +61,15 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `format(template, ...args)`：格式化字符串，如`format("a=%d, b=%s", 123, "xxx")`； 
 - `print(template, ...args)`：格式化字符串并输出；
 - `println(template, ...args)`：格式化字符串并输出，末尾加换行符；
+- `readline()`：从控制台获取用户一行的字符串输入；
 - `sleep(ms)`：等待指定毫秒时间；
 - `exit(code)`：结束进程；
 - `loadconfig(filename, format?)`：加载配置文件，支持 JSON、YAML、TOML 格式；
-
+- `base64encode`：Base64 编码字符串；
+- `base64decode`：Base64 解码字符串；
+- `md5`：MD5 编码字符串；
+- `sha1`：SAH1 编码字符串；
+- `sha256`：SHA256 编码字符串；
 	
 #### Shell操作
 

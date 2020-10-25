@@ -1,7 +1,6 @@
-#!/usr/bin/env jssh
+#!/usr/bin/env go run github.com/leizongmin/jssh
 
-// 在没有jssh的情况下，将第一行改为以下内容：
-// #!/usr/bin/env go run github.com/leizongmin/jssh
+updateBuiltinJS();
 
 const packageName = `github.com/leizongmin/jssh`;
 const binName = `jssh`;
@@ -38,13 +37,15 @@ fs.readdir(releaseDir).forEach((s) => {
   }
 });
 
-buildHostOSVersion();
+//**********************************************************************************************************************
 
+buildHostOSVersion();
 if (unameOutput.includes(`Darwin`)) {
   buildLinuxVersionOnDocker();
 }
-
 buildReleaseFiles();
+
+//**********************************************************************************************************************
 
 function updateReleasePkgInfo() {
   log.info(`更新版本信息`);
@@ -109,4 +110,27 @@ function buildReleaseFiles() {
       log.info(`输出压缩包%s`, tarFile);
     }
   });
+}
+
+function updateBuiltinJS() {
+  log.info(`更新内置JS模块`);
+  const dir = path.join(__dirname, `internal`, `jsbuiltin`);
+  const list = [];
+  fs.readdir(dir).forEach((s) => {
+    const f = path.join(dir, s.name);
+    if (!s.isdir && f.endsWith(`.js`)) {
+      log.info(`JS模块%s`, f);
+      const code = fs.readfile(f);
+      list.push(code);
+    }
+  });
+  const goFile = path.join(__dirname, `internal`, `jsbuiltin`, `all.go`);
+  fs.writefile(
+    goFile,
+    `
+package jsbuiltin
+
+const code = "${base64encode(list.join(`\n\n`))}"
+`.trim()
+  );
 }

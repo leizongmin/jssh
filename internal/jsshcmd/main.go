@@ -6,8 +6,10 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
+	"github.com/leizongmin/jssh/internal/jsbuiltin"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
+	"github.com/lithdew/quickjs"
 	"github.com/peterh/liner"
 	"io/ioutil"
 	"os"
@@ -88,14 +90,23 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 	defer ctx.Free()
 	jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
+	if ret, err := ctx.EvalFile(jsbuiltin.GetJS(), "builtin"); err != nil {
+		fmt.Println(color.FgRed.Render("load builtin js modules fail: %s", formatJsError(err)))
+		return
+	} else {
+		ret.Free()
+	}
+
 	commonFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%src.js", pkginfo.Name))
 	if b, err := ioutil.ReadFile(commonFile); err != nil {
 		if !strings.HasSuffix(err.Error(), "no such file or directory") {
 			fmt.Println(color.FgRed.Render(err))
 		}
 	} else {
-		if _, err := ctx.EvalFile(string(b), commonFile); err != nil {
-			fmt.Println(color.FgRed.Render(err))
+		if ret, err := ctx.EvalFile(string(b), commonFile); err != nil {
+			fmt.Println(color.FgRed.Render(formatJsError(err)))
+		} else {
+			ret.Free()
 		}
 	}
 
@@ -164,7 +175,7 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 				content := strings.Join(bufLines, "\n")
 				bufLines = make([]string, 0)
 				if ret, err := ctx.Eval(content); err != nil {
-					fmt.Println(color.FgRed.Render(err))
+					fmt.Println(color.FgRed.Render(formatJsError(err)))
 				} else {
 					jsonPrint := false
 					if ret.IsArray() {
@@ -211,7 +222,7 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 	} else {
 
 		if ret, err := ctx.EvalFile(content, file); err != nil {
-			printExitMessage(err.Error(), codeScriptError, false)
+			printExitMessage(formatJsError(err), codeScriptError, false)
 		} else {
 			if onEnd != nil {
 				onEnd(ret)
@@ -219,6 +230,13 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 			ret.Free()
 		}
 	}
+}
+
+func formatJsError(err error) string {
+	if err2, ok := err.(*quickjs.Error); ok {
+		return fmt.Sprintf("%s\n%s", err2.Cause, err2.Stack)
+	}
+	return err.Error()
 }
 
 func getJsGlobal(file string) typeutil.H {
@@ -245,10 +263,17 @@ func getJsGlobal(file string) typeutil.H {
 	global["format"] = JsFnFormat(global)
 	global["print"] = JsFnPrint(global)
 	global["println"] = JsFnPrintln(global)
+	global["readline"] = JsFnReadline(global)
 
 	global["sleep"] = JsFnSleep(global)
 	global["exit"] = JsFnExit(global)
 	global["loadconfig"] = JsFnLoadconfig(global)
+
+	global["base64encode"] = JsFnBase64encode(global)
+	global["base64decode"] = JsFnBase64decode(global)
+	global["md5"] = JsFnMd5(global)
+	global["sha1"] = JsFnSha1(global)
+	global["sha256"] = JsFnSha256(global)
 
 	shModule := make(typeutil.H)
 	shModule["setenv"] = JsFnShSetenv(global)
@@ -289,14 +314,6 @@ func getJsGlobal(file string) typeutil.H {
 	pathModule["ext"] = JsFnPathExt(global)
 	pathModule["dir"] = JsFnPathDir(global)
 	global["path"] = pathModule
-
-	cliModule := make(typeutil.H)
-	cliModule["get"] = JsFnCliGet(global)
-	cliModule["bool"] = JsFnCliBool(global)
-	cliModule["args"] = JsFnCliArgs(global)
-	cliModule["opts"] = JsFnCliOpts(global)
-	cliModule["prompt"] = JsFnCliPrompt(global)
-	global["cli"] = cliModule
 
 	httpModule := make(typeutil.H)
 	httpModule["timeout"] = JsFnHttpTimeout(global)

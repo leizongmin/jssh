@@ -5,7 +5,8 @@ import "strings"
 var replApiList = []string{
 	"__version", "__bin", "__pid", "__tmpdir", "__homedir", "__user", "__hostname",
 	"__dirname", "__filename", "__args", "__env", "__output", "__outputbytes", "__code",
-	"set(", "get(", "format(", "print(", "println(", "sleep(", "exit(", "loadconfig(",
+	"set(", "get(", "format(", "print(", "println(", "readline(", "sleep(", "exit(", "loadconfig(",
+	"base64encode(", "base64decode(", "md5(", "sha1(", "sha256(",
 	"fs.readdir(", "fs.readfile(", "fs.stat(", "fs.exist(", "fs.writefile(", "fs.appendfile(",
 	"path.join(", "path.abs(", "path.base(", "path.ext(", "path.dir(",
 	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(",

@@ -1,6 +1,7 @@
 package jsshcmd
 
 import (
+	"fmt"
 	"github.com/leizongmin/go/configloader"
 	_ "github.com/leizongmin/go/configloader/toml"
 	_ "github.com/leizongmin/go/configloader/yaml"
@@ -134,5 +135,16 @@ func JsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
 		}
 
 		return jsexecutor.AnyToJSValue(ctx, data)
+	}
+}
+
+func JsFnReadline(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		var line string
+		_, err := fmt.Scanln(&line)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		return ctx.String(line)
 	}
 }
