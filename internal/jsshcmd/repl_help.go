@@ -17,6 +17,7 @@ var replApiList = []string{
 	"sh.setenv(", "sh.exec(", "sh.bgexec(", "sh.chdir(", "sh.cd(", "sh.cwd(", "sh.pwd(",
 	"ssh.set(", "ssh.open(", "ssh.close(", "ssh.setenv(", "ssh.exec(",
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",
+	"sql.set(", "sql.open(", "sql.close(", "sql.query(", "sql.exec(",
 }
 
 func replCompleter(line string) (c []string) {

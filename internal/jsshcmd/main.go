@@ -327,5 +327,13 @@ func getJsGlobal(file string) typeutil.H {
 	socketModule["tcptest"] = JsFnSocketTcptest(global)
 	global["socket"] = socketModule
 
+	sqlModule := make(typeutil.H)
+	sqlModule["set"] = JsFnSqlSet(global)
+	sqlModule["open"] = JsFnSqlOpen(global)
+	sqlModule["close"] = JsFnSqlClose(global)
+	sqlModule["query"] = JsFnSqlQuery(global)
+	sqlModule["exec"] = JsFnSqlExec(global)
+	global["sql"] = sqlModule
+
 	return global
 }

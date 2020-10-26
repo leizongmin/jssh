@@ -147,6 +147,18 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `socket.tcpsend(host, port, data)`：往指定主机端口发送一段数据，并返回结果；
 - `socket.tcptest(host, port)`：测试指定主机端口是否可连接；
 
+#### SQL 连接操作
+
+- `sql.set(name, value)`：设置 SQL 连接配置：
+  - `name=connMaxLifetime`：最长非活跃毫秒时间，默认`60000`；
+- `sql.open(driverName, dataSourceName)`：打开连接：
+  - 当`driverName=mysql`时，`dataSourceName`格式：`user:password@tcp(host:port)/database?params`；
+  - 暂不支持其他 driver；
+- `sql.query(sql, ...args)`：执行查询，并返回结果：
+  - 当`driverName=mysql`时，`dataSourceName`需要增加参数`interpolateParams=true`来开启模板参数替换，`args`才生效；
+- `sql.exec(sql, ...args)`：执行查询，返回`lastInsertId`和`rowsAffected`；
+- `sql.close()`：关闭连接；
+
 ## 示例
 
 - **jssh 构建脚本**：[build.js](https://github.com/leizongmin/jssh/blob/main/build.js)；

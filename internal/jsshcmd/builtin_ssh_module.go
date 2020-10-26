@@ -85,6 +85,10 @@ func JsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
 		}
 		host := args[0].String()
 
+		if globalSshClient != nil {
+			return ctx.ThrowInternalError("ssh.open: please close the previous connection")
+		}
+
 		conf := ssh.ClientConfig{
 			Timeout: time.Second * 60,
 			HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
