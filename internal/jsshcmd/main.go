@@ -275,6 +275,8 @@ func getJsGlobal(file string) typeutil.H {
 	global["sha1"] = JsFnSha1(global)
 	global["sha256"] = JsFnSha256(global)
 
+	global["networkinterfaces"] = JsFnNetworkinterfaces(global)
+
 	shModule := make(typeutil.H)
 	shModule["setenv"] = JsFnShSetenv(global)
 	shModule["chdir"] = JsFnShChdir(global)

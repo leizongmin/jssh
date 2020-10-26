@@ -77,6 +77,7 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `md5`：MD5 编码字符串；
 - `sha1`：SAH1 编码字符串；
 - `sha256`：SHA256 编码字符串；
+- `networkinterfaces`：获得网络接口信息；
 
 #### Shell 操作
 

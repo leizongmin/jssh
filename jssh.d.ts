@@ -144,6 +144,22 @@ declare function sha1(data: string): string;
  */
 declare function sha256(data: string): string;
 
+/**
+ * 获得网络接口信息
+ * @return 网络接口数组
+ */
+declare function networkinterfaces(): NetworkInterface[];
+
+interface NetworkInterface {
+  address: string;
+  netmask: string;
+  family: string;
+  cidr: string;
+  internal: boolean;
+  multicast: boolean;
+  unspecified: boolean;
+}
+
 /** Shell相关操作模块 */
 declare const sh: ShModule;
 
