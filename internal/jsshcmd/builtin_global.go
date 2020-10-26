@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func JsFnExit(global typeutil.H) jsexecutor.JSFunction {
+func jsFnExit(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			os.Exit(0)
@@ -29,7 +29,7 @@ func JsFnExit(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnGet(global typeutil.H) jsexecutor.JSFunction {
+func jsFnGet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("get: missing name")
@@ -43,7 +43,7 @@ func JsFnGet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSet(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("set: missing name")
@@ -64,7 +64,7 @@ func JsFnSet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSleep(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSleep(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sleep: missing millisecond argument")
@@ -93,7 +93,7 @@ func isSupportedConfigFormat(t string) bool {
 	return false
 }
 
-func JsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
+func jsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("loadconfig: missing name")
@@ -138,7 +138,7 @@ func JsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnReadline(global typeutil.H) jsexecutor.JSFunction {
+func jsFnReadline(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		var line string
 		_, err := fmt.Scanln(&line)

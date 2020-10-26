@@ -18,7 +18,7 @@ func fileInfoToMap(s os.FileInfo) typeutil.H {
 	}
 }
 
-func JsFnFsReaddir(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsReaddir(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readdir: missing dir name")
@@ -40,7 +40,7 @@ func JsFnFsReaddir(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readfile: missing path name")
@@ -59,7 +59,7 @@ func JsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.exist: missing path name")
@@ -79,7 +79,7 @@ func JsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnFsStat(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsStat(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.stat: missing path name")
@@ -98,7 +98,7 @@ func JsFnFsStat(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.writefile: missing file name")
@@ -132,7 +132,7 @@ func JsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnFsAppendfile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsAppendfile(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.appendfile: missing file name")

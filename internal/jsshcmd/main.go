@@ -258,84 +258,88 @@ func getJsGlobal(file string) typeutil.H {
 	global["__outputbytes"] = 0
 	global["__code"] = 0
 
-	global["set"] = JsFnSet(global)
-	global["get"] = JsFnGet(global)
-	global["format"] = JsFnFormat(global)
-	global["print"] = JsFnPrint(global)
-	global["println"] = JsFnPrintln(global)
-	global["readline"] = JsFnReadline(global)
+	global["set"] = jsFnSet(global)
+	global["get"] = jsFnGet(global)
+	global["format"] = jsFnFormat(global)
+	global["print"] = jsFnPrint(global)
+	global["println"] = jsFnPrintln(global)
+	global["readline"] = jsFnReadline(global)
 
-	global["sleep"] = JsFnSleep(global)
-	global["exit"] = JsFnExit(global)
-	global["loadconfig"] = JsFnLoadconfig(global)
+	global["sleep"] = jsFnSleep(global)
+	global["exit"] = jsFnExit(global)
+	global["loadconfig"] = jsFnLoadconfig(global)
 
-	global["base64encode"] = JsFnBase64encode(global)
-	global["base64decode"] = JsFnBase64decode(global)
-	global["md5"] = JsFnMd5(global)
-	global["sha1"] = JsFnSha1(global)
-	global["sha256"] = JsFnSha256(global)
+	global["base64encode"] = jsFnBase64encode(global)
+	global["base64decode"] = jsFnBase64decode(global)
+	global["md5"] = jsFnMd5(global)
+	global["sha1"] = jsFnSha1(global)
+	global["sha256"] = jsFnSha256(global)
 
-	global["networkinterfaces"] = JsFnNetworkinterfaces(global)
+	global["networkinterfaces"] = jsFnNetworkinterfaces(global)
 
 	shModule := make(typeutil.H)
-	shModule["setenv"] = JsFnShSetenv(global)
-	shModule["chdir"] = JsFnShChdir(global)
-	shModule["cd"] = JsFnShChdir(global)
-	shModule["cwd"] = JsFnShCwd(global)
-	shModule["pwd"] = JsFnShCwd(global)
-	shModule["exec"] = JsFnShExec(global)
-	shModule["bgexec"] = JsFnShBgexec(global)
+	shModule["setenv"] = jsFnShSetenv(global)
+	shModule["chdir"] = jsFnShChdir(global)
+	shModule["cd"] = jsFnShChdir(global)
+	shModule["cwd"] = jsFnShCwd(global)
+	shModule["pwd"] = jsFnShCwd(global)
+	shModule["exec"] = jsFnShExec(global)
+	shModule["bgexec"] = jsFnShBgexec(global)
 	global["sh"] = shModule
 
 	sshModule := make(typeutil.H)
-	sshModule["set"] = JsFnSshSet(global)
-	sshModule["open"] = JsFnSshOpen(global)
-	sshModule["close"] = JsFnSshClose(global)
-	sshModule["setenv"] = JsFnSshSetenv(global)
-	sshModule["exec"] = JsFnSshExec(global)
+	sshModule["set"] = jsFnSshSet(global)
+	sshModule["open"] = jsFnSshOpen(global)
+	sshModule["close"] = jsFnSshClose(global)
+	sshModule["setenv"] = jsFnSshSetenv(global)
+	sshModule["exec"] = jsFnSshExec(global)
 	global["ssh"] = sshModule
 
 	logModule := make(typeutil.H)
-	logModule["info"] = JsFnLogInfo(global)
-	logModule["error"] = JsFnLogError(global)
+	logModule["info"] = jsFnLogInfo(global)
+	logModule["error"] = jsFnLogError(global)
 	global["log"] = logModule
 
 	fsModule := make(typeutil.H)
-	fsModule["readdir"] = JsFnFsReaddir(global)
-	fsModule["readfile"] = JsFnFsReadfile(global)
-	fsModule["stat"] = JsFnFsStat(global)
-	fsModule["exist"] = JsFnFsExist(global)
-	fsModule["writefile"] = JsFnFsWritefile(global)
-	fsModule["appendfile"] = JsFnFsAppendfile(global)
+	fsModule["readdir"] = jsFnFsReaddir(global)
+	fsModule["readfile"] = jsFnFsReadfile(global)
+	fsModule["stat"] = jsFnFsStat(global)
+	fsModule["exist"] = jsFnFsExist(global)
+	fsModule["writefile"] = jsFnFsWritefile(global)
+	fsModule["appendfile"] = jsFnFsAppendfile(global)
 	global["fs"] = fsModule
 
 	pathModule := make(typeutil.H)
-	pathModule["join"] = JsFnPathJoin(global)
-	pathModule["abs"] = JsFnPathAbs(global)
-	pathModule["base"] = JsFnPathBase(global)
-	pathModule["ext"] = JsFnPathExt(global)
-	pathModule["dir"] = JsFnPathDir(global)
+	pathModule["join"] = jsFnPathJoin(global)
+	pathModule["abs"] = jsFnPathAbs(global)
+	pathModule["base"] = jsFnPathBase(global)
+	pathModule["ext"] = jsFnPathExt(global)
+	pathModule["dir"] = jsFnPathDir(global)
 	global["path"] = pathModule
 
 	httpModule := make(typeutil.H)
-	httpModule["timeout"] = JsFnHttpTimeout(global)
-	httpModule["request"] = JsFnHttpRequest(global)
-	httpModule["download"] = JsFnHttpDownload(global)
+	httpModule["timeout"] = jsFnHttpTimeout(global)
+	httpModule["request"] = jsFnHttpRequest(global)
+	httpModule["download"] = jsFnHttpDownload(global)
 	global["http"] = httpModule
 
 	socketModule := make(typeutil.H)
-	socketModule["timeout"] = JsFnSocketTimeout(global)
-	socketModule["tcpsend"] = JsFnSocketTcpsend(global)
-	socketModule["tcptest"] = JsFnSocketTcptest(global)
+	socketModule["timeout"] = jsFnSocketTimeout(global)
+	socketModule["tcpsend"] = jsFnSocketTcpsend(global)
+	socketModule["tcptest"] = jsFnSocketTcptest(global)
 	global["socket"] = socketModule
 
 	sqlModule := make(typeutil.H)
-	sqlModule["set"] = JsFnSqlSet(global)
-	sqlModule["open"] = JsFnSqlOpen(global)
-	sqlModule["close"] = JsFnSqlClose(global)
-	sqlModule["query"] = JsFnSqlQuery(global)
-	sqlModule["exec"] = JsFnSqlExec(global)
+	sqlModule["set"] = jsFnSqlSet(global)
+	sqlModule["open"] = jsFnSqlOpen(global)
+	sqlModule["close"] = jsFnSqlClose(global)
+	sqlModule["query"] = jsFnSqlQuery(global)
+	sqlModule["exec"] = jsFnSqlExec(global)
 	global["sql"] = sqlModule
+
+	for n, v := range registeredGlobal {
+		global[n] = v
+	}
 
 	return global
 }

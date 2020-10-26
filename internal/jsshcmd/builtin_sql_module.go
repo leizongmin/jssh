@@ -18,7 +18,7 @@ func init() {
 	}
 }
 
-func JsFnSqlSet(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSqlSet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sql.set: missing name")
@@ -47,7 +47,7 @@ func JsFnSqlSet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSqlOpen(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSqlOpen(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("mysql.open: missing driver name")
@@ -83,7 +83,7 @@ func JsFnSqlOpen(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSqlClose(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSqlClose(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if globalSqlConn != nil {
 			if err := globalSqlConn.Close(); err != nil {
@@ -96,7 +96,7 @@ func JsFnSqlClose(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSqlQuery(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSqlQuery(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sql.query: missing sql")
@@ -127,7 +127,7 @@ func JsFnSqlQuery(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSqlExec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSqlExec(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sql.exec: missing sql")

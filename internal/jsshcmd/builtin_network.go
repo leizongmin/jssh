@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-func JsFnNetworkinterfaces(global typeutil.H) jsexecutor.JSFunction {
+func jsFnNetworkinterfaces(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		addrs, err := net.InterfaceAddrs()
 		if err != nil {

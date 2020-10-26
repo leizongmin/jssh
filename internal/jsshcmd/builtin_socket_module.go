@@ -11,7 +11,7 @@ import (
 
 var socketGlobalTimeout int64 = 60_000
 
-func JsFnSocketTimeout(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSocketTimeout(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("socket.timeout: missing timeout millisecond")
@@ -25,7 +25,7 @@ func JsFnSocketTimeout(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSocketTcpsend(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSocketTcpsend(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("socket.tcpsend: missing host")
@@ -77,7 +77,7 @@ func JsFnSocketTcpsend(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSocketTcptest(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSocketTcptest(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("socket.tcpsend: missing host")

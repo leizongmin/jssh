@@ -10,7 +10,7 @@ import (
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
-func JsFnBase64encode(global typeutil.H) jsexecutor.JSFunction {
+func jsFnBase64encode(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("base64encode: missing data")
@@ -25,7 +25,7 @@ func JsFnBase64encode(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnBase64decode(global typeutil.H) jsexecutor.JSFunction {
+func jsFnBase64decode(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("base64decode: missing data")
@@ -43,7 +43,7 @@ func JsFnBase64decode(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnMd5(global typeutil.H) jsexecutor.JSFunction {
+func jsFnMd5(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("md5: missing data")
@@ -59,7 +59,7 @@ func JsFnMd5(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSha1(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSha1(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sha1: missing data")
@@ -75,7 +75,7 @@ func JsFnSha1(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSha256(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSha256(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sha256: missing data")

@@ -14,7 +14,7 @@ var logPrefix = fmt.Sprintf("[%s] ", pkginfo.Name)
 var stdLog = log.New(os.Stdout, logPrefix, log.LstdFlags)
 var errLog = log.New(os.Stderr, logPrefix, log.LstdFlags)
 
-func JsFnFormat(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFormat(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) > 0 {
 			s, err := jsexecutor.JSValueToAny(args[0])
@@ -41,7 +41,7 @@ func JsFnFormat(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnPrint(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPrint(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) > 0 {
 			s, err := jsexecutor.JSValueToAny(args[0])
@@ -68,7 +68,7 @@ func JsFnPrint(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnPrintln(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPrintln(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		ret := global["print"].(jsexecutor.JSFunction)(ctx, this, args)
 		fmt.Println()
@@ -76,7 +76,7 @@ func JsFnPrintln(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnLogInfo(global typeutil.H) jsexecutor.JSFunction {
+func jsFnLogInfo(global typeutil.H) jsexecutor.JSFunction {
 	green := color.FgGreen.Render
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) > 0 {
@@ -104,7 +104,7 @@ func JsFnLogInfo(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnLogError(global typeutil.H) jsexecutor.JSFunction {
+func jsFnLogError(global typeutil.H) jsexecutor.JSFunction {
 	red := color.FgRed.Render
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) > 0 {

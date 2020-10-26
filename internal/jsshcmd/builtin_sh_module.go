@@ -10,7 +10,7 @@ import (
 	"sync"
 )
 
-func JsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sh.setenv: missing env name")
@@ -37,7 +37,7 @@ func JsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnShChdir(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShChdir(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sh.chdir: missing dir name")
@@ -54,7 +54,7 @@ func JsFnShChdir(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnShCwd(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShCwd(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		dir, err := os.Getwd()
 		if err != nil {
@@ -64,7 +64,7 @@ func JsFnShCwd(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnShExec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sh.exec: missing exec command")
@@ -207,7 +207,7 @@ func JsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sh.bgexec: missing exec command")

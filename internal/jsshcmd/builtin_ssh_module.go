@@ -31,7 +31,7 @@ func init() {
 	}
 }
 
-func JsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.set: missing name")
@@ -75,7 +75,7 @@ func JsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.open: missing host")
@@ -155,7 +155,7 @@ func JsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSshClose(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshClose(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if globalSshClient != nil {
 			if err := globalSshClient.Close(); err != nil {
@@ -168,7 +168,7 @@ func JsFnSshClose(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSshSetenv(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshSetenv(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.setenv: missing env name")
@@ -195,7 +195,7 @@ func JsFnSshSetenv(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.exec: missing exec command")

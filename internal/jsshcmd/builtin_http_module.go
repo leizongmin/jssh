@@ -24,7 +24,7 @@ func init() {
 	httpGlobalHeaders["user-agent"] = fmt.Sprintf("%s/%s", pkginfo.Name, pkginfo.LongVersion)
 }
 
-func JsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {
+func jsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.timeout: missing timeout millisecond")
@@ -40,7 +40,7 @@ func JsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
+func jsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.request: missing request method")
@@ -116,7 +116,7 @@ func JsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func JsFnHttpDownload(global typeutil.H) jsexecutor.JSFunction {
+func jsFnHttpDownload(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.download: missing request url")
