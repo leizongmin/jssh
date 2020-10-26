@@ -363,6 +363,14 @@ interface LogModule {
    * @return 是否成功
    */
   error(format: any, ...args: any[]): boolean;
+
+  /**
+   * 日志输出到控制台，并结束进程
+   * @param format 模板，支持%s等格式
+   * @param args 参数列表
+   * @return 是否成功
+   */
+  fatal(format: any, ...args: any[]): boolean;
 }
 
 interface ShModule {

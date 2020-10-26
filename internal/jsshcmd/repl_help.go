@@ -1,6 +1,8 @@
 package jsshcmd
 
-import "strings"
+import (
+	"strings"
+)
 
 var replApiList = []string{
 	"__version", "__bin", "__pid", "__tmpdir", "__homedir", "__user", "__hostname",
@@ -11,7 +13,7 @@ var replApiList = []string{
 	"path.join(", "path.abs(", "path.base(", "path.ext(", "path.dir(",
 	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(",
 	"http.timeout(", "http.request(", "http.download(",
-	"log.info(", "log.error(",
+	"log.info(", "log.error(", "log.fatal(",
 	"sh.setenv(", "sh.exec(", "sh.bgexec(", "sh.chdir(", "sh.cd(", "sh.cwd(", "sh.pwd(",
 	"ssh.set(", "ssh.open(", "ssh.close(", "ssh.setenv(", "ssh.exec(",
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",

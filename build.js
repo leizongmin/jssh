@@ -121,7 +121,9 @@ function updateBuiltinJS() {
     if (!s.isdir && f.endsWith(`.js`)) {
       log.info(`JS模块%s`, f);
       const code = fs.readfile(f);
-      list.push(code);
+      list.push(`	// ${s.name}`);
+      list.push(`	modules = append(modules, "${base64encode(code)}")`);
+      list.push(``);
     }
   });
   const goFile = path.join(__dirname, `internal`, `jsbuiltin`, `all.go`);
@@ -130,7 +132,11 @@ function updateBuiltinJS() {
     `
 package jsbuiltin
 
-const code = "${base64encode(list.join(`\n\n`))}"
+var modules []string
+
+func init() {
+	${list.join(`\n`).trim()}
+}
 `.trim()
   );
 }
