@@ -155,7 +155,7 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
   - 当`driverName=mysql`时，`dataSourceName`格式：`user:password@tcp(host:port)/database?params`；
   - 暂不支持其他 driver；
 - `sql.query(sql, ...args)`：执行查询，并返回结果：
-  - 当`driverName=mysql`时，`dataSourceName`需要增加参数`interpolateParams=true`来开启模板参数替换，`args`才生效；
+  - 当`driverName=mysql`时，`dataSourceName`需要增加参数`interpolateParams=true`来开启模板参数替换，`args`才生效；设置参数`multiStatements=true`开启多行 SQL 查询；
 - `sql.exec(sql, ...args)`：执行查询，返回`lastInsertId`和`rowsAffected`；
 - `sql.close()`：关闭连接；
 
