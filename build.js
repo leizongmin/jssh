@@ -49,7 +49,7 @@ buildReleaseFiles();
 
 function updateReleasePkgInfo() {
   log.info(`更新版本信息`);
-  const date = sh.exec(`date +%Y%m%d%H%M`, {}, 2).output.trim();
+  const date = sh.exec(`date +%Y%m%d`, {}, 2).output.trim();
   const time = sh.exec(`date +%H%M`, {}, 2).output.trim();
   const commit = sh.exec(`git rev-parse --short HEAD`, {}, 2).output.trim();
   if (!date || !commit) {

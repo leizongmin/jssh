@@ -1,6 +1,6 @@
 package pkginfo
 
-const BuildDate = "202010271807"
-const BuildTime = "1807"
-const BuildCommit = "ff0d39a"
+const BuildDate = "20201027"
+const BuildTime = "1809"
+const BuildCommit = "873ae09"
 const BuildGoVersion = "1.15.3"
