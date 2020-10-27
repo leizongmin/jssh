@@ -135,4 +135,4 @@ println(JSON.stringify(sql.query(`select * from  ${tableName}`)));
 println(JSON.stringify(sql.exec(`drop table ${tableName}`)));
 sql.close();
 
-return exit(123);
+exit(123);

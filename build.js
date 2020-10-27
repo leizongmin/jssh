@@ -137,6 +137,6 @@ var modules []string
 func init() {
 	${list.join(`\n`).trim()}
 }
-`.trim()
+`.trimLeft()
   );
 }
