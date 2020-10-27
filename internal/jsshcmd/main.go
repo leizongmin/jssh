@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gookit/color"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/leizongmin/go/cliargs"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsbuiltin"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
@@ -25,8 +24,6 @@ const (
 	codeScriptError = 3
 )
 
-var parsedCliArgs *cliargs.CliArgs
-
 func Main() {
 	runtime.LockOSThread()
 
@@ -46,7 +43,6 @@ func Main() {
 	}
 
 	if first == "-i" {
-		parsedCliArgs = cliargs.Parse(os.Args[2:])
 		run("", os.Args[1], true, nil)
 		return
 	}
@@ -56,14 +52,15 @@ func Main() {
 			printUsage(codeFileError)
 			return
 		}
-		parsedCliArgs = cliargs.Parse(os.Args[3:])
-		run("", os.Args[2], false, func(ret jsexecutor.JSValue) {
-			if first == "-x" {
+		if first == "-c" {
+			run("", os.Args[2], false, nil)
+		} else {
+			run("", "return "+os.Args[2], false, func(ret jsexecutor.JSValue) {
 				if !ret.IsUndefined() && !ret.IsNull() {
 					fmt.Println(ret.String())
 				}
-			}
-		})
+			})
+		}
 		return
 	}
 
@@ -77,7 +74,6 @@ func Main() {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
 	content := string(buf)
-	parsedCliArgs = cliargs.Parse(os.Args[2:])
 	run(file, content, false, nil)
 }
 
