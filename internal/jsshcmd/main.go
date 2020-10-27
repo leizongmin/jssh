@@ -86,11 +86,14 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 	defer ctx.Free()
 	jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
-	if ret, err := ctx.EvalFile(jsbuiltin.GetJS(), "builtin"); err != nil {
-		fmt.Println(color.FgRed.Render("load builtin js modules fail: %s", formatJsError(err)))
-		return
-	} else {
-		ret.Free()
+	builtinModules := jsbuiltin.GetJs()
+	for _, m := range builtinModules {
+		if ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal/%s", m.File)); err != nil {
+			fmt.Println(color.FgRed.Render("load builtin js modules fail: %s", formatJsError(err)))
+			return
+		} else {
+			ret.Free()
+		}
 	}
 
 	commonFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%src.js", pkginfo.Name))

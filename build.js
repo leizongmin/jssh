@@ -126,7 +126,7 @@ function updateBuiltinJS() {
       log.info(`JS模块%s`, f);
       const code = fs.readfile(f);
       list.push(`	// ${s.name}`);
-      list.push(`	modules = append(modules, "${base64encode(code)}")`);
+      list.push(`	modules = append(modules, JsModule{File: "${s.name}", Code: "${base64encode(code)}"})`);
       list.push(``);
     }
   });
@@ -136,7 +136,7 @@ function updateBuiltinJS() {
     `
 package jsbuiltin
 
-var modules []string
+var modules []JsModule
 
 func init() {
 	${list.join(`\n`).trim()}
