@@ -21,11 +21,6 @@ if (!goVersionOutput) {
 const goVersion = goVersionOutput[1];
 log.info(`当前Go版本号%s`, goVersion);
 
-// 如果执行命令时指定 --release 则更新版本号信息
-if (cli.bool(`release`)) {
-  updateReleasePkgInfo();
-}
-
 sh.setenv(`GO111MODULE`, `on`);
 sh.setenv(`GOPROXY`, goProxy);
 
@@ -39,11 +34,13 @@ fs.readdir(releaseDir).forEach((s) => {
 
 //**********************************************************************************************************************
 
+updateReleasePkgInfo();
 buildHostOSVersion();
 if (unameOutput.includes(`Darwin`)) {
   buildLinuxVersionOnDocker();
 }
 buildReleaseFiles();
+restoreReleasePkgInfo();
 
 //**********************************************************************************************************************
 
@@ -67,6 +64,10 @@ const BuildGoVersion = "${goVersion}"
 `.trimLeft();
   fs.writefile(file, data);
   log.info(data);
+}
+
+function restoreReleasePkgInfo() {
+  sh.exec(`git checkout internal/pkginfo/build_info.go`);
 }
 
 function buildHostOSVersion() {
@@ -126,7 +127,11 @@ function updateBuiltinJS() {
       log.info(`JS模块%s`, f);
       const code = fs.readfile(f);
       list.push(`	// ${s.name}`);
-      list.push(`	modules = append(modules, JsModule{File: "${s.name}", Code: "${base64encode(code)}"})`);
+      list.push(
+        `	modules = append(modules, JsModule{File: "${
+          s.name
+        }", Code: "${base64encode(code)}"})`
+      );
       list.push(``);
     }
   });
