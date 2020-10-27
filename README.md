@@ -166,6 +166,10 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 - [driverName=mysql DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
 
+#### 预置第三方模块
+
+- [moment.js](https://momentjs.com/)
+
 ## 示例
 
 - **jssh 构建脚本**：[build.js](https://github.com/leizongmin/jssh/blob/main/build.js)；
