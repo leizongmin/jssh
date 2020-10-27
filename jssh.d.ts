@@ -323,6 +323,18 @@ interface CliModule {
    * @return 输入的内容
    */
   prompt(message?: string): string;
+
+  /**
+   * 注册子命令处理函数
+   * @param name 命令名称，* 表示其他情况
+   * @param callback 回调函数
+   */
+  subcommand(name: string, callback: () => void): void;
+
+  /**
+   * 开始解析执行子命令
+   */
+  subcommandstart(): void;
 }
 
 interface HttpModule {

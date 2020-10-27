@@ -129,6 +129,8 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `cli.args()`：获取所有命令行参数；
 - `cli.opts()`：获取所有命令行选项；
 - `cli.prompt(message?)`：获取用户输入的内容，按`[Enter]`结束输入；
+- `cli.subcommand(name, callback)`：注册子命令处理函数，当`name=*`表示其他情况；
+- `cli.subcommandstart()`：开始解析执行子命令；
 
 #### HTTP 操作
 

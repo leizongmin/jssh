@@ -12,7 +12,7 @@ var replApiList = []string{
 	"networkinterfaces(",
 	"fs.readdir(", "fs.readfile(", "fs.stat(", "fs.exist(", "fs.writefile(", "fs.appendfile(",
 	"path.join(", "path.abs(", "path.base(", "path.ext(", "path.dir(",
-	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(",
+	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(", "cli.subcommand(", "cli.subcommandstart(",
 	"http.timeout(", "http.request(", "http.download(",
 	"log.info(", "log.error(", "log.fatal(",
 	"sh.setenv(", "sh.exec(", "sh.bgexec(", "sh.chdir(", "sh.cd(", "sh.cwd(", "sh.pwd(",

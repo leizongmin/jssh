@@ -64,4 +64,27 @@ const cli = {};
     if (message) print(message);
     return readline();
   };
+
+  cli._subcommand = {};
+
+  cli.subcommand = function (name, callback) {
+    if (typeof callback !== `function`) {
+      throw new TypeError(`callback expected a function`);
+    }
+    if (cli._subcommand[name]) {
+      throw new Error(`subcommand ${name} is already registered`);
+    }
+    cli._subcommand[name] = callback;
+  };
+
+  cli.subcommandstart = function () {
+    const name = cli.get(0);
+    if (cli._subcommand[name]) {
+      return cli._subcommand[name]();
+    }
+    if (cli._subcommand[`*`]) {
+      return cli._subcommand[`*`]();
+    }
+    throw new Error(`unrecognized subcommand ${name}`);
+  };
 }
