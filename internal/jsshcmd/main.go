@@ -221,7 +221,7 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 		}
 	} else {
 
-		if ret, err := ctx.EvalFile(content, file); err != nil {
+		if ret, err := ctx.EvalFile(wrapJsFile(content), file); err != nil {
 			printExitMessage(formatJsError(err), codeScriptError, false)
 		} else {
 			if onEnd != nil {
@@ -237,6 +237,22 @@ func formatJsError(err error) string {
 		return fmt.Sprintf("%s\n%s", err2.Cause, err2.Stack)
 	}
 	return err.Error()
+}
+
+func wrapJsFile(code string) string {
+	code = removeShebangLine(code)
+	return fmt.Sprintf("(function () { %s\n})();", code)
+}
+
+func removeShebangLine(code string) string {
+	if !strings.HasPrefix(code, "#!") {
+		return code
+	}
+	lines := strings.SplitN(code, "\n", 2)
+	if len(lines) < 2 {
+		return "\n"
+	}
+	return "\n" + lines[1]
 }
 
 func getJsGlobal(file string) typeutil.H {
