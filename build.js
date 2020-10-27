@@ -50,19 +50,23 @@ buildReleaseFiles();
 function updateReleasePkgInfo() {
   log.info(`更新版本信息`);
   const date = sh.exec(`date +%Y%m%d%H%M`, {}, 2).output.trim();
+  const time = sh.exec(`date +%H%M`, {}, 2).output.trim();
   const commit = sh.exec(`git rev-parse --short HEAD`, {}, 2).output.trim();
   if (!date || !commit) {
     log.error(`无法获取date和commit信息`);
     exit(1);
   }
-  const pkginfoFile = path.join(__dirname, `internal/pkginfo/pkginfo.go`);
-  const data = fs.readfile(pkginfoFile);
-  const newData = data
-    .replaceAll(/build-[1,2][0-9]*/g, `build-${date}`)
-    .replaceAll(/commit-[0-9a-f]*/g, `commit-${commit}`)
-    .replaceAll(/go\d+\.\d+\.\d+/g, `go${goVersion}`);
-  fs.writefile(pkginfoFile, newData);
-  log.info(newData);
+  const file = path.join(__dirname, `internal/pkginfo/build_info.go`);
+  const data = `
+package pkginfo
+
+const BuildDate = "${date}"
+const BuildTime = "${time}"
+const BuildCommit = "${commit}"
+const BuildGoVersion = "${goVersion}"
+`.trimLeft();
+  fs.writefile(file, data);
+  log.info(data);
 }
 
 function buildHostOSVersion() {
