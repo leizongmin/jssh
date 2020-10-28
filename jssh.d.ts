@@ -80,6 +80,20 @@ declare function print(format: any, ...args: any[]): boolean;
 declare function println(format: any, ...args: any[]): boolean;
 
 /**
+ * 在stdout输出一行日志
+ * @param message
+ * @return 是否成功
+ */
+declare function stdoutlog(message: string): boolean;
+
+/**
+ * 在stderr输出一行日志
+ * @param message
+ * @return 是否成功
+ */
+declare function stderrlog(message: string): boolean;
+
+/**
  * 从控制台获取用户一行的字符串输入
  * @return 用户输入的字符串
  */
@@ -379,6 +393,14 @@ interface HttpResponse {
 }
 
 interface LogModule {
+  /**
+   * 日志输出到控制台
+   * @param format 模板，支持%s等格式
+   * @param args 参数列表
+   * @return 是否成功
+   */
+  debug(format: any, ...args: any[]): boolean;
+
   /**
    * 日志输出到控制台
    * @param format 模板，支持%s等格式

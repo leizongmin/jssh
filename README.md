@@ -68,6 +68,8 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `format(template, ...args)`：格式化字符串，如`format("a=%d, b=%s", 123, "xxx")`；
 - `print(template, ...args)`：格式化字符串并输出；
 - `println(template, ...args)`：格式化字符串并输出，末尾加换行符；
+- `stdoutlog(message)`：在 stdout 中输出一行日志；
+- `stderrlog(message)`：在 stderr 中输出一行日志；
 - `readline()`：从控制台获取用户一行的字符串输入；
 - `sleep(ms)`：等待指定毫秒时间；
 - `exit(code)`：结束进程；
@@ -140,6 +142,9 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 日志输出操作
 
+可以通过环境变量 `JSSH_LOG=<DEBUG|INFO|ERROR>` 来控制日志输出等级，默认 `JSS_LOG=INFO`。
+
+- `log.debug(template, ...args)`：输出 DEBUG 信息（绿色文字）；
 - `log.info(template, ...args)`：输出 INFO 信息（绿色文字）；
 - `log.error(template, ...args)`：输出 ERROR 信息（红色文字）；
 - `log.fatal(template, ...args)`：输出 FATAL 信息（红色文字）并结束进程；
@@ -164,11 +169,7 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 参考资料：
 
-- [driverName=mysql DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
-
-#### 预置第三方模块
-
-- [moment.js](https://momentjs.com/)
+- [`driverName=mysql` DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
 
 ## 示例
 

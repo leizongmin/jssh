@@ -2,7 +2,6 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/gookit/color"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
@@ -61,73 +60,37 @@ func jsFnPrint(global typeutil.H) jsexecutor.JSFunction {
 				fmt.Printf(format, a...)
 			} else {
 				a = append([]interface{}{s}, a...)
-				fmt.Println(a...)
+				fmt.Print(a...)
 			}
 		}
 		return ctx.Bool(true)
 	}
 }
 
-func jsFnPrintln(global typeutil.H) jsexecutor.JSFunction {
+func jsFnStdoutlog(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		ret := global["print"].(jsexecutor.JSFunction)(ctx, this, args)
-		fmt.Println()
-		return ret
-	}
-}
-
-func jsFnLogInfo(global typeutil.H) jsexecutor.JSFunction {
-	green := color.FgGreen.Render
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) > 0 {
-			s, err := jsexecutor.JSValueToAny(args[0])
-			if err != nil {
-				return ctx.ThrowError(err)
-			}
-			format, ok := s.(string)
-			a := make([]interface{}, 0)
-			for _, v := range args[1:] {
-				v2, err := jsexecutor.JSValueToAny(v)
-				if err != nil {
-					return ctx.ThrowError(err)
-				}
-				a = append(a, v2)
-			}
-			if ok {
-				stdLog.Printf(green(format), a...)
-			} else {
-				a = append([]interface{}{s}, a...)
-				stdLog.Println(green(fmt.Sprint(a)))
-			}
+		if len(args) < 1 {
+			return ctx.ThrowTypeError("stdoutlog: missing log line argument")
 		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("stdoutlog: first argument expected string type")
+		}
+		line := args[0].String()
+		stdLog.Println(line)
 		return ctx.Bool(true)
 	}
 }
 
-func jsFnLogError(global typeutil.H) jsexecutor.JSFunction {
-	red := color.FgRed.Render
+func jsFnStderrlog(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) > 0 {
-			s, err := jsexecutor.JSValueToAny(args[0])
-			if err != nil {
-				return ctx.ThrowError(err)
-			}
-			format, ok := s.(string)
-			a := make([]interface{}, 0)
-			for _, v := range args[1:] {
-				v2, err := jsexecutor.JSValueToAny(v)
-				if err != nil {
-					return ctx.ThrowError(err)
-				}
-				a = append(a, v2)
-			}
-			if ok {
-				errLog.Printf(red(format), a...)
-			} else {
-				a = append([]interface{}{s}, a...)
-				errLog.Println(red(fmt.Sprint(a)))
-			}
+		if len(args) < 1 {
+			return ctx.ThrowTypeError("stderrlog: missing log line argument")
 		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("stderrlog: first argument expected string type")
+		}
+		line := args[0].String()
+		errLog.Println(line)
 		return ctx.Bool(true)
 	}
 }

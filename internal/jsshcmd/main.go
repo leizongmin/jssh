@@ -89,7 +89,7 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 	builtinModules := jsbuiltin.GetJs()
 	for _, m := range builtinModules {
 		if ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal/%s", m.File)); err != nil {
-			fmt.Println(color.FgRed.Render("load builtin js modules fail: %s", formatJsError(err)))
+			fmt.Println(color.FgRed.Render(fmt.Sprintf("load builtin js modules fail: %s", formatJsError(err))))
 			return
 		} else {
 			ret.Free()
@@ -277,8 +277,9 @@ func getJsGlobal(file string) typeutil.H {
 	global["get"] = jsFnGet(global)
 	global["format"] = jsFnFormat(global)
 	global["print"] = jsFnPrint(global)
-	global["println"] = jsFnPrintln(global)
 	global["readline"] = jsFnReadline(global)
+	global["stdoutlog"] = jsFnStdoutlog(global)
+	global["stderrlog"] = jsFnStderrlog(global)
 
 	global["sleep"] = jsFnSleep(global)
 	global["exit"] = jsFnExit(global)
@@ -309,11 +310,6 @@ func getJsGlobal(file string) typeutil.H {
 	sshModule["setenv"] = jsFnSshSetenv(global)
 	sshModule["exec"] = jsFnSshExec(global)
 	global["ssh"] = sshModule
-
-	logModule := make(typeutil.H)
-	logModule["info"] = jsFnLogInfo(global)
-	logModule["error"] = jsFnLogError(global)
-	global["log"] = logModule
 
 	fsModule := make(typeutil.H)
 	fsModule["readdir"] = jsFnFsReaddir(global)
