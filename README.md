@@ -2,8 +2,6 @@
 
 使用 JavaScript 编写运维脚本。
 
-特性：
-
 - 基于 [QuickJS](https://github.com/bellard/quickjs) 引擎，**支持 [ES2020](https://tc39.github.io/ecma262/) 语言特性**；
 - 脚本执行引擎仅需一个**约 10MB** 的二进制文件，无需安装其他依赖；
 - 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、SQL、命令行参数解析、日志输出等操作，满足大部分的运维需求，且**无需安装额外的第三方命令行工具**；
