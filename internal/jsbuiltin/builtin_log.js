@@ -22,25 +22,25 @@ const log = {};
     return `\u001b[2;1m${line}${reset}`;
   }
 
-  log.debug = function (message, ...args) {
+  log.debug = function debug(message, ...args) {
     if (logLevel >= levels.DEBUG) {
       stdoutlog(gray(format(message, ...args)));
     }
   };
 
-  log.info = function (message, ...args) {
+  log.info = function info(message, ...args) {
     if (logLevel >= levels.INFO) {
       stdoutlog(green(format(message, ...args)));
     }
   };
 
-  log.error = function (message, ...args) {
+  log.error = function error(message, ...args) {
     if (logLevel >= levels.ERROR) {
       stderrlog(red(format(message, ...args)));
     }
   };
 
-  log.fatal = function (message, ...args) {
+  log.fatal = function fatal(message, ...args) {
     log.error(message, ...args);
     exit(1);
   };

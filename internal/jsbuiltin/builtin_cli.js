@@ -37,7 +37,7 @@ const cli = {};
     }
   }
 
-  cli.get = function (n) {
+  cli.get = function get(n) {
     if (typeof n === "number") {
       return args[n];
     } else {
@@ -45,29 +45,29 @@ const cli = {};
     }
   };
 
-  cli.bool = function (n) {
+  cli.bool = function bool(n) {
     if (opts[n] === false || opts[n] === undefined) return false;
     if (opts[n] === true) return true;
     const s = opts[n].toLowerCase();
     return !(s === "0" || s === "f" || s === "false");
   };
 
-  cli.args = function () {
+  cli.args = function args() {
     return [...args];
   };
 
-  cli.opts = function () {
+  cli.opts = function opts() {
     return { ...opts };
   };
 
-  cli.prompt = function (message) {
+  cli.prompt = function prompt(message) {
     if (message) print(message);
     return readline();
   };
 
   cli._subcommand = {};
 
-  cli.subcommand = function (name, callback) {
+  cli.subcommand = function subcommand(name, callback) {
     if (typeof callback !== `function`) {
       throw new TypeError(`callback expected a function`);
     }
@@ -77,7 +77,7 @@ const cli = {};
     cli._subcommand[name] = callback;
   };
 
-  cli.subcommandstart = function () {
+  cli.subcommandstart = function subcommandstart() {
     const name = cli.get(0);
     if (cli._subcommand[name]) {
       return cli._subcommand[name]();
