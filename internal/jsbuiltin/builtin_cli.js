@@ -1,8 +1,8 @@
 const cli = {};
 
 {
-  const args = [];
-  const opts = {};
+  const _args = (cli._args = []);
+  const _opts = (cli._opts = {});
 
   function getFlagName(s) {
     if (s.startsWith("--")) {
@@ -19,45 +19,45 @@ const cli = {};
     if (v.startsWith("-")) {
       const r = v.match(/^--?([\w\-_]+)=(.*)$/);
       if (r) {
-        opts[r[1]] = r[2];
+        _opts[r[1]] = r[2];
       } else {
         if (v2 !== undefined) {
           if (v2.startsWith("-")) {
-            opts[getFlagName(v)] = true;
+            _opts[getFlagName(v)] = true;
           } else {
-            opts[getFlagName(v)] = v2;
+            _opts[getFlagName(v)] = v2;
             i++;
           }
         } else {
-          opts[getFlagName(v)] = true;
+          _opts[getFlagName(v)] = true;
         }
       }
     } else {
-      args.push(v);
+      _args.push(v);
     }
   }
 
   cli.get = function get(n) {
     if (typeof n === "number") {
-      return args[n];
+      return _args[n];
     } else {
-      return opts[n];
+      return _opts[n];
     }
   };
 
   cli.bool = function bool(n) {
-    if (opts[n] === false || opts[n] === undefined) return false;
-    if (opts[n] === true) return true;
-    const s = opts[n].toLowerCase();
+    if (_opts[n] === false || _opts[n] === undefined) return false;
+    if (_opts[n] === true) return true;
+    const s = _opts[n].toLowerCase();
     return !(s === "0" || s === "f" || s === "false");
   };
 
   cli.args = function args() {
-    return [...args];
+    return [..._args];
   };
 
   cli.opts = function opts() {
-    return { ...opts };
+    return { ..._opts };
   };
 
   cli.prompt = function prompt(message) {
