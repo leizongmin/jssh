@@ -4,16 +4,16 @@
 
 ## 安装
 
-安装 Linux 版本：
+安装预构建的 Linux x64 版本：
 
 ```bash
 curl -O -L https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz && \
 tar -xvf jssh-linux.tar.gz && \
-cp jssh /usr/local/bin/jssh && \
-chmod +x /usr/local/bin/jssh
+sudo cp jssh /usr/local/bin/jssh && \
+sudo chmod +x /usr/local/bin/jssh
 ```
 
-安装 macOS 版本：
+安装预构建的 macOS x64 版本：
 
 ```bash
 curl -O -L https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz && \
@@ -22,13 +22,13 @@ cp jssh /usr/local/bin/jssh && \
 chmod +x /usr/local/bin/jssh
 ```
 
-通过 Go 命令行工具安装：
+其他系统通过 Go 命令行工具安装最新版本：
 
 ```bash
 GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 ```
 
-下载压缩包：
+下载预构建的压缩包：
 
 - macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
 - Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
@@ -42,7 +42,7 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 
 ## 参考文档
 
-TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/jssh/blob/main/jssh.d.ts)。
+TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/jssh/blob/main/jssh.d.ts)，可将其导入编辑器以支持代码自动提示。
 
 #### 全局变量列表
 
