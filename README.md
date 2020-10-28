@@ -17,7 +17,7 @@
 安装预构建的版本（仅支持 Linux x64 和 macOS x64 两种版本）：
 
 ```bash
-curl https://jssh.leizm.com/get.sh | sh
+curl https://jssh.leizm.com/get.sh | bash
 ```
 
 其他系统通过 Go 命令行工具安装最新版本：
