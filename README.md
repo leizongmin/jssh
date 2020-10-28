@@ -4,32 +4,20 @@
 
 特性：
 
-- 基于 [QuickJS](https://github.com/bellard/quickjs) 引擎，支持 [ES2020](https://tc39.github.io/ecma262/) 语言特性；
-- 脚本执行引擎仅需一个约 10MB 的二进制文件，无需安装其他依赖；
-- 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、SQL、命令行参数解析、日志输出等操作，满足大部分的运维需求，且无需安装额外的第三方命令行工具；
-- 所有操作均为阻塞函数，无异步操作，简化代码编写；
-- 内存占用小，启动速度快（约为 Node.js 的五分之一）；
+- 基于 [QuickJS](https://github.com/bellard/quickjs) 引擎，**支持 [ES2020](https://tc39.github.io/ecma262/) 语言特性**；
+- 脚本执行引擎仅需一个**约 10MB** 的二进制文件，无需安装其他依赖；
+- 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、SQL、命令行参数解析、日志输出等操作，满足大部分的运维需求，且**无需安装额外的第三方命令行工具**；
+- 所有操作均为阻塞函数，无异步操作，**降低代码复杂度**；
+- **内存占用小，启动速度快**（约为 Node.js 的五分之一）；
 
 **提示：此项目正在初期开发阶段，接口可能会有较大的调整，仅供学习研究之用，请勿用于生产环境。**
 
 ## 安装
 
-安装预构建的 Linux x64 版本：
+安装预构建的版本（仅支持 Linux x64 和 macOS x64 两种版本）：
 
 ```bash
-curl -O -L https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz && \
-tar -xvf jssh-linux.tar.gz && \
-sudo cp jssh /usr/local/bin/jssh && \
-sudo chmod +x /usr/local/bin/jssh
-```
-
-安装预构建的 macOS x64 版本：
-
-```bash
-curl -O -L https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz && \
-tar -xvf jssh-osx.tar.gz && \
-cp jssh /usr/local/bin/jssh && \
-chmod +x /usr/local/bin/jssh
+curl https://jssh.leizm.com/get.sh | sh
 ```
 
 其他系统通过 Go 命令行工具安装最新版本：
