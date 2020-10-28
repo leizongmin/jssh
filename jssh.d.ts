@@ -40,6 +40,9 @@ declare const __outputbytes: number;
 /** 最近一次执行命令进程退出code */
 declare const __code: number;
 
+/** 已自动加载的全局脚本文件列表 */
+declare const __globalfiles: string[];
+
 /**
  * 设置全局变量
  * @param name 变量名

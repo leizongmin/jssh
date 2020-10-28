@@ -96,18 +96,20 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 		}
 	}
 
-	commonFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%src.js", pkginfo.Name))
-	if b, err := ioutil.ReadFile(commonFile); err != nil {
-		if !strings.HasSuffix(err.Error(), "no such file or directory") {
+	globalFiles := getJsshGlobalFilePath()
+	for _, f := range globalFiles {
+		if b, err := ioutil.ReadFile(f); err != nil {
 			fmt.Println(color.FgRed.Render(err))
-		}
-	} else {
-		if ret, err := ctx.EvalFile(string(b), commonFile); err != nil {
-			fmt.Println(color.FgRed.Render(formatJsError(err)))
 		} else {
-			ret.Free()
+			content := string(b) + "\n;;"
+			if ret, err := ctx.EvalFile(content, f); err != nil {
+				fmt.Println(color.FgRed.Render(formatJsError(err)))
+			} else {
+				ret.Free()
+			}
 		}
 	}
+	ctx.Globals().Set("__globalfiles", jsexecutor.AnyToJSValue(ctx, globalFiles))
 
 	if interactive {
 		printAuthorInfo()
@@ -141,18 +143,19 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 		})
 		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
 
-		historyFile := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_history", pkginfo.Name))
-
-		if f, err := os.Open(historyFile); err != nil {
-			if !strings.HasSuffix(err.Error(), "no such file or directory") {
-				fmt.Println(color.FgRed.Render(err))
-			}
-		} else {
-			if _, err := repl.ReadHistory(f); err != nil {
-				fmt.Println(color.FgRed.Render(err))
-			}
-			if err := f.Close(); err != nil {
-				fmt.Println(color.FgRed.Render(err))
+		historyFile, isEnableHistoryFile := getJsshHistoryFilePath()
+		if isEnableHistoryFile {
+			if f, err := os.Open(historyFile); err != nil {
+				if !strings.HasSuffix(err.Error(), "no such file or directory") {
+					fmt.Println(color.FgRed.Render(err))
+				}
+			} else {
+				if _, err := repl.ReadHistory(f); err != nil {
+					fmt.Println(color.FgRed.Render(err))
+				}
+				if err := f.Close(); err != nil {
+					fmt.Println(color.FgRed.Render(err))
+				}
 			}
 		}
 
@@ -207,14 +210,16 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 			}
 		}
 
-		if f, err := os.Create(historyFile); err != nil {
-			fmt.Println(color.FgRed.Render(err))
-		} else {
-			if _, err := repl.WriteHistory(f); err != nil {
+		if isEnableHistoryFile {
+			if f, err := os.Create(historyFile); err != nil {
 				fmt.Println(color.FgRed.Render(err))
 			} else {
-				if err := f.Close(); err != nil {
+				if _, err := repl.WriteHistory(f); err != nil {
 					fmt.Println(color.FgRed.Render(err))
+				} else {
+					if err := f.Close(); err != nil {
+						fmt.Println(color.FgRed.Render(err))
+					}
 				}
 			}
 		}
@@ -252,6 +257,74 @@ func removeShebangLine(code string) string {
 		return "\n"
 	}
 	return "\n" + lines[1]
+}
+
+func getJsshHistoryFilePath() (f string, enable bool) {
+	e := os.Getenv("JSSH_HISTORY")
+	if len(e) < 1 {
+		return filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_history", pkginfo.Name)), true
+	}
+	if e == "0" {
+		return "", false
+	}
+	f, err := filepath.Abs(e)
+	if err != nil {
+		errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get file path from environment variable [JSSH_HISTORY]: %s", err)))
+		return "", false
+	}
+	return f, true
+}
+
+func getJsshGlobalFilePath() (list []string) {
+	e := os.Getenv("JSSH_GLOBAL")
+	var dir string
+	if len(e) < 1 {
+		f := filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_global.js", pkginfo.Name))
+		s := tryGetFileStat(f)
+		if s != nil && !s.IsDir() {
+			list = append(list, f)
+		}
+		dir = filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_global.d", pkginfo.Name))
+	} else if e != "0" {
+		f, err := filepath.Abs(e)
+		if err != nil {
+			errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get global file from environment variable [JSSH_GLOBAL]: %s", err)))
+		} else {
+			s := tryGetFileStat(f)
+			if s == nil {
+				errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get global file from environment variable [JSSH_GLOBAL]: %s", err)))
+			} else {
+				if s.IsDir() {
+					dir = f
+				} else {
+					list = append(list, f)
+				}
+			}
+		}
+	}
+	if len(dir) > 0 {
+		files, err := ioutil.ReadDir(dir)
+		if err != nil {
+			if !strings.HasSuffix(err.Error(), "no such file or directory") {
+				errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get global file from environment variable [JSSH_GLOBAL]: %s", err)))
+			}
+		} else {
+			for _, f := range files {
+				if strings.HasSuffix(f.Name(), ".js") && !f.IsDir() {
+					list = append(list, filepath.Join(dir, f.Name()))
+				}
+			}
+		}
+	}
+	return list
+}
+
+func tryGetFileStat(name string) os.FileInfo {
+	s, err := os.Stat(name)
+	if err != nil {
+		return nil
+	}
+	return s
 }
 
 func getJsGlobal(file string) typeutil.H {

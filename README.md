@@ -40,6 +40,11 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 - 执行命令行参数指定的脚本代码：`jssh -c "js code"`；
 - 执行命令行参数指定的脚本代码，并将结果作为字符串输出：`jssh -x "js code"`；
 
+## 配置
+
+- REPL 执行历史默认存储于`~/.jssh_history`文件中，可通过环境变量`JSSH_HISTORY=path`文件设置为新到文件路径，设置`JSSH_HISTORY=0`关闭历史记录；
+- jssh 启动时会尝试加载`~/.jssh_global.js`文件和`~/.jssh_global.d`目录下的所有`.js`文件并执行，可通过环境变量`JSSH_GLOBAL=0`关闭；
+
 ## 参考文档
 
 TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/jssh/blob/main/jssh.d.ts)，可将其导入编辑器以支持代码自动提示。
@@ -60,6 +65,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `__output`：上一个命令输出的结果，`sh.exec()`且`mode=1`或`mode=2`时有效；
 - `__outputbytes`：上一个命令输出结果的字节数；
 - `__code`：上一个命令结束时的状态码；
+- `__globalfiles`：已自动加载的全局脚本文件列表；
 
 #### 全局函数列表
 
