@@ -74,12 +74,13 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `sleep(ms)`：等待指定毫秒时间；
 - `exit(code)`：结束进程；
 - `loadconfig(filename, format?)`：加载配置文件，支持 JSON、YAML、TOML 格式；
-- `base64encode`：Base64 编码字符串；
-- `base64decode`：Base64 解码字符串；
-- `md5`：MD5 编码字符串；
-- `sha1`：SAH1 编码字符串；
-- `sha256`：SHA256 编码字符串；
-- `networkinterfaces`：获得网络接口信息；
+- `base64encode(data)`：Base64 编码字符串；
+- `base64decode(data)`：Base64 解码字符串；
+- `md5(data)`：MD5 编码字符串；
+- `sha1(data)`：SAH1 编码字符串；
+- `sha256(data)`：SHA256 编码字符串；
+- `networkinterfaces()`：获得网络接口信息；
+- `randomstring(size, chars?)`：生成随机字符串；
 
 #### Shell 操作
 

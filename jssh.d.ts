@@ -159,6 +159,14 @@ declare function sha1(data: string): string;
 declare function sha256(data: string): string;
 
 /**
+ * 生成随机字符串
+ * @param size 长度
+ * @param chars 可用的字符集，默认为 ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
+ * @return 生成的随机字符串
+ */
+declare function randomstring(size: number, chars?: string): string;
+
+/**
  * 获得网络接口信息
  * @return 网络接口数组
  */
