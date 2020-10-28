@@ -81,6 +81,7 @@ TypeScript types 定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `sha256(data)`：SHA256 编码字符串；
 - `networkinterfaces()`：获得网络接口信息；
 - `randomstring(size, chars?)`：生成随机字符串；
+- `formatdate(format, timestamp?)`：格式化日期时间，格式参考PHP的 date() 函数，文档参考 https://locutus.io/php/datetime/date/ ；
 
 #### Shell 操作
 

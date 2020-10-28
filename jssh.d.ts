@@ -167,6 +167,14 @@ declare function sha256(data: string): string;
 declare function randomstring(size: number, chars?: string): string;
 
 /**
+ * 格式化日期时间，格式参考PHP的 date() 函数，文档参考 https://locutus.io/php/datetime/date/
+ * @param format 格式
+ * @param timestamp 秒时间戳或Date对象
+ * @return 日期时间字符串
+ */
+declare function formatdate(format: string, timestamp?: number | Date): string;
+
+/**
  * 获得网络接口信息
  * @return 网络接口数组
  */
