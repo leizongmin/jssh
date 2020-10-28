@@ -170,16 +170,20 @@ declare function randomstring(size: number, chars?: string): string;
  * 获得网络接口信息
  * @return 网络接口数组
  */
-declare function networkinterfaces(): NetworkInterface[];
+declare function networkinterfaces(): Record<string, NetworkInterface>;
 
 interface NetworkInterface {
-  address: string;
-  netmask: string;
-  family: string;
-  cidr: string;
-  internal: boolean;
-  multicast: boolean;
-  unspecified: boolean;
+  index: number;
+  mac: string;
+  list: {
+    address: string;
+    netmask: string;
+    family: string;
+    cidr: string;
+    internal: boolean;
+    multicast: boolean;
+    unspecified: boolean;
+  }[];
 }
 
 /** Shell相关操作模块 */
@@ -602,7 +606,8 @@ interface SqlModule {
 
   /**
    * 连接到指定服务器
-   * @param host 服务器地址
+   * @param driverName 驱动名称，如 mysql
+   * @param dataSourceName 数据源字符串
    * @return 是否成功
    */
   open(driverName: string, dataSourceName): boolean;
