@@ -135,4 +135,8 @@ println(JSON.stringify(sql.query(`select * from  ${tableName}`)));
 println(JSON.stringify(sql.exec(`drop table ${tableName}`)));
 sql.close();
 
+println(evalfile("./hello.js"));
+println(evalfile("./hello.js"));
+fnFromHello();
+
 exit(123);

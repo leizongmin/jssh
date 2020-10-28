@@ -8,7 +8,7 @@ var replApiList = []string{
 	"__version", "__bin", "__pid", "__tmpdir", "__homedir", "__user", "__hostname",
 	"__dirname", "__filename", "__args", "__env", "__output", "__outputbytes", "__code",
 	"__globalfiles",
-	"set(", "get(", "format(", "print(", "println(", "stdoutlog(", "stderrlog(", "readline(", "sleep(", "exit(", "loadconfig(",
+	"evalfile(", "set(", "get(", "format(", "print(", "println(", "stdoutlog(", "stderrlog(", "readline(", "sleep(", "exit(", "loadconfig(",
 	"base64encode(", "base64decode(", "md5(", "sha1(", "sha256(",
 	"randomstring(", "formatdate(",
 	"networkinterfaces(",

@@ -148,3 +148,27 @@ func jsFnReadline(global typeutil.H) jsexecutor.JSFunction {
 		return ctx.String(line)
 	}
 }
+
+func jsFnEvalfile(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("evalfile: missing filename")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("evalfile: first argument expected string type")
+		}
+		file := args[0].String()
+
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		content := string(b)
+
+		ret, err := ctx.EvalFile(content, file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+		return ret
+	}
+}

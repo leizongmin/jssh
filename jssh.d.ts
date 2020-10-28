@@ -44,6 +44,13 @@ declare const __code: number;
 declare const __globalfiles: string[];
 
 /**
+ * 以eval方式执行指定脚本文件
+ * @param filename 文件名称
+ * @return 返回结果
+ */
+declare function evalfile(filename: string): any;
+
+/**
  * 设置全局变量
  * @param name 变量名
  * @param value 值

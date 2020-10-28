@@ -69,6 +69,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 全局函数列表
 
+- `evalfile(filename)`：以`eval`方式执行指定脚本文件；
 - `set(name, value)`：设置全局变量；
 - `get(name)`：获取全局变量；
 - `format(template, ...args)`：格式化字符串，如`format("a=%d, b=%s", 123, "xxx")`；

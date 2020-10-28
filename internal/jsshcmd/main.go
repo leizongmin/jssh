@@ -353,6 +353,7 @@ func getJsGlobal(file string) typeutil.H {
 	global["readline"] = jsFnReadline(global)
 	global["stdoutlog"] = jsFnStdoutlog(global)
 	global["stderrlog"] = jsFnStderrlog(global)
+	global["evalfile"] = jsFnEvalfile(global)
 
 	global["sleep"] = jsFnSleep(global)
 	global["exit"] = jsFnExit(global)
