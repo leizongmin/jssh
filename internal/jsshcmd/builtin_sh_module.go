@@ -13,18 +13,18 @@ import (
 func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("sh.setenv: missing env name")
+			return ctx.ThrowSyntaxError("setenv: missing env name")
 		}
 		if !args[0].IsString() {
-			return ctx.ThrowTypeError("sh.setenv: first argument expected string type")
+			return ctx.ThrowTypeError("setenv: first argument expected string type")
 		}
 		name := args[0].String()
 
 		if len(args) < 2 {
-			return ctx.ThrowSyntaxError("sh.setenv: missing env value")
+			return ctx.ThrowSyntaxError("setenv: missing env value")
 		}
 		if !args[1].IsString() {
-			return ctx.ThrowTypeError("sh.setenv: second argument expected string type")
+			return ctx.ThrowTypeError("setenv: second argument expected string type")
 		}
 		value := args[1].String()
 
@@ -40,10 +40,10 @@ func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
 func jsFnShChdir(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("sh.chdir: missing dir name")
+			return ctx.ThrowSyntaxError("chdir: missing dir name")
 		}
 		if !args[0].IsString() {
-			return ctx.ThrowTypeError("sh.chdir: first argument expected string type")
+			return ctx.ThrowTypeError("chdir: first argument expected string type")
 		}
 		dir := args[0].String()
 
@@ -67,10 +67,10 @@ func jsFnShCwd(global typeutil.H) jsexecutor.JSFunction {
 func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("sh.exec: missing exec command")
+			return ctx.ThrowSyntaxError("exec: missing exec command")
 		}
 		if !args[0].IsString() {
-			return ctx.ThrowTypeError("sh.exec: first argument expected string type")
+			return ctx.ThrowTypeError("exec: first argument expected string type")
 		}
 		cmd := args[0].String()
 
@@ -79,7 +79,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			if args[1].IsNull() || args[1].IsUndefined() {
 			} else {
 				if !args[1].IsObject() {
-					return ctx.ThrowTypeError("sh.exec: second argument expected an object")
+					return ctx.ThrowTypeError("exec: second argument expected an object")
 				}
 				second, err := jsexecutor.JSValueToAny(args[1])
 				if err != nil {
@@ -87,7 +87,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 				}
 				env2, ok := second.(typeutil.H)
 				if !ok {
-					return ctx.ThrowTypeError("sh.exec: second argument expected an object")
+					return ctx.ThrowTypeError("exec: second argument expected an object")
 				}
 				for n, v := range env2 {
 					env[n] = v
@@ -99,7 +99,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 		pipeOutput := true
 		if len(args) >= 3 {
 			if !args[2].IsNumber() {
-				return ctx.ThrowTypeError("sh.exec: third argument expected number type")
+				return ctx.ThrowTypeError("exec: third argument expected number type")
 			}
 			mode := args[2].Int32()
 			switch mode {
@@ -113,7 +113,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 				saveOutput = true
 				pipeOutput = true
 			default:
-				return ctx.ThrowTypeError("sh.exec: mode expected one of 0,1,2")
+				return ctx.ThrowTypeError("exec: mode expected one of 0,1,2")
 			}
 		}
 
@@ -144,7 +144,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			go func() {
 				if _, err := pipeBufferAndSave(os.Stdout, stdout, saveBuffer); err != nil {
 					if err != os.ErrClosed {
-						stdLog.Printf("sh.exec: [stdout] %s", err)
+						stdLog.Printf("exec: [stdout] %s", err)
 					}
 				}
 				wg.Done()
@@ -152,7 +152,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			go func() {
 				if _, err := pipeBufferAndSave(os.Stderr, stderr, saveBuffer); err != nil {
 					if err != os.ErrClosed {
-						stdLog.Printf("sh.exec: [stderr] %s", err)
+						stdLog.Printf("exec: [stderr] %s", err)
 					}
 				}
 				wg.Done()
@@ -164,13 +164,13 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 			wg.Wait()
 
 			if err := stdout.Close(); err != nil {
-				stdLog.Printf("sh.exec: [stdout] %s", err)
+				stdLog.Printf("exec: [stdout] %s", err)
 			}
 			if err := stderr.Close(); err != nil {
-				stdLog.Printf("sh.exec: [stderr] %s", err)
+				stdLog.Printf("exec: [stderr] %s", err)
 			}
 			if err := sh.Wait(); err != nil {
-				stdLog.Printf("sh.exec: %s", err)
+				stdLog.Printf("exec: %s", err)
 			}
 
 			var output []byte
@@ -183,7 +183,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 
 			out, err := sh.CombinedOutput()
 			if err != nil {
-				stdLog.Printf("sh.exec: %s", err)
+				stdLog.Printf("exec: %s", err)
 			}
 			global["__output"] = string(out)
 			global["__outputbytes"] = len(out)
@@ -210,10 +210,10 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("sh.bgexec: missing exec command")
+			return ctx.ThrowSyntaxError("bgexec: missing exec command")
 		}
 		if !args[0].IsString() {
-			return ctx.ThrowTypeError("sh.bgexec: first argument expected string type")
+			return ctx.ThrowTypeError("bgexec: first argument expected string type")
 		}
 		cmd := args[0].String()
 
@@ -222,7 +222,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 			if args[1].IsNull() || args[1].IsUndefined() {
 			} else {
 				if !args[1].IsObject() {
-					return ctx.ThrowTypeError("sh.bgexec: second argument expected an object")
+					return ctx.ThrowTypeError("bgexec: second argument expected an object")
 				}
 				second, err := jsexecutor.JSValueToAny(args[1])
 				if err != nil {
@@ -230,7 +230,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 				}
 				env2, ok := second.(typeutil.H)
 				if !ok {
-					return ctx.ThrowTypeError("sh.bgexec: second argument expected an object")
+					return ctx.ThrowTypeError("bgexec: second argument expected an object")
 				}
 				for n, v := range env2 {
 					env[n] = v
@@ -242,7 +242,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 		pipeOutput := true
 		if len(args) >= 3 {
 			if !args[2].IsNumber() {
-				return ctx.ThrowTypeError("sh.bgexec: third argument expected number type")
+				return ctx.ThrowTypeError("bgexec: third argument expected number type")
 			}
 			mode := args[2].Int32()
 			switch mode {
@@ -256,7 +256,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 				saveOutput = true
 				pipeOutput = true
 			default:
-				return ctx.ThrowTypeError("sh.bgexec: mode expected one of 0,1,2")
+				return ctx.ThrowTypeError("bgexec: mode expected one of 0,1,2")
 			}
 		}
 
@@ -287,7 +287,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 			go func() {
 				if _, err := pipeBufferAndSave(os.Stdout, stdout, saveBuffer); err != nil {
 					if err != os.ErrClosed {
-						stdLog.Printf("sh.bgexec: [stdout] %s", err)
+						stdLog.Printf("bgexec: [stdout] %s", err)
 					}
 				}
 				wg.Done()
@@ -295,7 +295,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 			go func() {
 				if _, err := pipeBufferAndSave(os.Stderr, stderr, saveBuffer); err != nil {
 					if err != os.ErrClosed {
-						stdLog.Printf("sh.bgexec: [stderr] %s", err)
+						stdLog.Printf("bgexec: [stderr] %s", err)
 					}
 				}
 				wg.Done()
@@ -309,20 +309,20 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 				wg.Wait()
 
 				if err := stdout.Close(); err != nil {
-					stdLog.Printf("sh.bgexec: [stdout] %s", err)
+					stdLog.Printf("bgexec: [stdout] %s", err)
 				}
 				if err := stderr.Close(); err != nil {
-					stdLog.Printf("sh.bgexec: [stderr] %s", err)
+					stdLog.Printf("bgexec: [stderr] %s", err)
 				}
 				if err := sh.Wait(); err != nil {
-					stdLog.Printf("sh.bgexec: %s", err)
+					stdLog.Printf("bgexec: %s", err)
 				}
 			}()
 		} else {
 			go func() {
 				_, err := sh.CombinedOutput()
 				if err != nil {
-					stdLog.Printf("sh.bgexec: %s", err)
+					stdLog.Printf("bgexec: %s", err)
 				}
 			}()
 		}

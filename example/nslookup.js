@@ -8,10 +8,10 @@ if (!host) {
   exit(1);
 }
 
-const { code, output } = sh.exec(
+const { code, output } = exec(
   dns ? `nslookup ${host} ${dns}` : `nslookup ${host}`,
   {},
-  true
+  2
 );
 if (code !== 0) {
   println(output);

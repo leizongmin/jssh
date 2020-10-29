@@ -185,6 +185,66 @@ declare function randomstring(size: number, chars?: string): string;
 declare function formatdate(format: string, timestamp?: number | Date): string;
 
 /**
+ * 设置环境变量
+ * @param name 环境变量名称
+ * @param value 环境变量值
+ * @return 是否成功
+ */
+declare function setenv(name: string, value: string): boolean;
+
+/**
+ * 执行命令
+ * @param cmd 命令
+ * @param env 额外的环境变量
+ * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
+ * @return 进程信息
+ */
+declare function exec(
+  cmd: string,
+  env?: Record<string, string>,
+  mode?: number
+): ExecResult;
+
+/**
+ * 后台执行命令
+ * @param cmd 命令
+ * @param env 额外的环境变量
+ * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
+ * @return 进程信息
+ */
+declare function bgexec(
+  cmd: string,
+  env?: Record<string, string>,
+  mode?: number
+): ExecResult;
+
+/**
+ * 改变当前工作目录
+ * @param dir 目录路径
+ * @return 是否成功
+ */
+declare function chdir(dir: string): boolean;
+
+/**
+ * 改变当前工作目录
+ * @param dir 目录路径
+ * @return 是否成功
+ */
+declare function cd(dir: string): boolean;
+
+/**
+ * 获取当前工作目录
+ * @return 当前工作目录路径
+ */
+declare function cwd(): string;
+
+/**
+ * 获取当前工作目录
+ * @return 当前工作目录路径
+ */
+declare function pwd(): string;
+
+/**
  * 获得网络接口信息
  * @return 网络接口数组
  */
@@ -203,9 +263,6 @@ interface NetworkInterface {
     unspecified: boolean;
   }[];
 }
-
-/** Shell相关操作模块 */
-declare const sh: ShModule;
 
 /** 文件相关操作模块 */
 declare const fs: FsModule;
@@ -454,60 +511,6 @@ interface LogModule {
    * @return 是否成功
    */
   fatal(format: any, ...args: any[]): boolean;
-}
-
-interface ShModule {
-  /**
-   * 设置环境变量
-   * @param name 环境变量名称
-   * @param value 环境变量值
-   * @return 是否成功
-   */
-  setenv(name: string, value: string): boolean;
-
-  /**
-   * 执行命令
-   * @param cmd 命令
-   * @param env 额外的环境变量
-   * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
-   * @return 进程信息
-   */
-  exec(cmd: string, env?: Record<string, string>, mode?: number): ExecResult;
-
-  /**
-   * 后台执行命令
-   * @param cmd 命令
-   * @param env 额外的环境变量
-   * @param mode 输出模式，0=直接pipe输出结果到标准输出，1=执行中途不直接输出，存储到返回结果{output}中，2=pipe输出并且存储到返回结果{output}中
-   * @return 进程信息
-   */
-  bgexec(cmd: string, env?: Record<string, string>, mode?: number): ExecResult;
-
-  /**
-   * 改变当前工作目录
-   * @param dir 目录路径
-   * @return 是否成功
-   */
-  chdir(dir: string): boolean;
-
-  /**
-   * 改变当前工作目录
-   * @param dir 目录路径
-   * @return 是否成功
-   */
-  cd(dir: string): boolean;
-
-  /**
-   * 获取当前工作目录
-   * @return 当前工作目录路径
-   */
-  cwd(): string;
-
-  /**
-   * 获取当前工作目录
-   * @return 当前工作目录路径
-   */
-  pwd(): string;
 }
 
 interface ExecResult {

@@ -367,15 +367,13 @@ func getJsGlobal(file string) typeutil.H {
 
 	global["networkinterfaces"] = jsFnNetworkinterfaces(global)
 
-	shModule := make(typeutil.H)
-	shModule["setenv"] = jsFnShSetenv(global)
-	shModule["chdir"] = jsFnShChdir(global)
-	shModule["cd"] = jsFnShChdir(global)
-	shModule["cwd"] = jsFnShCwd(global)
-	shModule["pwd"] = jsFnShCwd(global)
-	shModule["exec"] = jsFnShExec(global)
-	shModule["bgexec"] = jsFnShBgexec(global)
-	global["sh"] = shModule
+	global["setenv"] = jsFnShSetenv(global)
+	global["chdir"] = jsFnShChdir(global)
+	global["cd"] = jsFnShChdir(global)
+	global["cwd"] = jsFnShCwd(global)
+	global["pwd"] = jsFnShCwd(global)
+	global["exec"] = jsFnShExec(global)
+	global["bgexec"] = jsFnShBgexec(global)
 
 	sshModule := make(typeutil.H)
 	sshModule["set"] = jsFnSshSet(global)

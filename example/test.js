@@ -6,20 +6,20 @@ println(JSON.stringify(__env));
 println("%f", Date.now());
 
 sleep(500);
-sh.setenv("__xx__", new Date().toString());
+setenv("__xx__", new Date().toString());
 log.info(JSON.stringify(__env));
 
-log.info(sh.pwd());
-log.info(sh.cd(__dirname));
-log.info(sh.cwd());
+log.info(pwd());
+log.info(cd(__dirname));
+log.info(cwd());
 
-sh.exec("pwd");
+exec("pwd");
 log.info("%f %f %s", __code, __outputbytes, __output);
 
-sh.exec("pwd", {}, 2);
+exec("pwd", {}, 2);
 log.info("%f %f %s", __code, __outputbytes, __output);
 
-if (sh.exec(`ls -al ${__homedir}`, {}, 1).code === 0) {
+if (exec(`ls -al ${__homedir}`, {}, 1).code === 0) {
   __output.split("\n").forEach((line) => log.error(line));
 }
 
@@ -60,9 +60,9 @@ if (cli.bool("request")) {
 }
 
 if (cli.bool("bgexec")) {
-  log.info("bgexec: pid=%v", sh.bgexec("ping qq.com -c 60"));
-  log.info("bgexec: pid=%v", sh.bgexec("ping baidu.com -c 60"));
-  log.info("tail: %s", JSON.stringify(sh.exec(`tail ${__filename}`, {}, 1)));
+  log.info("bgexec: pid=%v", bgexec("ping qq.com -c 60"));
+  log.info("bgexec: pid=%v", bgexec("ping baidu.com -c 60"));
+  log.info("tail: %s", JSON.stringify(exec(`tail ${__filename}`, {}, 1)));
   sleep(3000);
 }
 

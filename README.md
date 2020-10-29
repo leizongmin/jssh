@@ -26,8 +26,8 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 
 下载预构建的压缩包：
 
-- macOS(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
-- Linux(amd64): https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
+- macOS x64: https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
+- Linux x64: https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
 
 ## 命令行工具使用
 
@@ -88,14 +88,14 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### Shell 操作
 
-- `sh.setenv(name, value)`：设置环境变量；
-- `sh.exec(cmd, env?, mode?)`：阻塞执行指定命令：
+- `setenv(name, value)`：设置环境变量；
+- `exec(cmd, env?, mode?)`：阻塞执行指定命令：
   - `mode=0`表示直接执行，命令输出直接 Pipe 到标准输出（默认）；
   - `mode=1`表示等待命令执行后返回输出结果；
   - `mode=2`表示输出 Pipe 到标准输出并且在执行完毕后返回输出结果；
-- `sh.bgexec(cmd, env?, mode?)`：在后台执行指定命令（非阻塞）；
-- `sh.chdir(dir)`或`sh.cd(dir)`：切换工作目录；
-- `sh.cwd(dir)`或`sh.pwd(dir)`：取得当前工作目录；
+- `bgexec(cmd, env?, mode?)`：在后台执行指定命令（非阻塞）；
+- `chdir(dir)`或`cd(dir)`：切换工作目录；
+- `cwd(dir)`或`pwd(dir)`：取得当前工作目录；
 
 #### SSH 操作
 
