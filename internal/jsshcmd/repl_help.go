@@ -5,7 +5,7 @@ import (
 )
 
 var replApiList = []string{
-	"__os", "__arch", "__version", "__bin", "__pid", "__tmpdir", "__homedir", "__user", "__hostname",
+	"__cpucount", "__os", "__arch", "__version", "__bin", "__pid", "__tmpdir", "__homedir", "__user", "__hostname",
 	"__dirname", "__filename", "__args", "__env", "__output", "__outputbytes", "__code",
 	"__globalfiles",
 	"evalfile(", "set(", "get(", "format(", "print(", "println(", "stdoutlog(", "stderrlog(", "readline(", "sleep(", "exit(", "loadconfig(",

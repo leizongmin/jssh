@@ -332,6 +332,7 @@ func getJsGlobal(file string) typeutil.H {
 	dir := filepath.Dir(file)
 	global := make(typeutil.H)
 
+	global["__cpucount"] = runtime.NumCPU()
 	global["__os"] = runtime.GOOS
 	global["__arch"] = runtime.GOARCH
 	global["__version"] = pkginfo.LongVersion

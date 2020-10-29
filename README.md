@@ -52,6 +52,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 全局变量列表
 
+- `__cpucount`：CPU 数量；
 - `__os`：操作系统类型，如 darwin, freebsd, linux, windows；
 - `__arch`：处理器架构，如 386, amd64, arm, s390x；
 - `__version`：jssh 版本号；
