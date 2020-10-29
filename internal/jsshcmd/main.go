@@ -333,6 +333,7 @@ func getJsGlobal(file string) typeutil.H {
 	global := make(typeutil.H)
 
 	global["__os"] = runtime.GOOS
+	global["__arch"] = runtime.GOARCH
 	global["__version"] = pkginfo.LongVersion
 	global["__bin"] = getCurrentAbsoluteBinPath()
 	global["__pid"] = os.Getpid()

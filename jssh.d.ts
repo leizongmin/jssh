@@ -1,6 +1,9 @@
 /** 操作系统类型，darwin, freebsd, linux, windows */
 declare const __os: string;
 
+/** 处理器架构，386, amd64, arm, s390x */
+declare const __arch: string;
+
 /** JSSH版本号 */
 declare const __version: string;
 
