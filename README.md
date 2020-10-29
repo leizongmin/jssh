@@ -41,9 +41,14 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 - REPL 执行历史默认存储于`~/.jssh_history`文件中，可通过环境变量`JSSH_HISTORY=path`文件设置为新到文件路径，设置`JSSH_HISTORY=0`关闭历史记录；
 - jssh 启动时会尝试加载`~/.jssh_global.js`文件和`~/.jssh_global.d`目录下的所有`.js`文件并执行，可通过环境变量`JSSH_GLOBAL=0`关闭；
 
+## 示例
+
+- **jssh 构建脚本**：[build.js](https://github.com/leizongmin/jssh/blob/main/build.js)；
+- **nslookup 包装**：[example/nslookup.js](https://github.com/leizongmin/jssh/blob/main/example/nslookup.js)；
+
 ## 参考文档
 
-TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/jssh/blob/main/jssh.d.ts)，可将其导入编辑器以支持代码自动提示。
+TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/jssh/blob/main/jssh.d.ts)，可将其导入编辑器以获得代码自动提示支持。
 
 #### 全局变量列表
 
@@ -68,23 +73,29 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `evalfile(filename)`：以`eval`方式执行指定脚本文件；
 - `set(name, value)`：设置全局变量；
 - `get(name)`：获取全局变量；
-- `format(template, ...args)`：格式化字符串，如`format("a=%d, b=%s", 123, "xxx")`；
-- `print(template, ...args)`：格式化字符串并输出；
-- `println(template, ...args)`：格式化字符串并输出，末尾加换行符；
+- `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
+- `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同`format()`函数；
 - `stdoutlog(message)`：在 stdout 中输出一行日志；
 - `stderrlog(message)`：在 stderr 中输出一行日志；
 - `readline()`：从控制台获取用户一行的字符串输入；
 - `sleep(ms)`：等待指定毫秒时间；
 - `exit(code)`：结束进程；
 - `loadconfig(filename, format?)`：加载配置文件，支持 JSON、YAML、TOML 格式；
+- `networkinterfaces()`：获得网络接口信息；
+
+#### 字符串操作
+
+- `format(template, ...args)`：格式化字符串，如`format("a=%d, b=%s", 123, "xxx")`；
+- `randomstring(size, chars?)`：生成随机字符串；
+- `formatdate(format, timestamp?)`：格式化日期时间，格式参考PHP的 date() 函数，文档参考 https://locutus.io/php/datetime/date/ ；
+
+#### 编码解码操作
+
 - `base64encode(data)`：Base64 编码字符串；
 - `base64decode(data)`：Base64 解码字符串；
 - `md5(data)`：MD5 编码字符串；
 - `sha1(data)`：SAH1 编码字符串；
 - `sha256(data)`：SHA256 编码字符串；
-- `networkinterfaces()`：获得网络接口信息；
-- `randomstring(size, chars?)`：生成随机字符串；
-- `formatdate(format, timestamp?)`：格式化日期时间，格式参考PHP的 date() 函数，文档参考 https://locutus.io/php/datetime/date/ ；
 
 #### Shell 操作
 
@@ -153,10 +164,10 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 可以通过环境变量 `JSSH_LOG=<DEBUG|INFO|ERROR>` 来控制日志输出等级，默认 `JSS_LOG=INFO`。
 
-- `log.debug(template, ...args)`：输出 DEBUG 信息（绿色文字）；
-- `log.info(template, ...args)`：输出 INFO 信息（绿色文字）；
-- `log.error(template, ...args)`：输出 ERROR 信息（红色文字）；
-- `log.fatal(template, ...args)`：输出 FATAL 信息（红色文字）并结束进程；
+- `log.debug(template, ...args)`：输出 DEBUG 信息（绿色文字），格式同`format()`函数；
+- `log.info(template, ...args)`：输出 INFO 信息（绿色文字），格式同`format()`函数；
+- `log.error(template, ...args)`：输出 ERROR 信息（红色文字），格式同`format()`函数；
+- `log.fatal(template, ...args)`：输出 FATAL 信息（红色文字）并结束进程，格式同`format()`函数；
 
 #### 网络连接操作
 
@@ -180,10 +191,13 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 - [`driverName=mysql` DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
 
-## 示例
+## 开发
 
-- **jssh 构建脚本**：[build.js](https://github.com/leizongmin/jssh/blob/main/build.js)；
-- **nslookup 包装**：[example/nslookup.js](https://github.com/leizongmin/jssh/blob/main/example/nslookup.js)；
+执行以下命令构建项目：
+
+```bash
+./build.js
+```
 
 ## License
 
