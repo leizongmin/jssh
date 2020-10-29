@@ -206,6 +206,22 @@ declare function exec(
 ): ExecResult;
 
 /**
+ * 执行命令 mode=1
+ * @param cmd 命令
+ * @param env 额外的环境变量
+ * @return 进程信息
+ */
+declare function exec1(cmd: string, env?: Record<string, string>): ExecResult;
+
+/**
+ * 执行命令 mode=2
+ * @param cmd 命令
+ * @param env 额外的环境变量
+ * @return 进程信息
+ */
+declare function exec2(cmd: string, env?: Record<string, string>): ExecResult;
+
+/**
  * 后台执行命令
  * @param cmd 命令
  * @param env 额外的环境变量
@@ -573,6 +589,22 @@ interface SshModule {
    * @return 进程信息
    */
   exec(cmd: string, env?: Record<string, string>, mode?: number): SshExecResult;
+
+  /**
+   * 执行命令 mode=1
+   * @param cmd 命令
+   * @param env 额外的环境变量
+   * @return 进程信息
+   */
+  exec1(cmd: string, env?: Record<string, string>): SshExecResult;
+
+  /**
+   * 执行命令 mode=2
+   * @param cmd 命令
+   * @param env 额外的环境变量
+   * @return 进程信息
+   */
+  exec2(cmd: string, env?: Record<string, string>): SshExecResult;
 }
 
 interface SshExecResult {

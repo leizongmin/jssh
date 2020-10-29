@@ -17,8 +17,8 @@ var replApiList = []string{
 	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(", "cli.subcommand(", "cli.subcommandstart(",
 	"http.timeout(", "http.request(", "http.download(",
 	"log.debug(", "log.info(", "log.error(", "log.fatal(",
-	"setenv(", "exec(", "bgexec(", "chdir(", "cd(", "cwd(", "pwd(",
-	"ssh.set(", "ssh.open(", "ssh.close(", "ssh.setenv(", "ssh.exec(",
+	"setenv(", "exec(", "exec1(", "exec2", "bgexec(", "chdir(", "cd(", "cwd(", "pwd(",
+	"ssh.set(", "ssh.open(", "ssh.close(", "ssh.setenv(", "ssh.exec(", "ssh.exec1(", "ssh.exec2(",
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",
 	"sql.set(", "sql.open(", "sql.close(", "sql.query(", "sql.exec(",
 }

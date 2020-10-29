@@ -93,6 +93,8 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
   - `mode=0`表示直接执行，命令输出直接 Pipe 到标准输出（默认）；
   - `mode=1`表示等待命令执行后返回输出结果；
   - `mode=2`表示输出 Pipe 到标准输出并且在执行完毕后返回输出结果；
+- `exec1(cmd, env?)`：阻塞执行指定命令，`mode=1`
+- `exec2(cmd, env?)`：阻塞执行指定命令，`mode=2`
 - `bgexec(cmd, env?, mode?)`：在后台执行指定命令（非阻塞）；
 - `chdir(dir)`或`cd(dir)`：切换工作目录；
 - `cwd(dir)`或`pwd(dir)`：取得当前工作目录；
@@ -110,6 +112,8 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `ssh.close()`：关闭连接；
 - `ssh.setenv(name, value)`：设置环境变量；
 - `ssh.exec(cmd, env?, mode?)`：执行命令；
+- `ssh.exec1(cmd, env?)`：执行命令，`mode=1`；
+- `ssh.exec2(cmd, env?)`：执行命令，`mode=2`；
 
 #### 文件操作
 

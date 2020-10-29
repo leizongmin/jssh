@@ -8,10 +8,8 @@ if (!host) {
   exit(1);
 }
 
-const { code, output } = exec(
-  dns ? `nslookup ${host} ${dns}` : `nslookup ${host}`,
-  {},
-  2
+const { code, output } = exec2(
+  dns ? `nslookup ${host} ${dns}` : `nslookup ${host}`
 );
 if (code !== 0) {
   println(output);

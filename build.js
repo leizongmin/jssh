@@ -7,13 +7,11 @@ const binName = `jssh`;
 const goBuild = `go build -v -ldflags "-s -w"`;
 const goProxy = `https://goproxy.cn`;
 
-const unameOutput = exec(`uname -a`, {}, 1).output;
+const unameOutput = exec1(`uname -a`).output;
 const releaseDir = path.join(__dirname, `release`);
 const cacheDir = path.join(releaseDir, `cross_compile_cache`);
 
-const goVersionOutput = exec(`go version`, {}, 2).output.match(
-  /go version go(.*) /
-);
+const goVersionOutput = exec2(`go version`).output.match(/go version go(.*) /);
 if (!goVersionOutput) {
   log.error(`无法通过命令[go version]获得Go版本号`);
   exit(1);
@@ -46,9 +44,9 @@ restoreReleasePkgInfo();
 
 function updateReleasePkgInfo() {
   log.info(`更新版本信息`);
-  const date = exec(`date +%Y%m%d`, {}, 2).output.trim();
-  const time = exec(`date +%H%M`, {}, 2).output.trim();
-  const commit = exec(`git rev-parse --short HEAD`, {}, 2).output.trim();
+  const date = exec2(`date +%Y%m%d`).output.trim();
+  const time = exec2(`date +%H%M`).output.trim();
+  const commit = exec2(`git rev-parse --short HEAD`).output.trim();
   if (!date || !commit) {
     log.error(`无法获取date和commit信息`);
     exit(1);
