@@ -7,7 +7,6 @@ const binName = `jssh`;
 const goBuild = `go build -v -ldflags "-s -w"`;
 const goProxy = `https://goproxy.cn`;
 
-const unameOutput = exec1(`uname -a`).output;
 const releaseDir = path.join(__dirname, `release`);
 const cacheDir = path.join(releaseDir, `cross_compile_cache`);
 
@@ -34,7 +33,7 @@ fs.readdir(releaseDir).forEach((s) => {
 
 updateReleasePkgInfo();
 buildHostOSVersion();
-if (unameOutput.includes(`Darwin`)) {
+if (__os === `darwin`) {
   buildLinuxVersionOnDocker();
 }
 buildReleaseFiles();
@@ -71,9 +70,9 @@ function restoreReleasePkgInfo() {
 function buildHostOSVersion() {
   log.info(`构建宿主系统版本`);
   let type = `other`;
-  if (unameOutput.includes(`Darwin`)) {
+  if (__os === `darwin`) {
     type = `osx`;
-  } else if (unameOutput.includes(`Linux`)) {
+  } else if (__os === `linux`) {
     type = `linux`;
   }
   const binPath = path.join(releaseDir, type, binName);
