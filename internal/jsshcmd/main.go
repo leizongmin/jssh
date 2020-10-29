@@ -12,6 +12,7 @@ import (
 	"github.com/peterh/liner"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -332,7 +333,7 @@ func getJsGlobal(file string) typeutil.H {
 	global := make(typeutil.H)
 
 	global["__version"] = pkginfo.LongVersion
-	global["__bin"], _ = filepath.Abs(os.Args[0])
+	global["__bin"] = getCurrentAbsoluteBinPath()
 	global["__pid"] = os.Getpid()
 	global["__user"] = mustGetCurrentUsername()
 	global["__tmpdir"] = os.TempDir()
@@ -425,4 +426,22 @@ func getJsGlobal(file string) typeutil.H {
 	}
 
 	return global
+}
+
+func getCurrentAbsoluteBinPath() string {
+	bin := os.Args[0]
+	if filepath.IsAbs(bin) {
+		return bin
+	}
+	ret, err := exec.LookPath(bin)
+	if err != nil {
+		errLog.Println(color.FgRed.Render(err.Error()))
+		return bin
+	}
+	ret2, err := filepath.Abs(ret)
+	if err != nil {
+		errLog.Println(color.FgRed.Render(err.Error()))
+		return bin
+	}
+	return ret2
 }
