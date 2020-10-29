@@ -52,6 +52,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 全局变量列表
 
+- `__os`：操作系统类型，如 darwin, freebsd, linux, windows；
 - `__version`：jssh 版本号；
 - `__bin`：jssh 二进制文件路径；
 - `__pid`：当前进程 PID；
