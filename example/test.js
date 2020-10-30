@@ -137,6 +137,7 @@ sql.close();
 
 println(evalfile("./hello.js"));
 println(evalfile("./hello.js"));
+println(evalfile("./__file_does_not_exist__.js", "println('hello')"));
 fnFromHello();
 
 exit(123);

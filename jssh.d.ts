@@ -58,9 +58,10 @@ declare const __globalfiles: string[];
 /**
  * 以eval方式执行指定脚本文件
  * @param filename 文件名称
+ * @param content 文件内容，若指定此参数则无需实际读取文件内容
  * @return 返回结果
  */
-declare function evalfile(filename: string): any;
+declare function evalfile(filename: string, content?: string): any;
 
 /**
  * 格式化文本内容
