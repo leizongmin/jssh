@@ -27,8 +27,8 @@ fs.readdir(__homedir).forEach((f) => log.error(JSON.stringify(f)));
 log.info(fs.readfile(`${__homedir}/.gitconfig`));
 log.info(JSON.stringify(fs.stat(`${__homedir}/.gitconfig`)));
 
-set("xyz", 12345);
-log.info("xyz = %f", get("xyz"));
+global.xyz = 12345;
+log.info("xyz = %f", xyz);
 
 const file = `${__tmpdir}/${Date.now()}-${Math.random()}.txt`;
 log.info(fs.writefile(file, "hello"));

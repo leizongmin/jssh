@@ -1,4 +1,4 @@
-/** 全局变量 */
+/** 全局变量对象 */
 declare var global: any;
 
 /** CPU数量 */
