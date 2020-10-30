@@ -1,0 +1,1 @@
+const global = globalThis || this;

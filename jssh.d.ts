@@ -1,3 +1,6 @@
+/** 全局变量 */
+declare var global: any;
+
 /** CPU数量 */
 declare const __cpucount: number;
 
@@ -58,21 +61,6 @@ declare const __globalfiles: string[];
  * @return 返回结果
  */
 declare function evalfile(filename: string): any;
-
-/**
- * 设置全局变量
- * @param name 变量名
- * @param value 值
- * @return 是否成功
- */
-declare function set(name: string, value: any): boolean;
-
-/**
- * 获取全局变量
- * @param name 变量名
- * @return 值
- */
-declare function get(name: string): any;
 
 /**
  * 格式化文本内容

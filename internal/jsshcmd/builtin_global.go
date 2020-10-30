@@ -29,41 +29,6 @@ func jsFnExit(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnGet(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("get: missing name")
-		}
-		if !args[0].IsString() {
-			return ctx.ThrowTypeError("get: first argument expected string type")
-		}
-		name := args[0].String()
-
-		return ctx.Globals().Get(name)
-	}
-}
-
-func jsFnSet(global typeutil.H) jsexecutor.JSFunction {
-	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
-		if len(args) < 1 {
-			return ctx.ThrowSyntaxError("set: missing name")
-		}
-		if !args[0].IsString() {
-			return ctx.ThrowTypeError("set: first argument expected string type")
-		}
-		name := args[0].String()
-
-		if len(args) < 2 {
-			return ctx.ThrowSyntaxError("set: missing value")
-		}
-		value := args[1]
-
-		ctx.Globals().Set(name, value)
-
-		return ctx.Bool(true)
-	}
-}
-
 func jsFnSleep(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {

@@ -350,8 +350,6 @@ func getJsGlobal(file string) typeutil.H {
 	global["__outputbytes"] = 0
 	global["__code"] = 0
 
-	global["set"] = jsFnSet(global)
-	global["get"] = jsFnGet(global)
 	global["format"] = jsFnFormat(global)
 	global["print"] = jsFnPrint(global)
 	global["readline"] = jsFnReadline(global)

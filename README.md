@@ -52,6 +52,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 全局变量列表
 
+- `global`：全局变量；
 - `__cpucount`：CPU 数量；
 - `__os`：操作系统类型，如 darwin, freebsd, linux, windows；
 - `__arch`：处理器架构，如 386, amd64, arm, s390x；
@@ -74,8 +75,6 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 #### 全局函数列表
 
 - `evalfile(filename)`：以`eval`方式执行指定脚本文件；
-- `set(name, value)`：设置全局变量；
-- `get(name)`：获取全局变量；
 - `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
 - `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同`format()`函数；
 - `stdoutlog(message)`：在 stdout 中输出一行日志；

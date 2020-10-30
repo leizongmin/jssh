@@ -6,9 +6,9 @@ import (
 
 var replApiList = []string{
 	"__cpucount", "__os", "__arch", "__version", "__bin", "__pid", "__tmpdir", "__homedir", "__user", "__hostname",
-	"__dirname", "__filename", "__args", "__env", "__output", "__outputbytes", "__code",
+	"__dirname", "__filename", "__args", "__env", "__output", "__outputbytes", "__code", "global",
 	"__globalfiles",
-	"evalfile(", "set(", "get(", "format(", "print(", "println(", "stdoutlog(", "stderrlog(", "readline(", "sleep(", "exit(", "loadconfig(",
+	"evalfile(", "format(", "print(", "println(", "stdoutlog(", "stderrlog(", "readline(", "sleep(", "exit(", "loadconfig(",
 	"base64encode(", "base64decode(", "md5(", "sha1(", "sha256(",
 	"randomstring(", "formatdate(",
 	"networkinterfaces(",
