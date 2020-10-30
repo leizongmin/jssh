@@ -118,20 +118,22 @@ function updateBuiltinJS() {
   log.info(`更新内置JS模块`);
   const dir = path.join(__dirname, `internal`, `jsbuiltin`);
   const list = [];
-  fs.readdir(dir).forEach((s) => {
-    const f = path.join(dir, s.name);
-    if (!s.isdir && f.endsWith(`.js`)) {
-      log.info(`JS模块%s`, f);
-      const code = fs.readfile(f);
-      list.push(`	// ${s.name}`);
-      list.push(
-        `	modules = append(modules, JsModule{File: "${
-          s.name
-        }", Code: "${base64encode(code)}"})`
-      );
-      list.push(``);
-    }
-  });
+  fs.readdir(dir)
+    .sort()
+    .forEach((s) => {
+      const f = path.join(dir, s.name);
+      if (!s.isdir && f.endsWith(`.js`)) {
+        log.info(`JS模块%s`, f);
+        const code = fs.readfile(f);
+        list.push(`	// ${s.name}`);
+        list.push(
+          `	modules = append(modules, JsModule{File: "${
+            s.name
+          }", Code: "${base64encode(code)}"})`
+        );
+        list.push(``);
+      }
+    });
   const goFile = path.join(__dirname, `internal`, `jsbuiltin`, `all.go`);
   fs.writefile(
     goFile,
