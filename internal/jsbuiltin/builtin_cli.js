@@ -4,14 +4,14 @@ const cli = {};
   const _args = (cli._args = []);
   const _opts = (cli._opts = {});
 
-  function getFlagName(s) {
+  const getFlagName = (s) => {
     if (s.startsWith("--")) {
       return s.slice(2);
     }
     if (s.startsWith("-")) {
       return s.slice(1);
     }
-  }
+  };
 
   for (let i = 2; i < __args.length; i++) {
     const v = __args[i];

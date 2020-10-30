@@ -1,9 +1,9 @@
 const console = {};
 
 {
-  function printVars(...vars) {
+  const printVars = (...vars) => {
     println(vars.map((v) => String(v)).join(" "));
-  }
+  };
 
   console.log = function log(...args) {
     printVars(...args);

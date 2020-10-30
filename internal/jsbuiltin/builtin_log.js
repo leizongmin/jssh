@@ -10,17 +10,17 @@ const log = {};
 
   const reset = `\u001b[0m`;
 
-  function red(line) {
+  const red = (line) => {
     return `\u001b[31;1m${line}${reset}`;
-  }
+  };
 
-  function green(line) {
+  const green = (line) => {
     return `\u001b[32;1m${line}${reset}`;
-  }
+  };
 
-  function gray(line) {
+  const gray = (line) => {
     return `\u001b[2;1m${line}${reset}`;
-  }
+  };
 
   log.debug = function debug(message, ...args) {
     if (logLevel >= levels.DEBUG) {
