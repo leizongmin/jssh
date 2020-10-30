@@ -74,6 +74,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 全局函数列表
 
+- `require(modulename)`：加载 CommonJS 模块；
 - `evalfile(filename, content?)`：以`eval`方式执行指定脚本文件，若指定参数`content`则不需要实际读取文件内容；
 - `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
 - `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同`format()`函数；

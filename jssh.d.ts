@@ -56,6 +56,14 @@ declare const __code: number;
 declare const __globalfiles: string[];
 
 /**
+ * 加载 CommonJS 模块
+ * @param modulename 模块名称
+ * @return 模块内容
+ */
+// @ts-ignore
+declare function require(modulename: string): any;
+
+/**
  * 以eval方式执行指定脚本文件
  * @param filename 文件名称
  * @param content 文件内容，若指定此参数则无需实际读取文件内容
