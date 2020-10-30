@@ -182,6 +182,14 @@ declare function randomstring(size: number, chars?: string): string;
 declare function formatdate(format: string, timestamp?: number | Date): string;
 
 /**
+ * 深度合并两个对象
+ * @param target 第一个对象
+ * @param src 第二个对象，仅当第一个对象不存在该键才覆盖
+ * @return 合并后的新对象
+ */
+declare function deepmerge(target: any, src: any): any;
+
+/**
  * 设置环境变量
  * @param name 环境变量名称
  * @param value 环境变量值

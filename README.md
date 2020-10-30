@@ -90,6 +90,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `format(template, ...args)`：格式化字符串，如`format("a=%d, b=%s", 123, "xxx")`；
 - `randomstring(size, chars?)`：生成随机字符串；
 - `formatdate(format, timestamp?)`：格式化日期时间，格式参考PHP的 date() 函数，文档参考 https://locutus.io/php/datetime/date/ ；
+- `deepmerge(target, src)`：深度合并两个对象；
 
 #### 编码解码操作
 
