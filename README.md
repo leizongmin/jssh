@@ -29,6 +29,7 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 - macOS x64: https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
 - Linux x64: https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
 
+
 ## 命令行工具使用
 
 - 执行脚本：`jssh file.js`；
@@ -194,6 +195,12 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 参考资料：
 
 - [`driverName=mysql` DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
+
+## 移除安装
+
+```bash
+rm /usr/local/bin/jssh
+```
 
 ## 开发
 
