@@ -45,8 +45,13 @@ function updateReleasePkgInfo() {
   log.info(`更新版本信息`);
   const date = exec2(`date +%Y%m%d`).output.trim();
   const time = exec2(`date +%H%M`).output.trim();
-  const commit = exec2(`git rev-parse --short HEAD`).output.trim();
-  if (!date || !commit) {
+  const commitHash = exec2(`git rev-parse --short HEAD`).output.trim();
+  const commitDate = exec2(
+    `git for-each-ref --sort=-committerdate refs/heads/ --format="%(authordate:short)"`
+  )
+    .output.trim()
+    .replace(/\-/g, ``);
+  if (!date || !commitHash) {
     log.error(`无法获取date和commit信息`);
     exit(1);
   }
@@ -56,7 +61,8 @@ package pkginfo
 
 const BuildDate = "${date}"
 const BuildTime = "${time}"
-const BuildCommit = "${commit}"
+const CommitHash = "${commitHash}"
+const CommitDate = "${commitDate}"
 const BuildGoVersion = "${goVersion}"
 `.trimLeft();
   fs.writefile(file, data);
