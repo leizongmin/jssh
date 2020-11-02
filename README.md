@@ -12,7 +12,7 @@
 
 ## 安装
 
-安装预构建的版本（仅支持 Linux x64 和 macOS x64 两种版本）：
+安装预构建的版本（仅支持 Linux amd64 和 macOS amd64 两种版本）：
 
 ```bash
 curl https://jssh.leizm.com/get.sh | bash
@@ -26,8 +26,8 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 
 下载预构建的压缩包：
 
-- macOS x64: https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
-- Linux x64: https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
+- macOS amd64: https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
+- Linux amd64: https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
 
 
 ## 命令行工具使用
