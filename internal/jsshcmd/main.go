@@ -168,7 +168,7 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 					fmt.Println(color.FgRed.Render("Aborted"))
 					break
 				} else {
-					fmt.Println(color.FgRed.Render("Error reading line: %s", err))
+					fmt.Println(color.FgRed.Render(fmt.Sprintf("Error reading line: %s", err)))
 				}
 			}
 			bufLines = append(bufLines, code)
