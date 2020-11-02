@@ -199,7 +199,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 ## 移除安装
 
 ```bash
-rm /usr/local/bin/jssh
+[sudo] rm /usr/local/bin/jssh
 ```
 
 ## 开发
