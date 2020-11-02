@@ -69,13 +69,13 @@ func jsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 			if !args[2].IsObject() {
 				return ctx.ThrowTypeError("http.request: third argument expected object type")
 			}
-			third, err := jsexecutor.JSValueToAny(args[1])
+			third, err := jsexecutor.JSValueToAny(args[2])
 			if err != nil {
 				return ctx.ThrowError(err)
 			}
 			headers, ok := third.(typeutil.H)
 			if !ok {
-				return ctx.ThrowTypeError("http.request: second argument expected an object")
+				return ctx.ThrowTypeError("http.request: third argument expected an object")
 			}
 			for n, v := range headers {
 				if s, ok := v.(string); ok {
