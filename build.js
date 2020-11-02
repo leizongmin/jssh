@@ -130,12 +130,10 @@ function updateBuiltinJS() {
       const f = path.join(dir, s.name);
       if (!s.isdir && f.endsWith(`.js`)) {
         log.info(`JS模块%s`, f);
-        const code = fs.readfile(f);
+        const code = JSON.stringify(JSON.stringify(fs.readfile(f)));
         list.push(`	// ${s.name}`);
         list.push(
-          `	modules = append(modules, JsModule{File: "${
-            s.name
-          }", Code: "${base64encode(code)}"})`
+          `	modules = append(modules, JsModule{File: "${s.name}", Code: ${code}})`
         );
         list.push(``);
       }

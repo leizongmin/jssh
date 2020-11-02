@@ -1,7 +1,7 @@
 package jsbuiltin
 
 import (
-	"encoding/base64"
+	jsoniter "github.com/json-iterator/go"
 	"log"
 	"strings"
 )
@@ -16,11 +16,11 @@ func GetJs() []JsModule {
 	for _, m := range modules {
 		// 仅返回内置的模块
 		if strings.HasPrefix(m.File, "builtin_") {
-			b, err := base64.StdEncoding.DecodeString(m.Code)
-			if err != nil {
+			var code string
+			if err := jsoniter.UnmarshalFromString(m.Code, &code); err != nil {
 				log.Fatalf("jsbuiltin.GetJs: %s", err)
 			}
-			retModules = append(retModules, JsModule{File: m.File, Code: string(b)})
+			retModules = append(retModules, JsModule{File: m.File, Code: code})
 		}
 	}
 	return retModules
