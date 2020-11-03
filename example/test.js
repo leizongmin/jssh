@@ -12,6 +12,7 @@ log.info(JSON.stringify(__env));
 log.info(pwd());
 log.info(cd(__dirname));
 log.info(cwd());
+log.warn(cwd());
 
 exec("pwd");
 log.info("%f %f %s", __code, __outputbytes, __output);

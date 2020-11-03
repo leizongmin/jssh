@@ -532,6 +532,14 @@ interface LogModule {
    * @param args 参数列表
    * @return 是否成功
    */
+  warn(format: any, ...args: any[]): boolean;
+
+  /**
+   * 日志输出到控制台
+   * @param format 模板，支持%s等格式
+   * @param args 参数列表
+   * @return 是否成功
+   */
   error(format: any, ...args: any[]): boolean;
 
   /**

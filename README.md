@@ -75,7 +75,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 #### 全局函数列表
 
-- `require(modulename)`：加载 CommonJS 模块；
+- `require(modulename)`：加载 CommonJS 模块（**注意：仍然有 Bug，慎用**）；
 - `evalfile(filename, content?)`：以`eval`方式执行指定脚本文件，若指定参数`content`则不需要实际读取文件内容；
 - `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
 - `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同`format()`函数；
@@ -171,6 +171,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 - `log.debug(template, ...args)`：输出 DEBUG 信息（绿色文字），格式同`format()`函数；
 - `log.info(template, ...args)`：输出 INFO 信息（绿色文字），格式同`format()`函数；
+- `log.warn(template, ...args)`：输出 WARN 信息（黄色文字），格式同`format()`函数；
 - `log.error(template, ...args)`：输出 ERROR 信息（红色文字），格式同`format()`函数；
 - `log.fatal(template, ...args)`：输出 FATAL 信息（红色文字）并结束进程，格式同`format()`函数；
 

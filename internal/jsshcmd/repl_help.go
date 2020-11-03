@@ -9,7 +9,7 @@ var replApiList = []string{
 	"path.join(", "path.abs(", "path.base(", "path.ext(", "path.dir(",
 	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(", "cli.subcommand(", "cli.subcommandstart(",
 	"http.timeout(", "http.request(", "http.download(",
-	"log.debug(", "log.info(", "log.error(", "log.fatal(",
+	"log.debug(", "log.info(", "log.warn(", "log.error(", "log.fatal(",
 	"setenv(", "exec(", "exec1(", "exec2", "bgexec(", "chdir(", "cd(", "cwd(", "pwd(",
 	"ssh.set(", "ssh.open(", "ssh.close(", "ssh.setenv(", "ssh.exec(", "ssh.exec1(", "ssh.exec2(",
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",

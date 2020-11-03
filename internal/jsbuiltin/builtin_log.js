@@ -5,7 +5,7 @@ function println(...args) {
 
 const log = {};
 {
-  const levels = { ERROR: 1, INFO: 2, DEBUG: 3 };
+  const levels = { ERROR: 1, WARN: 2, INFO: 3, DEBUG: 4 };
   const logLevel = levels[(__env["JSSH_LOG"] || "INFO").toUpperCase()];
 
   const reset = `\u001b[0m`;
@@ -16,6 +16,10 @@ const log = {};
 
   const green = (line) => {
     return `\u001b[32;1m${line}${reset}`;
+  };
+
+  const yellow = (line) => {
+    return `\u001b[33;1m${line}${reset}`;
   };
 
   const gray = (line) => {
@@ -31,6 +35,12 @@ const log = {};
   log.info = function info(message, ...args) {
     if (logLevel >= levels.INFO) {
       stdoutlog(green(format(message, ...args)));
+    }
+  };
+
+  log.warn = function error(message, ...args) {
+    if (logLevel >= levels.WARN) {
+      stderrlog(yellow(format(message, ...args)));
     }
   };
 
