@@ -108,6 +108,9 @@ func jsFnReadline(global typeutil.H) jsexecutor.JSFunction {
 		var line string
 		_, err := fmt.Scanln(&line)
 		if err != nil {
+			if err.Error() == "unexpected newline" {
+				return ctx.String("")
+			}
 			return ctx.ThrowError(err)
 		}
 		return ctx.String(line)
