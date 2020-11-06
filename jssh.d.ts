@@ -721,3 +721,10 @@ interface SqlExecResult {
   lastInsertId: number;
   rowsAffected: number;
 }
+
+/**
+ * 简单断言
+ * @param ok 要断言的值
+ * @param message 提示信息
+ */
+declare function assert(ok: boolean, message?: string);

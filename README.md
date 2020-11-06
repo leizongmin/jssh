@@ -194,6 +194,10 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `sql.exec(sql, ...args)`：执行查询，返回`lastInsertId`和`rowsAffected`；
 - `sql.close()`：关闭连接；
 
+#### 断言及测试操作
+
+- `assert(ok, message?)`：简单断言；
+
 参考资料：
 
 - [`driverName=mysql` DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
