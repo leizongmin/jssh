@@ -86,6 +86,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `exit(code)`：结束进程；
 - `loadconfig(filename, format?)`：加载配置文件，支持 JSON、YAML、TOML 格式；
 - `networkinterfaces()`：获得网络接口信息；
+- `bytesize(data)`：获取指定字符串的字节长度；
 
 #### 字符串操作
 

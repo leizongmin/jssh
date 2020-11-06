@@ -154,3 +154,18 @@ func jsFnEvalfile(global typeutil.H) jsexecutor.JSFunction {
 		return ret
 	}
 }
+
+func jsFnBytesize(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("bytesize: missing data")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("bytesize: first argument expected string type")
+		}
+		data := args[0].String()
+
+		b := []byte(data)
+		return ctx.Int32(int32(len(b)))
+	}
+}

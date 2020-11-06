@@ -72,6 +72,13 @@ declare function require(modulename: string): any;
 declare function evalfile(filename: string, content?: string): any;
 
 /**
+ * 获取指定字符串的字节长度
+ * @param data 字符串
+ * @return 字节长度
+ */
+declare function bytesize(data: string): number;
+
+/**
  * 格式化文本内容
  * @param format 模板，支持%s等格式
  * @param args 参数列表
