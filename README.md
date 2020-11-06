@@ -220,4 +220,4 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 ## License
 
-AGPL-3.0
+MIT License
