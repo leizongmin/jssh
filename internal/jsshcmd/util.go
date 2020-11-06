@@ -2,6 +2,7 @@ package jsshcmd
 
 import (
 	"bytes"
+	"github.com/leizongmin/go/httputil"
 	"github.com/leizongmin/go/typeutil"
 	"io"
 	"net/http"
@@ -105,4 +106,21 @@ func pipeBufferAndSave(dst io.Writer, src io.Reader, saveWriter *bytes.Buffer) (
 	}
 
 	return written, err
+}
+
+func isUrl(s string) bool {
+	s = strings.ToLower(s)
+	return strings.HasPrefix(s, "http://") || strings.HasPrefix(s, "https://")
+}
+
+func httpGetFileContent(url string) (string, error) {
+	res, err := httputil.Request().GET(url).Send()
+	if err != nil {
+		return "", err
+	}
+	b, err := res.Body()
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }

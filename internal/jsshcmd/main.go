@@ -65,16 +65,27 @@ func Main() {
 		return
 	}
 
-	file, err := filepath.Abs(first)
-	if err != nil {
-		printExitMessage(err.Error(), codeFileError, false)
+	var file string
+	var content string
+	if isUrl(first) {
+		s, err := httpGetFileContent(first)
+		if err != nil {
+			printExitMessage(err.Error(), codeFileError, false)
+		}
+		file = first
+		content = s
+	} else {
+		f, err := filepath.Abs(first)
+		if err != nil {
+			printExitMessage(err.Error(), codeFileError, false)
+		}
+		file = f
+		buf, err := ioutil.ReadFile(file)
+		if err != nil {
+			printExitMessage(err.Error(), codeFileError, false)
+		}
+		content = string(buf)
 	}
-
-	buf, err := ioutil.ReadFile(file)
-	if err != nil {
-		printExitMessage(err.Error(), codeFileError, false)
-	}
-	content := string(buf)
 	run(file, content, false, nil)
 }
 
