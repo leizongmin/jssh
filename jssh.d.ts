@@ -65,7 +65,7 @@ declare function require(modulename: string): any;
 
 /**
  * 以eval方式执行指定脚本文件
- * @param filename 文件名称
+ * @param filename 文件路径或URL
  * @param content 文件内容，若指定此参数则无需实际读取文件内容
  * @return 返回结果
  */

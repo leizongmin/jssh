@@ -133,6 +133,12 @@ func jsFnEvalfile(global typeutil.H) jsexecutor.JSFunction {
 				return ctx.ThrowTypeError("evalfile: seconds argument expected string type")
 			}
 			content = args[1].String()
+		} else if isUrl(file) {
+			s, err := httpGetFileContent(file)
+			if err != nil {
+				return ctx.ThrowError(err)
+			}
+			content = s
 		} else {
 			b, err := ioutil.ReadFile(file)
 			if err != nil {
