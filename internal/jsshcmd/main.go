@@ -100,12 +100,12 @@ func run(file string, content string, interactive bool, onEnd func(ret jsexecuto
 
 	builtinModules := jsbuiltin.GetJs()
 	for _, m := range builtinModules {
-		if ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal/%s", m.File)); err != nil {
+		ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal/%s", m.File))
+		if err != nil {
 			fmt.Println(color.FgRed.Render(fmt.Sprintf("load builtin js modules fail: %s", formatJsError(err))))
 			return
-		} else {
-			ret.Free()
 		}
+		ret.Free()
 	}
 
 	globalFiles := getJsshGlobalFilePath()

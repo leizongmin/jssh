@@ -31,10 +31,9 @@ func jsFnFormat(global typeutil.H) jsexecutor.JSFunction {
 			}
 			if ok {
 				return ctx.String(fmt.Sprintf(format, a...))
-			} else {
-				a = append([]interface{}{s}, a...)
-				return ctx.String(fmt.Sprint(a...))
 			}
+			a = append([]interface{}{s}, a...)
+			return ctx.String(fmt.Sprint(a...))
 		}
 		return ctx.String("")
 	}
