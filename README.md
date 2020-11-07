@@ -1,4 +1,4 @@
-# jssh
+# jssh ![CodeQL](https://github.com/leizongmin/jssh/workflows/CodeQL/badge.svg) [![PkgGoDev](https://pkg.go.dev/badge/leizongmin/jssh)](https://pkg.go.dev/leizongmin/jssh) [![Go Report Card](https://goreportcard.com/badge/leizongmin/jssh)](https://goreportcard.com/report/github.com/leizongmin/jssh) ![GitHub](https://img.shields.io/github/license/leizongmin/jssh)
 
 使用 JavaScript 编写运维脚本。
 
