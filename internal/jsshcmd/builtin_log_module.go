@@ -20,7 +20,7 @@ func jsFnFormat(global typeutil.H) jsexecutor.JSFunction {
 			if err != nil {
 				return ctx.ThrowError(err)
 			}
-			format, ok := s.(string)
+			format, firstIsString := s.(string)
 			a := make([]interface{}, 0)
 			for _, v := range args[1:] {
 				v2, err := jsexecutor.JSValueToAny(v)
@@ -29,8 +29,11 @@ func jsFnFormat(global typeutil.H) jsexecutor.JSFunction {
 				}
 				a = append(a, v2)
 			}
-			if ok {
-				return ctx.String(fmt.Sprintf(format, a...))
+			if firstIsString {
+				if len(a) > 0 {
+					return ctx.String(fmt.Sprintf(format, a...))
+				}
+				return ctx.String(format)
 			}
 			a = append([]interface{}{s}, a...)
 			return ctx.String(fmt.Sprint(a...))
