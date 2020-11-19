@@ -121,21 +121,6 @@ if (cli.bool("tcp")) {
   log.info("socket: %v", socket.tcpsend("baidu.com", 81, rawReq));
 }
 
-sql.set("connMaxLifetime", 10_000);
-sql.open("mysql", "root:@tcp(localhost:3306)/mysql?interpolateParams=true");
-println(JSON.stringify(sql.query("show tables")));
-println(JSON.stringify(sql.query("show databases")));
-const tableName = `jssh_test_${Date.now()}`;
-println(JSON.stringify(sql.exec(`create table ${tableName}(id int)`)));
-println(
-  JSON.stringify(
-    sql.exec(`insert into ${tableName}(id) values (?),(?)`, 123, 456)
-  )
-);
-println(JSON.stringify(sql.query(`select * from  ${tableName}`)));
-println(JSON.stringify(sql.exec(`drop table ${tableName}`)));
-sql.close();
-
 println(evalfile("./hello.js"));
 println(evalfile("./hello.js"));
 println(evalfile("./__file_does_not_exist__.js", "println('hello')"));

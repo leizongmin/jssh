@@ -47,7 +47,7 @@ function updateReleasePkgInfo() {
   const time = exec2(`date +%H%M`).output.trim();
   const commitHash = exec2(`git rev-parse --short HEAD`).output.trim();
   const commitDate = exec2(
-    `git for-each-ref --sort=-committerdate refs/heads/ --format="%(authordate:short)"`
+    `git for-each-ref --sort=-committerdate refs/heads/ --format="%(authordate:short)" | head -n 1`
   )
     .output.trim()
     .replace(/\-/g, ``);
@@ -59,8 +59,6 @@ function updateReleasePkgInfo() {
   const data = `
 package pkginfo
 
-const BuildDate = "${date}"
-const BuildTime = "${time}"
 const CommitHash = "${commitHash}"
 const CommitDate = "${commitDate}"
 const BuildGoVersion = "${goVersion}"

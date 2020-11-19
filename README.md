@@ -4,7 +4,7 @@
 
 - 基于 [QuickJS](https://github.com/bellard/quickjs) 引擎，**支持 [ES2020](https://tc39.github.io/ecma262/) 语言特性**；
 - 脚本执行引擎仅需一个**约 10MB** 的二进制文件，无需安装其他依赖；
-- 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、SQL、命令行参数解析、日志输出等操作，满足大部分的运维需求，且**无需安装额外的第三方命令行工具**；
+- 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、命令行参数解析、日志输出等操作，满足大部分的运维需求，且**无需安装额外的第三方命令行工具**；
 - 所有操作均为阻塞函数，无异步操作，**降低代码复杂度**；
 - **内存占用小，启动速度快**（约为 Node.js 的五分之一）；
 
@@ -26,8 +26,8 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 
 下载预构建的压缩包：
 
-- macOS amd64: https://cdn.itoutiao.co/jssh/v0.1/jssh-osx.tar.gz
-- Linux amd64: https://cdn.itoutiao.co/jssh/v0.1/jssh-linux.tar.gz
+- macOS amd64: https://cdn.itoutiao.co/jssh/v0.2/jssh-osx.tar.gz
+- Linux amd64: https://cdn.itoutiao.co/jssh/v0.2/jssh-linux.tar.gz
 
 
 ## 命令行工具使用
@@ -181,22 +181,6 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `socket.timeout(ms)`：设置操作超时毫秒时间，默认为`60000`；
 - `socket.tcpsend(host, port, data)`：往指定主机端口发送一段数据，并返回结果；
 - `socket.tcptest(host, port)`：测试指定主机端口是否可连接；
-
-#### SQL 连接操作
-
-- `sql.set(name, value)`：设置 SQL 连接配置：
-  - `name=connMaxLifetime`：最长非活跃毫秒时间，默认`60000`；
-- `sql.open(driverName, dataSourceName)`：打开连接：
-  - 当`driverName=mysql`时，`dataSourceName`格式：`user:password@tcp(host:port)/database?params`；
-  - 暂不支持其他 driver；
-- `sql.query(sql, ...args)`：执行查询，并返回结果：
-  - 当`driverName=mysql`时，`dataSourceName`需要增加参数`interpolateParams=true`来开启模板参数替换，`args`才生效；设置参数`multiStatements=true`开启多行 SQL 查询；
-- `sql.exec(sql, ...args)`：执行查询，返回`lastInsertId`和`rowsAffected`；
-- `sql.close()`：关闭连接；
-
-参考资料：
-
-- [`driverName=mysql` DSN 参数](https://github.com/go-sql-driver/mysql#dsn-data-source-name)
 
 
 #### 断言及测试操作

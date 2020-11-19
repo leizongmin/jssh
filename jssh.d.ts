@@ -322,9 +322,6 @@ declare const ssh: SshModule;
 /** Socket相关操作模块 */
 declare const socket: SocketModule;
 
-/** SQL数据库相关操作 */
-declare const sql: SqlModule;
-
 interface FsModule {
   /**
    * 读取目录
@@ -675,46 +672,6 @@ interface SocketModule {
    * @return 是否成功
    */
   tcptest(host: string, port: number): boolean;
-}
-
-interface SqlModule {
-  /**
-   * 设置SQL配置
-   * @param name 配置名
-   * @param value 配置值
-   * @return 是否成功
-   */
-  set(name: "connMaxLifetime", value: any): boolean;
-
-  /**
-   * 连接到指定服务器
-   * @param driverName 驱动名称，如 mysql
-   * @param dataSourceName 数据源字符串
-   * @return 是否成功
-   */
-  open(driverName: string, dataSourceName): boolean;
-
-  /**
-   * 关闭服务器连接
-   * @return 是否成功
-   */
-  close(): boolean;
-
-  /**
-   * 执行SQL查询
-   * @param sql SQL
-   * @param args 参数列表
-   * @return 查询结果
-   */
-  query(sql: string, ...args: any): any[];
-
-  /**
-   * 执行SQL查询
-   * @param sql SQL
-   * @param args 参数列表
-   * @return lastInsertId和rowsAffected
-   */
-  exec(sql: string, ...args: any): SqlExecResult;
 }
 
 interface SqlExecResult {

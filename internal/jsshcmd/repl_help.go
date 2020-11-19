@@ -13,7 +13,6 @@ var replApiList = []string{
 	"setenv(", "exec(", "exec1(", "exec2", "bgexec(", "chdir(", "cd(", "cwd(", "pwd(",
 	"ssh.set(", "ssh.open(", "ssh.close(", "ssh.setenv(", "ssh.exec(", "ssh.exec1(", "ssh.exec2(",
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",
-	"sql.set(", "sql.open(", "sql.close(", "sql.query(", "sql.exec(",
 }
 
 func replCompleter(line string) (c []string) {
