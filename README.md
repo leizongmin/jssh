@@ -1,14 +1,18 @@
 # jssh ![CodeQL](https://github.com/leizongmin/jssh/workflows/CodeQL/badge.svg) [![PkgGoDev](https://pkg.go.dev/badge/leizongmin/jssh)](https://pkg.go.dev/leizongmin/jssh) [![Go Report Card](https://goreportcard.com/badge/leizongmin/jssh)](https://goreportcard.com/report/github.com/leizongmin/jssh) ![GitHub](https://img.shields.io/github/license/leizongmin/jssh)
 
-使用 JavaScript 编写运维脚本。
+一款使用JS编写命令行小工具的神器。
+
+-----
+
+**提示：此项目正在初期开发阶段，接口可能会有较大的调整，且代码测试覆盖率较低。仅供学习研究之用，请谨慎用于生产环境。**
+
+## 简介
 
 - 基于 [QuickJS](https://github.com/bellard/quickjs) 引擎，**支持 [ES2020](https://tc39.github.io/ecma262/) 语言特性**；
 - 脚本执行引擎仅需一个**约 10MB** 的二进制文件，无需安装其他依赖；
-- 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、命令行参数解析、日志输出等操作，满足大部分的运维需求，且**无需安装额外的第三方命令行工具**；
-- 所有操作均为阻塞函数，无异步操作，**降低代码复杂度**；
-- **内存占用小，启动速度快**（约为 Node.js 的五分之一）；
-
-**提示：此项目正在初期开发阶段，接口可能会有较大的调整，仅供学习研究之用，请谨慎用于生产环境。**
+- 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、命令行参数解析、日志输出等操作，满足大部分的命令行工具需求；
+- 所有操作均为阻塞函数，无异步操作，**简单易于编写**；
+- **内存占用小，启动速度快**（约 10ms）；
 
 ## 安装
 
@@ -18,7 +22,7 @@
 curl https://jssh.leizm.com/get.sh | bash
 ```
 
-其他系统通过 Go 命令行工具安装最新版本：
+其他系统通过 Go 命令行工具安装最新版本（暂不支持 Windows）：
 
 ```bash
 GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
@@ -28,6 +32,12 @@ GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 
 - macOS amd64: https://cdn.itoutiao.co/jssh/v0.2/jssh-osx.tar.gz
 - Linux amd64: https://cdn.itoutiao.co/jssh/v0.2/jssh-linux.tar.gz
+
+**若要卸载 jssh，直接删除 jssh 二进制文件即可**。可尝试以下命令：
+
+```bash
+rm $(which jssh)
+```
 
 
 ## 命令行工具使用
@@ -187,13 +197,6 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 - `assert(ok, message?)`：简单断言；
 
-
-## 移除安装
-
-```bash
-[sudo] rm /usr/local/bin/jssh
-```
-
 ## 开发
 
 执行以下命令构建项目：
@@ -204,4 +207,26 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 ## License
 
+```text
 MIT License
+
+Copyright (c) 2020 Zongmin Lei <leizongmin@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
