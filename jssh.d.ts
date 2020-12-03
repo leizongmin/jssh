@@ -631,6 +631,14 @@ interface SshModule {
    * @return 进程信息
    */
   exec2(cmd: string, env?: Record<string, string>): SshExecResult;
+
+  /**
+   * 模拟TTY设备执行命令
+   * @param cmd 命令
+   * @param env 额外的环境变量
+   * @return 进程信息
+   */
+  pty(cmd: string, env?: Record<string, string>): SshExecResult;
 }
 
 interface SshExecResult {

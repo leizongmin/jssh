@@ -388,6 +388,7 @@ func getJsGlobal(file string) typeutil.H {
 	global["pwd"] = jsFnShCwd(global)
 	global["exec"] = jsFnShExec(global)
 	global["bgexec"] = jsFnShBgexec(global)
+	global["pty"] = jsFnShPty(global)
 
 	sshModule := make(typeutil.H)
 	sshModule["set"] = jsFnSshSet(global)

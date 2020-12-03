@@ -123,6 +123,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `exec1(cmd, env?)`：阻塞执行指定命令，`mode=1`
 - `exec2(cmd, env?)`：阻塞执行指定命令，`mode=2`
 - `bgexec(cmd, env?, mode?)`：在后台执行指定命令（非阻塞）；
+- `pty(cmd, env?)`：模拟 TTY 设备执行指定命令；
 - `chdir(dir)`或`cd(dir)`：切换工作目录；
 - `cwd(dir)`或`pwd(dir)`：取得当前工作目录；
 
