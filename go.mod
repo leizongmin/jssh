@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/creack/pty v1.1.11
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gookit/color v1.3.1
+	github.com/gookit/color v1.3.3
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/json-iterator/go v1.1.10
 	github.com/leizongmin/go v1.9.5
