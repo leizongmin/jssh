@@ -6,11 +6,13 @@ import (
 	"strings"
 )
 
+// JS模块
 type JsModule struct {
 	File string
 	Code string
 }
 
+// 获得JS模块列表
 func GetJs() []JsModule {
 	retModules := make([]JsModule, 0)
 	for _, m := range modules {

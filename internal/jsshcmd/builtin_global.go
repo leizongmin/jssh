@@ -3,8 +3,8 @@ package jsshcmd
 import (
 	"fmt"
 	"github.com/leizongmin/go/configloader"
-	_ "github.com/leizongmin/go/configloader/toml"
-	_ "github.com/leizongmin/go/configloader/yaml"
+	_ "github.com/leizongmin/go/configloader/toml" // toml格式的配置支持
+	_ "github.com/leizongmin/go/configloader/yaml" // yaml格式的配置支持
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io/ioutil"

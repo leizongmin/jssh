@@ -8,6 +8,7 @@ func init() {
 	registeredGlobal = make(typeutil.H)
 }
 
+// 注册全局变量
 func RegisterGlobal(name string, value interface{}) {
 	registeredGlobal[name] = value
 }

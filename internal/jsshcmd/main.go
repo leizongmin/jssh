@@ -19,12 +19,13 @@ import (
 )
 
 const (
-	codeOK          = 0
-	codeSystem      = 1
-	codeFileError   = 2
-	codeScriptError = 3
+	codeOK          = 0 // 正常
+	codeSystem      = 1 // 系统错误
+	codeFileError   = 2 // 文件错误
+	codeScriptError = 3 // 脚本错误
 )
 
+// 主入口函数
 func Main() {
 	runtime.LockOSThread()
 

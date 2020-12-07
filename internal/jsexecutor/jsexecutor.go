@@ -8,15 +8,17 @@ import (
 	"reflect"
 )
 
-type JSRuntime = quickjs.Runtime
-type JSContext = quickjs.Context
-type JSValue = quickjs.Value
-type JSFunction = func(ctx *JSContext, this JSValue, args []JSValue) JSValue
+type JSRuntime = quickjs.Runtime                                             // JSRuntime类型
+type JSContext = quickjs.Context                                             // JSContext类型
+type JSValue = quickjs.Value                                                 // JSValue类型
+type JSFunction = func(ctx *JSContext, this JSValue, args []JSValue) JSValue // JSFunction类型
 
+// 创建新的JSRuntime实例
 func NewJSRuntime() JSRuntime {
 	return quickjs.NewRuntime()
 }
 
+// 判断是否为Go的函数类型
 func IsGoFunction(f interface{}) bool {
 	if reflect.TypeOf(f).Kind().String() == "func" {
 		return true
@@ -24,6 +26,7 @@ func IsGoFunction(f interface{}) bool {
 	return false
 }
 
+// 将map类型的值合并到一个JSObject中
 func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars typeutil.H) quickjs.Value {
 	for n, v := range vars {
 		if IsGoFunction(v) {
@@ -35,6 +38,7 @@ func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars typeutil.H
 	return obj
 }
 
+// 执行JS代码并返回JSValue结果
 func EvalJS(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
 	defer ctx.Free()
@@ -42,6 +46,7 @@ func EvalJS(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (quickjs.Va
 	return ctx.Eval(code)
 }
 
+// 执行JS文件并返回JSValue结果
 func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars typeutil.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
 	defer ctx.Free()
@@ -49,6 +54,7 @@ func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars ty
 	return ctx.EvalFile(code, filename)
 }
 
+// 执行JS并返回并返回interface{}结果
 func EvalJSAndGetResult(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (interface{}, error) {
 	ret, err := EvalJS(jsRuntime, code, vars)
 	if err != nil {
@@ -58,6 +64,7 @@ func EvalJSAndGetResult(jsRuntime quickjs.Runtime, code string, vars typeutil.H)
 	return JSValueToAny(ret)
 }
 
+// 将JSValue转换为interface{}
 func JSValueToAny(value quickjs.Value) (interface{}, error) {
 	if value.IsString() {
 		return value.String(), nil
@@ -129,6 +136,7 @@ func mapToJSValue(ctx *quickjs.Context, m typeutil.H) quickjs.Value {
 	return obj
 }
 
+// 将interface{}转换为JSValue
 func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
 	v := reflect.ValueOf(value)
 	vt := v.Type()
