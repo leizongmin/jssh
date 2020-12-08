@@ -54,8 +54,8 @@ rm $(which jssh)
 
 ## 示例
 
-- **jssh 构建脚本**：[build.js](https://github.com/leizongmin/jssh/blob/main/build.js)；
-- **nslookup 包装**：[example/nslookup.js](https://github.com/leizongmin/jssh/blob/main/example/nslookup.js)；
+- **jssh 构建脚本**：[jssh/build.js](https://github.com/leizongmin/jssh/blob/main/build.js)；
+- **实现一个玩具 Docker**：[toy-docker](https://github.com/leizongmin/toy-docker)；
 
 ## 参考文档
 
