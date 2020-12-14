@@ -88,7 +88,7 @@ func Main() {
 
 		var source string
 		if isUrl(sourceFile) {
-			s, err := httpGetFileContent(first)
+			s, err := httpGetFileContent(sourceFile)
 			if err != nil {
 				printExitMessage(err.Error(), codeFileError, false)
 			}
