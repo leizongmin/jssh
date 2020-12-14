@@ -21,6 +21,7 @@ func printUsage(code int) {
 	fmt.Printf("  %s http://example.com/file.js [arg1] [arg2] [...]     Run script from URL\n", pkginfo.Name)
 	fmt.Printf("  %s -c \"script\" [arg1] [arg2] [...]                    Run script from argument\n", pkginfo.Name)
 	fmt.Printf("  %s -x \"script\" [arg1] [arg2] [...]                    Run script from argument and print the result\n", pkginfo.Name)
+	fmt.Printf("  %s -s script_file.js [target_file]                    Create self-contained binary file\n", pkginfo.Name)
 	fmt.Printf("  %s -i                                                 Start REPL\n", pkginfo.Name)
 	fmt.Printf("  %s -h                                                 Show usage\n", pkginfo.Name)
 	fmt.Printf("  %s -v                                                 Show version\n", pkginfo.Name)

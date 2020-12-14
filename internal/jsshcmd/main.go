@@ -1,6 +1,7 @@
 package jsshcmd
 
 import (
+	"encoding/binary"
 	"fmt"
 	"github.com/gookit/color"
 	jsoniter "github.com/json-iterator/go"
@@ -13,6 +14,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -25,9 +27,19 @@ const (
 	codeScriptError = 3 // 脚本错误
 )
 
+const fixedSelfContainedBoundary = "Ac7mr7vA4ih4PhELJtGP1bN9McJ849PvBHfXGUws2Mw8x63EMQIdn5GYdShUE2YT"
+
+func getSelfContainedBoundary() string {
+	return "\n----" + fixedSelfContainedBoundary + "-" + pkginfo.CommitHash + "-" + pkginfo.CommitDate + "----\n"
+}
+
 // 主入口函数
 func Main() {
 	runtime.LockOSThread()
+
+	if tryRunSelfContainedBoundary() {
+		return
+	}
 
 	if len(os.Args) < 2 {
 		printUsage(codeOK)
@@ -45,7 +57,51 @@ func Main() {
 	}
 
 	if first == "-i" {
-		run("", os.Args[1], true, nil)
+		run("", os.Args[1], true, nil, nil)
+		return
+	}
+
+	if first == "-s" {
+		if len(os.Args) < 3 {
+			printExitMessage("missing script file", codeFileError, true)
+			return
+		}
+		sourceFile := os.Args[2]
+
+		var targetFile string
+		if len(os.Args) >= 4 {
+			targetFile = os.Args[3]
+		} else {
+			base := path.Base(sourceFile)
+			ext := path.Ext(base)
+			if len(ext) > 0 {
+				targetFile = base[0 : len(base)-len(ext)]
+			} else {
+				targetFile = sourceFile + ".bin"
+			}
+		}
+		if s, err := filepath.Abs(targetFile); err != nil {
+			printExitMessage(err.Error(), codeFileError, false)
+		} else {
+			targetFile = s
+		}
+
+		var source string
+		if isUrl(sourceFile) {
+			s, err := httpGetFileContent(first)
+			if err != nil {
+				printExitMessage(err.Error(), codeFileError, false)
+			}
+			source = s
+		} else {
+			b, err := ioutil.ReadFile(sourceFile)
+			if err != nil {
+				printExitMessage(err.Error(), codeFileError, false)
+			}
+			source = string(b)
+		}
+
+		createSelfContainedBinary(source, targetFile)
 		return
 	}
 
@@ -55,9 +111,9 @@ func Main() {
 			return
 		}
 		if first == "-c" {
-			run("", os.Args[2], false, nil)
+			run("", os.Args[2], false, nil, nil)
 		} else {
-			run("", "return "+os.Args[2], false, func(ret jsexecutor.JSValue) {
+			run("", "return "+os.Args[2], false, nil, func(ret jsexecutor.JSValue) {
 				if !ret.IsUndefined() && !ret.IsNull() {
 					fmt.Println(ret.String())
 				}
@@ -87,13 +143,102 @@ func Main() {
 		}
 		content = string(buf)
 	}
-	run(file, content, false, nil)
+	run(file, content, false, nil, nil)
 }
 
-func run(file string, content string, interactive bool, onEnd func(ret jsexecutor.JSValue)) {
+func tryRunSelfContainedBoundary() bool {
+	boundary := getSelfContainedBoundary()
+	boundaryBytes := []byte(boundary)
+	selfFile := getCurrentAbsoluteBinPath()
+
+	f, err := os.OpenFile(selfFile, os.O_RDONLY, os.ModePerm)
+	if err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+		return true
+	}
+	info, err := f.Stat()
+	if err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+		return true
+	}
+
+	endPos := info.Size() - int64(len(boundaryBytes)) - 8
+	var sourceLen int64
+	{
+		bytesLen := len(boundaryBytes) + 8
+		b := make([]byte, bytesLen)
+		if n, err := f.ReadAt(b, endPos); err != nil {
+			printExitMessage(err.Error(), codeFileError, false)
+			return true
+		} else if n != bytesLen {
+			printExitMessage(fmt.Sprintf("read boundary errored, expected %d but got %d bytes", bytesLen, n), codeFileError, false)
+			return true
+		}
+		if string(b[0:len(b)-8]) != boundary {
+			return false
+		}
+		sourceLen = int64(binary.BigEndian.Uint64(b[len(b)-8:]))
+	}
+
+	startPos := endPos - sourceLen
+	content := make([]byte, sourceLen)
+	if n, err := f.ReadAt(content, startPos); err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+		return true
+	} else if int64(n) != sourceLen {
+		printExitMessage(fmt.Sprintf("read source content errored, expected %d but got %d bytes", sourceLen, n), codeFileError, false)
+		return true
+	}
+
+	run(selfFile, string(content), false, typeutil.H{
+		"__selfcontained": true,
+		"__args":          append([]string{selfFile}, os.Args...),
+	}, nil)
+	return true
+}
+
+func createSelfContainedBinary(source string, targetFile string) {
+	boundary := getSelfContainedBoundary()
+	selfFile := getCurrentAbsoluteBinPath()
+	if _, err := copyFile(selfFile, targetFile); err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+	}
+
+	lenBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(lenBytes, uint64(len([]byte(source))))
+
+	perm := os.FileMode(0755)
+	data := []byte(boundary + source + boundary)
+	f, err := os.OpenFile(targetFile, os.O_APPEND|os.O_WRONLY, perm)
+	if err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+		return
+	}
+	defer f.Close()
+	if _, err := f.Write(data); err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+	}
+	if _, err := f.Write(lenBytes); err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+	}
+
+	if err := os.Chmod(targetFile, perm); err != nil {
+		printExitMessage(err.Error(), codeFileError, false)
+	}
+
+	fmt.Printf("Created self-contained binary file: %s\n", targetFile)
+}
+
+func run(file string, content string, interactive bool, customGlobal typeutil.H, onEnd func(ret jsexecutor.JSValue)) {
 	global := getJsGlobal(file)
 	jsRuntime := jsexecutor.NewJSRuntime()
 	defer jsRuntime.Free()
+
+	if customGlobal != nil {
+		for n, v := range customGlobal {
+			global[n] = v
+		}
+	}
 
 	ctx := jsRuntime.NewContext()
 	defer ctx.Free()
@@ -344,6 +489,7 @@ func getJsGlobal(file string) typeutil.H {
 	dir := filepath.Dir(file)
 	global := make(typeutil.H)
 
+	global["__selfcontained"] = false
 	global["__cpucount"] = runtime.NumCPU()
 	global["__os"] = runtime.GOOS
 	global["__arch"] = runtime.GOARCH

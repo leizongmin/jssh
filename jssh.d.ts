@@ -1,6 +1,9 @@
 /** 全局变量对象 */
 declare var global: any;
 
+/** 是否 self-contained 方式执行 */
+declare const __selfcontained: boolean;
+
 /** CPU数量 */
 declare const __cpucount: number;
 

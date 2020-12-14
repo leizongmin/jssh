@@ -46,6 +46,8 @@ rm $(which jssh)
 - 进入 REPL：`jssh -i`；
 - 执行命令行参数指定的脚本代码：`jssh -c "js code"`；
 - 执行命令行参数指定的脚本代码，并将结果作为字符串输出：`jssh -x "js code"`；
+- 将 JS 源码编译为二进制可执行文件（仅限当前操作系统）：`jssh -s file.js`；
+- 显示帮助信息：`jssh -h`；
 
 ## 配置
 
@@ -64,6 +66,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 #### 全局变量列表
 
 - `global`：全局变量；
+- `__selfcontained`：是否 self-contained 方式执行；
 - `__cpucount`：CPU 数量；
 - `__os`：操作系统类型，如 darwin, freebsd, linux, windows；
 - `__arch`：处理器架构，如 386, amd64, arm, s390x；
