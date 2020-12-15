@@ -71,15 +71,24 @@ function restoreReleasePkgInfo() {
   exec(`git checkout internal/pkginfo/build_info.go`);
 }
 
+function getNormalOSType() {
+  switch (__os) {
+    case "darwin":
+      return "osx";
+    case "linux":
+      return "linux";
+    case "freebsd":
+      return "freebsd";
+    case "windows":
+      return "windows";
+    default:
+      return "other";
+  }
+}
+
 function buildHostOSVersion() {
   log.info(`构建宿主系统版本`);
-  let type = `other`;
-  if (__os === `darwin`) {
-    type = `osx`;
-  } else if (__os === `linux`) {
-    type = `linux`;
-  }
-  const binPath = path.join(releaseDir, type, binName);
+  const binPath = path.join(releaseDir, getNormalOSType(), binName);
   exec(`${goBuild} -o ${binPath} ${packageName}`);
   log.info(`构建输出到%s`, binPath);
 }
@@ -116,6 +125,16 @@ function buildReleaseFiles() {
       log.info(`输出压缩包%s`, tarFile);
     }
   });
+
+  const currentDir = path.join(releaseDir, "current");
+  const currentTarFile = path.join(
+    releaseDir,
+    `jssh-${getNormalOSType()}.tar.gz`
+  );
+  const currentBinFile = path.join(releaseDir, getNormalOSType(), "jssh");
+  exec(`mkdir -p ${currentDir}`);
+  exec(`cp -f ${currentTarFile} ${path.join(currentDir, "jssh.tar.gz")}`);
+  exec(`cp -f ${currentBinFile} ${path.join(currentDir, "jssh")}`);
 }
 
 function updateBuiltinJS() {
