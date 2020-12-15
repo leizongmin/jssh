@@ -125,8 +125,8 @@ function buildReleaseFiles() {
       cd(__dirname);
       exec(`cp -f ${fixFilePath(dtsFile)} ${fixFilePath(p)}`);
       cd(p);
-      const tarFile = path.join(releaseDir, `${binName}-${s.name}`);
-      const cmd = `tar -czvPf ${fixFilePath(tarFile)}.tar.gz *`;
+      const tarFile = `${binName}-${s.name}`;
+      const cmd = `tar -czvf ../${tarFile}.tar.gz *`;
       log.info(cmd);
       exec(cmd);
       cd(__dirname);
