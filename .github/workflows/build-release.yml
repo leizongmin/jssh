@@ -3,8 +3,8 @@ name: Go
 on:
   push:
     branches: [ main ]
-  release:
-    types: [ published, created ]
+  label:
+    types: [ created ]
 
 jobs:
   build:
@@ -32,27 +32,6 @@ jobs:
         with:
           path: ./release/*.tar.gz
 
-#  build-windows:
-#    runs-on: windows-latest
-#    name: Build windows version
-#    steps:
-#
-#      - name: Set up Go 1.x
-#        uses: actions/setup-go@v2
-#        with:
-#          go-version: ^1.15
-#
-#      - name: Check out code into the Go module directory
-#        uses: actions/checkout@v2
-#
-#      - name: Build
-#        run: go env && go build -o release/jssh.exe github.com/leizongmin/jssh
-#
-#      - name: Accidently upload to the same artifact via multiple jobs
-#        uses: actions/upload-artifact@v2
-#        with:
-#          path: release/jssh.exe
-
   release:
     runs-on: ubuntu-latest
     name: Release
@@ -61,28 +40,48 @@ jobs:
 
       - name: Download artifact
         uses: actions/download-artifact@v2
+        with:
+          path: .
 
       - name: List files
-        run: ls -al
+        run: ls -R
 
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ github.ref }}
-#          release_name: Release ${{ github.ref }}
-#          draft: true
-#          prerelease: false
-#
-#      - name: Upload Release Asset
-#        id: upload-release-asset
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ./release/current/jssh.tar.gz
-#          asset_name: jssh-${{ matrix.os }}.tar.gz
-#          asset_content_type: application/x-gzip
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: jssh-windows.tar.gz
+          asset_name: jssh-windows.tar.gz
+          asset_content_type: application/x-gzip
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: jssh-linux.tar.gz
+          asset_name: jssh-linux.tar.gz
+          asset_content_type: application/x-gzip
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: jssh-osx.tar.gz
+          asset_name: jssh-osx.tar.gz
+          asset_content_type: application/x-gzip
