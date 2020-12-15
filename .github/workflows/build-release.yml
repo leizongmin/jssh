@@ -27,24 +27,40 @@ jobs:
       - name: Build
         run: go env && go run github.com/leizongmin/jssh build.js
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Accidently upload to the same artifact via multiple jobs
+        uses: actions/upload-artifact@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
-          prerelease: false
+          path: ./release/*.tar.gz
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/current/jssh.tar.gz
-          asset_name: jssh-${{ matrix.os }}.tar.gz
-          asset_content_type: application/x-gzip
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    steps:
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+
+      - name: List files
+        run: ls -al
+
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.ref }}
+#          release_name: Release ${{ github.ref }}
+#          draft: true
+#          prerelease: false
+#
+#      - name: Upload Release Asset
+#        id: upload-release-asset
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./release/current/jssh.tar.gz
+#          asset_name: jssh-${{ matrix.os }}.tar.gz
+#          asset_content_type: application/x-gzip
