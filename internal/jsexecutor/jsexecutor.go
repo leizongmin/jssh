@@ -104,6 +104,9 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 		return arr, nil
 	}
 	if value.IsObject() {
+		if JSValueIsUint8Array(value) {
+			return JSValueUint8ArrayToByteSlice(value)
+		}
 		props, err := value.PropertyNames()
 		if err != nil {
 			return nil, err
@@ -126,6 +129,32 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 		return m, nil
 	}
 	return nil, fmt.Errorf("unexpected JS value: %+v", value)
+}
+
+// 判断是否为Uint8Array
+func JSValueIsUint8Array(value JSValue) bool {
+	constructor := value.Get("constructor")
+	defer constructor.Free()
+	if !constructor.IsConstructor() {
+		return false
+	}
+	name := constructor.Get("name")
+	defer name.Free()
+	if name.String() != "Uint8Array" {
+		return false
+	}
+	return true
+}
+
+// 将Uint8Array转换为[]byte
+func JSValueUint8ArrayToByteSlice(value quickjs.Value) ([]byte, error) {
+	size := int(value.Len())
+	arr := make([]byte, 0)
+	for i := 0; i < size; i++ {
+		v := value.Get(textutil.AnythingToString(i))
+		arr = append(arr, byte(v.Uint32()))
+	}
+	return arr, nil
 }
 
 func mapToJSValue(ctx *quickjs.Context, m typeutil.H) quickjs.Value {
@@ -154,25 +183,15 @@ func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
 		}
 		return ctx.ThrowTypeError("AnyToJSValue: unsupported map type: %+v", value)
 	case "slice":
-		{
-			arr := ctx.Array()
-			for i := 0; i < v.Len(); i++ {
-				arr.SetByUint32(uint32(i), AnyToJSValue(ctx, v.Index(i).Interface()))
-			}
-			return arr
-		}
+		return anySliceToJSValue(ctx, v, vt)
 	case "array":
-		{
-			arr := ctx.Array()
-			for i := 0; i < v.Len(); i++ {
-				arr.SetByUint32(uint32(i), AnyToJSValue(ctx, v.Index(i).Interface()))
-			}
-			return arr
-		}
+		return anySliceToJSValue(ctx, v, vt)
 	case "string":
 		return ctx.String(value.(string))
 	case "bool":
 		return ctx.Bool(value.(bool))
+	case "byte":
+		return ctx.Uint32(uint32(value.(byte)))
 	case "int":
 		return ctx.Int32(int32(value.(int)))
 	case "int8":
@@ -202,4 +221,23 @@ func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
 	default:
 		return ctx.Undefined()
 	}
+}
+
+// 将slice转换为JSValue
+func anySliceToJSValue(ctx *quickjs.Context, v reflect.Value, vt reflect.Type) quickjs.Value {
+	arr := ctx.Array()
+	size := v.Len()
+	if size > 0 {
+		if vt.String() == "[]byte" {
+			bytes := v.Bytes()
+			for i := 0; i < len(bytes); i++ {
+				arr.SetByUint32(uint32(i), ctx.Uint32(uint32(bytes[i])))
+			}
+		} else {
+			for i := 0; i < size; i++ {
+				arr.SetByUint32(uint32(i), AnyToJSValue(ctx, v.Index(i).Interface()))
+			}
+		}
+	}
+	return arr
 }

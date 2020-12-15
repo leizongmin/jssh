@@ -5,7 +5,7 @@ import (
 )
 
 var replApiList = []string{
-	"fs.readdir(", "fs.readfile(", "fs.stat(", "fs.exist(", "fs.writefile(", "fs.appendfile(",
+	"fs.readdir(", "fs.readfile(", "fs.stat(", "fs.exist(", "fs.writefile(", "fs.appendfile(", "fs.readfilebytes(",
 	"path.join(", "path.abs(", "path.base(", "path.ext(", "path.dir(",
 	"cli.get(", "cli.bool(", "cli.args(", "cli.opts(", "cli.prompt(", "cli.subcommand(", "cli.subcommandstart(",
 	"http.timeout(", "http.request(", "http.download(",

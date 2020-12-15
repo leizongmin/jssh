@@ -1,6 +1,7 @@
 package jsshcmd
 
 import (
+	"fmt"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io/ioutil"
@@ -59,6 +60,25 @@ func jsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
+func jsFnFsReadfilebytes(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.readfile: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.readfilebytes: first argument expected string type")
+		}
+		file := args[0].String()
+
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return jsexecutor.AnyToJSValue(ctx, b)
+	}
+}
+
 func jsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
@@ -111,10 +131,19 @@ func jsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
 		if len(args) < 2 {
 			return ctx.ThrowSyntaxError("fs.writefile: missing data")
 		}
-		if !args[1].IsString() {
-			return ctx.ThrowTypeError("fs.writefile: second argument expected string type")
+
+		var data []byte
+		if args[1].IsString() {
+			data = []byte(args[1].String())
+		} else if jsexecutor.JSValueIsUint8Array(args[1]) {
+			if b, err := jsexecutor.JSValueUint8ArrayToByteSlice(args[1]); err != nil {
+				return ctx.ThrowTypeError(fmt.Sprintf("fs.writefile: read Uint8Array data failed: %s", err))
+			} else {
+				data = b
+			}
+		} else {
+			return ctx.ThrowTypeError("fs.writefile: second argument expected string or Uint8Array type")
 		}
-		data := args[1].String()
 
 		perm := int64(0666)
 		if len(args) >= 3 {
@@ -124,7 +153,7 @@ func jsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
 			perm = args[2].Int64()
 		}
 
-		if err := ioutil.WriteFile(file, []byte(data), os.FileMode(perm)); err != nil {
+		if err := ioutil.WriteFile(file, data, os.FileMode(perm)); err != nil {
 			return ctx.ThrowError(err)
 		}
 
@@ -145,10 +174,19 @@ func jsFnFsAppendfile(global typeutil.H) jsexecutor.JSFunction {
 		if len(args) < 2 {
 			return ctx.ThrowSyntaxError("fs.appendfile: missing data")
 		}
-		if !args[1].IsString() {
-			return ctx.ThrowTypeError("fs.appendfile: second argument expected string type")
+
+		var data []byte
+		if args[1].IsString() {
+			data = []byte(args[1].String())
+		} else if jsexecutor.JSValueIsUint8Array(args[1]) {
+			if b, err := jsexecutor.JSValueUint8ArrayToByteSlice(args[1]); err != nil {
+				return ctx.ThrowTypeError(fmt.Sprintf("fs.appendfile: read Uint8Array data failed: %s", err))
+			} else {
+				data = b
+			}
+		} else {
+			return ctx.ThrowTypeError("fs.appendfile: second argument expected string or Uint8Array type")
 		}
-		data := args[1].String()
 
 		perm := int64(0644)
 		if len(args) >= 3 {
@@ -167,7 +205,7 @@ func jsFnFsAppendfile(global typeutil.H) jsexecutor.JSFunction {
 				stdLog.Printf("fs.appendfile: %s", err)
 			}
 		}()
-		if _, err := f.WriteString(data); err != nil {
+		if _, err := f.Write(data); err != nil {
 			return ctx.ThrowError(err)
 		}
 

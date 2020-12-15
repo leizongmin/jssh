@@ -552,6 +552,7 @@ func getJsGlobal(file string) typeutil.H {
 	fsModule["exist"] = jsFnFsExist(global)
 	fsModule["writefile"] = jsFnFsWritefile(global)
 	fsModule["appendfile"] = jsFnFsAppendfile(global)
+	fsModule["readfilebytes"] = jsFnFsReadfilebytes(global)
 	global["fs"] = fsModule
 
 	pathModule := make(typeutil.H)

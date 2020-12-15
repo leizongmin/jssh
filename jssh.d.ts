@@ -341,6 +341,13 @@ interface FsModule {
   readfile(path: string): string;
 
   /**
+   * 读取文件内容
+   * @param path 路径
+   * @return 文件内容
+   */
+  readfilebytes(path: string): Uint8Array;
+
+  /**
    * 读取文件信息
    * @param path 路径
    * @return 文件信息
@@ -360,7 +367,7 @@ interface FsModule {
    * @param data 内容
    * @return 是否成功
    */
-  writefile(path: string, data: string): boolean;
+  writefile(path: string, data: string | Uint8Array): boolean;
 
   /**
    * 追加内容到文件末尾
@@ -368,7 +375,7 @@ interface FsModule {
    * @param data 内容
    * @return 是否成功
    */
-  appendfile(path: string, data: string): boolean;
+  appendfile(path: string, data: string | Uint8Array): boolean;
 }
 
 interface FileStat {
