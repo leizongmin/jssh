@@ -1,4 +1,4 @@
-#!/usr/bin/env go run github.com/leizongmin/jssh
+#!/usr/bin/env -S go run github.com/leizongmin/jssh
 
 updateBuiltinJS();
 
