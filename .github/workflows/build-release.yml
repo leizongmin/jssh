@@ -27,6 +27,9 @@ jobs:
       - name: Build
         run: go env && go run github.com/leizongmin/jssh build.js
 
+      - name: List files
+        run: ls -Rl release
+
       - name: Accidently upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v2
         with:
