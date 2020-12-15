@@ -126,7 +126,7 @@ function buildReleaseFiles() {
       exec(`cp -f ${fixFilePath(dtsFile)} ${fixFilePath(p)}`);
       cd(p);
       const tarFile = path.join(releaseDir, `${binName}-${s.name}`);
-      exec(`tar -czvf --force-local ${fixFilePath(tarFile)}.tar.gz *`);
+      exec(`tar -czvf --force-local --absolute-names ${fixFilePath(tarFile)}.tar.gz *`);
       cd(__dirname);
       log.info(`输出压缩包%s`, tarFile);
     }
