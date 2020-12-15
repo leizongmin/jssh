@@ -159,6 +159,7 @@ func crossPlatformFilepathAbs(p string) (string, error) {
 		if strings.Contains(err.Error(), "The system cannot find the file specified") {
 			return p, nil
 		}
+		return f, err
 	}
 	return f, nil
 }

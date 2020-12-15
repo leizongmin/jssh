@@ -461,6 +461,9 @@ func getJsshGlobalFilePath() (list []string) {
 		}
 	}
 	if len(dir) > 0 {
+		if d, err := crossPlatformFilepathAbs(dir); err == nil {
+			dir = d
+		}
 		files, err := ioutil.ReadDir(dir)
 		if err != nil {
 			if !strings.HasSuffix(err.Error(), "no such file or directory") {
