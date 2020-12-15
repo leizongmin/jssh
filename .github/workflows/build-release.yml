@@ -3,8 +3,8 @@ name: Go
 on:
   push:
     branches: [ main ]
-  label:
-    types: [ created ]
+  # label:
+  #   types: [ created ]
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
           path: .
 
       - name: List files
-        run: ls -R
+        run: ls -Rl
 
       - name: Create Release
         id: create_release
@@ -55,9 +55,9 @@ jobs:
           tag_name: ${{ github.sha }}
           release_name: Release ${{ github.sha }}
           draft: true
-          prerelease: false
+          prerelease: true
 
-      - name: Upload Release Asset
+      - name: Upload Release Asset for Windows version
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -67,7 +67,7 @@ jobs:
           asset_name: jssh-windows.tar.gz
           asset_content_type: application/x-gzip
 
-      - name: Upload Release Asset
+      - name: Upload Release Asset for Linux version
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,7 +77,7 @@ jobs:
           asset_name: jssh-linux.tar.gz
           asset_content_type: application/x-gzip
 
-      - name: Upload Release Asset
+      - name: Upload Release Asset for macOS version
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
