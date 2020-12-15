@@ -29,7 +29,7 @@ jobs:
 
       - name: List files
         run: ls -Rl release
-        if: ${{ runner.os != "Windows" }}
+        if: ${{ runner.os != 'Windows' }}
 
       - name: Accidently upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v2
