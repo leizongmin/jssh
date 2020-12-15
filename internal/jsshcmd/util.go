@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/user"
+	"path/filepath"
 	"strings"
 )
 
@@ -149,4 +150,15 @@ func copyFile(src string, dst string) (int64, error) {
 	defer destination.Close()
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+func crossPlatformFilepathAbs(p string) (string, error) {
+	f, err := filepath.Abs(p)
+	if err != nil {
+		// Windows会报错，需要忽略
+		if strings.Contains(err.Error(), "The system cannot find the file specified") {
+			return p, nil
+		}
+	}
+	return f, nil
 }

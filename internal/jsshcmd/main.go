@@ -80,7 +80,7 @@ func Main() {
 				targetFile = sourceFile + ".bin"
 			}
 		}
-		if s, err := filepath.Abs(targetFile); err != nil {
+		if s, err := crossPlatformFilepathAbs(targetFile); err != nil {
 			printExitMessage(err.Error(), codeFileError, false)
 		} else {
 			targetFile = s
@@ -132,7 +132,7 @@ func Main() {
 		file = first
 		content = s
 	} else {
-		f, err := filepath.Abs(first)
+		f, err := crossPlatformFilepathAbs(first)
 		if err != nil {
 			printExitMessage(err.Error(), codeFileError, false)
 		}
@@ -425,7 +425,7 @@ func getJsshHistoryFilePath() (f string, enable bool) {
 	if e == "0" {
 		return "", false
 	}
-	f, err := filepath.Abs(e)
+	f, err := crossPlatformFilepathAbs(e)
 	if err != nil {
 		errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get file path from environment variable [JSSH_HISTORY]: %s", err)))
 		return "", false
@@ -444,7 +444,7 @@ func getJsshGlobalFilePath() (list []string) {
 		}
 		dir = filepath.Join(mustGetHomeDir(), fmt.Sprintf(".%s_global.d", pkginfo.Name))
 	} else if e != "0" {
-		f, err := filepath.Abs(e)
+		f, err := crossPlatformFilepathAbs(e)
 		if err != nil {
 			errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get global file from environment variable [JSSH_GLOBAL]: %s", err)))
 		} else {
@@ -592,7 +592,7 @@ func getCurrentAbsoluteBinPath() string {
 		errLog.Println(color.FgRed.Render(err.Error()))
 		return bin
 	}
-	ret2, err := filepath.Abs(ret)
+	ret2, err := crossPlatformFilepathAbs(ret)
 	if err != nil {
 		errLog.Println(color.FgRed.Render(err.Error()))
 		return bin

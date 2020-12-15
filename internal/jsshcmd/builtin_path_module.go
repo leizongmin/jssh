@@ -30,7 +30,7 @@ func jsFnPathAbs(global typeutil.H) jsexecutor.JSFunction {
 		}
 		file := args[0].String()
 
-		ret, err := filepath.Abs(file)
+		ret, err := crossPlatformFilepathAbs(file)
 		if err != nil {
 			return ctx.ThrowError(err)
 		}
