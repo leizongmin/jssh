@@ -3,26 +3,10 @@ name: Go
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  release:
+    types: [ published, created ]
 
 jobs:
-
-  build-windows:
-    name: Build windows version
-    runs-on: windows-latest
-    steps:
-
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: ^1.15
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-
-      - name: Build
-        run: ./build.js
 
   build-macos:
     name: Build macOS version
@@ -55,3 +39,12 @@ jobs:
 
       - name: Build
         run: ./build.js
+
+  publish-release:
+    name: Publish release
+    needs: [ build-macos, build-linux ]
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: List release files
+        run: ls -al release
