@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        os: [ windows-2019, ubuntu-20.04, macos-11.0 ]
 
     runs-on: ${{ matrix.os }}
     name: Build ${{ matrix.os }} version
@@ -29,6 +29,7 @@ jobs:
 
       - name: List files
         run: ls -Rl release
+        if: ${{ runner.os != "Windows" }}
 
       - name: Accidently upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v2
