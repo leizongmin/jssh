@@ -8,8 +8,24 @@ on:
 
 jobs:
 
-  build-osx:
-    name: Build
+  build-windows:
+    name: Build windows version
+    runs-on: windows-latest
+    steps:
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: ./build.js
+
+  build-macos:
+    name: Build macOS version
     runs-on: macos-11.0
     steps:
 
@@ -23,3 +39,19 @@ jobs:
 
     - name: Build
       run: ./build.js
+
+  build-linux:
+    name: Build Linux version
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.15
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: ./build.js
