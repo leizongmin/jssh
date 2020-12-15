@@ -461,12 +461,9 @@ func getJsshGlobalFilePath() (list []string) {
 		}
 	}
 	if len(dir) > 0 {
-		if d, err := crossPlatformFilepathAbs(dir); err == nil {
-			dir = d
-		}
 		files, err := ioutil.ReadDir(dir)
 		if err != nil {
-			if !strings.HasSuffix(err.Error(), "no such file or directory") {
+			if !strings.Contains(err.Error(), "no such file or directory") && !strings.Contains(err.Error(), "The system cannot find the file specified") {
 				errLog.Println(color.FgRed.Render(fmt.Sprintf("cannot get global file from environment variable [JSSH_GLOBAL]: %s", err)))
 			}
 		} else {
