@@ -21,11 +21,11 @@ log.info(`当前Go版本号%s`, goVersion);
 setenv(`GO111MODULE`, `on`);
 setenv(`GOPROXY`, goProxy);
 
-exec(`mkdir -p ${releaseDir}`);
+exec(`mkdir -p ${fixFilePath(releaseDir)}`);
 fs.readdir(releaseDir).forEach((s) => {
   const p = path.join(releaseDir, s.name);
   if (p !== cacheDir) {
-    exec(`rm -rf ${p}`);
+    exec(`rm -rf ${fixFilePath(p)}`);
   }
 });
 
@@ -89,7 +89,7 @@ function getNormalOSType() {
 function buildHostOSVersion() {
   log.info(`构建宿主系统版本`);
   const binPath = path.join(releaseDir, getNormalOSType(), binName);
-  exec(`${goBuild} -o ${binPath} ${packageName}`);
+  exec(`${goBuild} -o ${fixFilePath(binPath)} ${packageName}`);
   log.info(`构建输出到%s`, binPath);
 }
 
@@ -100,9 +100,15 @@ function buildLinuxVersionOnDocker() {
   }
   log.info(`在macOS上通过Docker构建Linux版本`);
   const binPath = path.join(releaseDir, `linux`, binName);
-  exec(`mkdir -p ${cacheDir}`);
+  exec(`mkdir -p ${fixFilePath(cacheDir)}`);
   const ret = exec(
-    `docker run --rm -it -v "${cacheDir}:/go" -v ${__dirname}:${__dirname} -w ${__dirname} -e GO111MODULE=on -e GOPROXY=${goProxy} golang:${goVersion} ${goBuild} -o ${binPath} ${packageName}`
+    `docker run --rm -it -v "${fixFilePath(cacheDir)}:/go" -v ${fixFilePath(
+      __dirname
+    )}:${fixFilePath(__dirname)} -w ${fixFilePath(
+      __dirname
+    )} -e GO111MODULE=on -e GOPROXY=${goProxy} golang:${goVersion} ${goBuild} -o ${fixFilePath(
+      binPath
+    )} ${packageName}`
   );
   if (ret.code !== 0) {
     log.error(`通过Docker构建失败`);
@@ -117,10 +123,10 @@ function buildReleaseFiles() {
     const p = path.join(releaseDir, s.name);
     if (p !== cacheDir) {
       cd(__dirname);
-      exec(`cp -f ${dtsFile} ${p}`);
+      exec(`cp -f ${fixFilePath(dtsFile)} ${fixFilePath(p)}`);
       cd(p);
       const tarFile = path.join(releaseDir, `${binName}-${s.name}`);
-      exec(`tar -czvf ${tarFile}.tar.gz *`);
+      exec(`tar -czvf ${fixFilePath(tarFile)}.tar.gz *`);
       cd(__dirname);
       log.info(`输出压缩包%s`, tarFile);
     }
@@ -132,9 +138,17 @@ function buildReleaseFiles() {
     `jssh-${getNormalOSType()}.tar.gz`
   );
   const currentBinFile = path.join(releaseDir, getNormalOSType(), "jssh");
-  exec(`mkdir -p ${currentDir}`);
-  exec(`cp -f ${currentTarFile} ${path.join(currentDir, "jssh.tar.gz")}`);
-  exec(`cp -f ${currentBinFile} ${path.join(currentDir, "jssh")}`);
+  exec(`mkdir -p ${fixFilePath(currentDir)}`);
+  exec(
+    `cp -f ${fixFilePath(currentTarFile)} ${fixFilePath(
+      path.join(currentDir, "jssh.tar.gz")
+    )}`
+  );
+  exec(
+    `cp -f ${fixFilePath(currentBinFile)} ${fixFilePath(
+      path.join(currentDir, "jssh")
+    )}`
+  );
 }
 
 function updateBuiltinJS() {
@@ -168,4 +182,8 @@ func init() {
 }
 `.trimLeft()
   );
+}
+
+function fixFilePath(p) {
+  return p.replace(/\\/g, "/");
 }

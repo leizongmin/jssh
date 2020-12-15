@@ -32,31 +32,31 @@ jobs:
         with:
           path: ./release/*.tar.gz
 
-  build-windows:
-    runs-on: windows-latest
-    name: Build windows version
-    steps:
-
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v2
-        with:
-          go-version: ^1.15
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-
-      - name: Build
-        run: go env && go build -o release/jssh.exe github.com/leizongmin/jssh
-
-      - name: Accidently upload to the same artifact via multiple jobs
-        uses: actions/upload-artifact@v2
-        with:
-          path: release/jssh.exe
+#  build-windows:
+#    runs-on: windows-latest
+#    name: Build windows version
+#    steps:
+#
+#      - name: Set up Go 1.x
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: ^1.15
+#
+#      - name: Check out code into the Go module directory
+#        uses: actions/checkout@v2
+#
+#      - name: Build
+#        run: go env && go build -o release/jssh.exe github.com/leizongmin/jssh
+#
+#      - name: Accidently upload to the same artifact via multiple jobs
+#        uses: actions/upload-artifact@v2
+#        with:
+#          path: release/jssh.exe
 
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [ build, build-windows ]
+    needs: [ build ]
     steps:
 
       - name: Download artifact
