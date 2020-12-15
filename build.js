@@ -19,7 +19,9 @@ const goVersion = goVersionOutput[1];
 log.info(`当前Go版本号%s`, goVersion);
 
 setenv(`GO111MODULE`, `on`);
-setenv(`GOPROXY`, goProxy);
+if (!__env.GOPROXY) {
+  setenv(`GOPROXY`, goProxy);
+}
 
 exec(`mkdir -p ${fixFilePath(releaseDir)}`);
 fs.readdir(releaseDir).forEach((s) => {
@@ -88,9 +90,17 @@ function getNormalOSType() {
 
 function buildHostOSVersion() {
   log.info(`构建宿主系统版本`);
-  const binPath = path.join(releaseDir, getNormalOSType(), binName);
-  exec(`${goBuild} -o ${fixFilePath(binPath)} ${packageName}`);
+  let binPath = path.join(releaseDir, getNormalOSType(), binName);
+  if (__os === "windows") {
+    binPath += ".exe";
+  }
+  exec(`rm -f ${fixFilePath(binPath)}`);
+  const cmd = `${goBuild} -o ${fixFilePath(binPath)} ${packageName}`;
+  log.info(cmd);
+  exec(cmd);
   log.info(`构建输出到%s`, binPath);
+  const version = exec2(`${fixFilePath(binPath)} -v`).output.trim();
+  log.info(`已构建的jssh版本：${version}`);
 }
 
 function buildLinuxVersionOnDocker() {
@@ -133,24 +143,6 @@ function buildReleaseFiles() {
       log.info(`输出压缩包%s`, tarFile);
     }
   });
-
-  const currentDir = path.join(releaseDir, "current");
-  const currentTarFile = path.join(
-    releaseDir,
-    `jssh-${getNormalOSType()}.tar.gz`
-  );
-  const currentBinFile = path.join(releaseDir, getNormalOSType(), "jssh");
-  exec(`mkdir -p ${fixFilePath(currentDir)}`);
-  exec(
-    `cp -f ${fixFilePath(currentTarFile)} ${fixFilePath(
-      path.join(currentDir, "jssh.tar.gz")
-    )}`
-  );
-  exec(
-    `cp -f ${fixFilePath(currentBinFile)} ${fixFilePath(
-      path.join(currentDir, "jssh")
-    )}`
-  );
 }
 
 function updateBuiltinJS() {
