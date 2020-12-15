@@ -11,8 +11,9 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
-      runs-on: ${{ matrix.os }}
-      name: Build ${{ matrix.os }} version
+
+    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.os }} version
     steps:
 
       - name: Set up Go 1.x
