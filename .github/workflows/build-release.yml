@@ -62,7 +62,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: jssh-windows.tar.gz
+          asset_path: artifact/jssh-windows.tar.gz
           asset_name: jssh-windows.tar.gz
           asset_content_type: application/x-gzip
 
@@ -72,7 +72,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: jssh-linux.tar.gz
+          asset_path: artifact/jssh-linux.tar.gz
           asset_name: jssh-linux.tar.gz
           asset_content_type: application/x-gzip
 
@@ -82,6 +82,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: jssh-osx.tar.gz
+          asset_path: artifact/jssh-osx.tar.gz
           asset_name: jssh-osx.tar.gz
           asset_content_type: application/x-gzip
