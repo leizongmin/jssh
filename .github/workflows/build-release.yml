@@ -13,7 +13,7 @@ jobs:
         os: [ windows-2019, ubuntu-20.04, macos-11.0 ]
 
     runs-on: ${{ matrix.os }}
-    name: Build ${{ matrix.os }} version
+    name: Build on ${{ matrix.os }}
     steps:
 
       - name: Set up Go 1.x
