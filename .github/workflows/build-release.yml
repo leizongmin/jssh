@@ -27,6 +27,9 @@ jobs:
       - name: Build
         run: go env && go run github.com/leizongmin/jssh build.js
 
+      - name: Test tar
+        run: cd release && export target=$(ls *.tar.gz | awk '{ print $1 }' | head -1 | sed 's/jssh-//;s/.tar.gz//') && cd $target && tar -czvf ../jssh-test.tar.gz *
+
       - name: List files
         run: ls -Rl release
         if: ${{ runner.os != 'Windows' }}
