@@ -33,13 +33,13 @@ jobs:
 
       - name: Accidently upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v2
-        if: ${{ runner.os != 'Darwin' }}
+        if: ${{ runner.os != 'macOS' }}
         with:
           path: ./release/*.tar.gz
 
       - name: Accidently upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v2
-        if: ${{ runner.os == 'Darwin' }}
+        if: ${{ runner.os == 'macOS' }}
         with:
           path: ./release/*.zip
 
