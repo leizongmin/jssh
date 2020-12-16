@@ -137,7 +137,7 @@ function buildReleaseFiles() {
       cd(p);
       exec(`tar --version`);
       const tarFile = `${binName}-${s.name}`;
-      const cmd = `tar -cjvf ../${tarFile}.tar.gz *`;
+      const cmd = `tar -czvf ../${tarFile}.tar.gz *`;
       log.info(cmd);
       exec(cmd);
       cd(__dirname);
