@@ -77,14 +77,8 @@ function getNormalOSType() {
   switch (__os) {
     case "darwin":
       return "osx";
-    case "linux":
-      return "linux";
-    case "freebsd":
-      return "freebsd";
-    case "windows":
-      return "windows";
     default:
-      return "other";
+      return __os;
   }
 }
 
@@ -135,13 +129,23 @@ function buildReleaseFiles() {
       cd(__dirname);
       exec(`cp -f ${fixFilePath(dtsFile)} ${fixFilePath(p)}`);
       cd(p);
-      exec(`tar --version`);
-      const tarFile = `${binName}-${s.name}`;
-      const cmd = `tar -czvf ../${tarFile}.tar.gz *`;
-      log.info(cmd);
-      exec(cmd);
+      if (__os === "darwin") {
+        // macOS系统使用zip压缩，解决github action的runner用tar打包出来的文件损坏问题
+        exec(`zip --version`);
+        const zipFile = `${binName}-${s.name}.zip`;
+        const cmd = `zip ../${zipFile} *`;
+        log.info(cmd);
+        exec(cmd);
+        log.info(`输出压缩包%s`, zipFile);
+      } else {
+        exec(`tar --version`);
+        const tarFile = `${binName}-${s.name}.tar.gz`;
+        const cmd = `tar -czvf ../${tarFile} *`;
+        log.info(cmd);
+        exec(cmd);
+        log.info(`输出压缩包%s`, tarFile);
+      }
       cd(__dirname);
-      log.info(`输出压缩包%s`, tarFile);
     }
   });
 }

@@ -27,17 +27,21 @@ jobs:
       - name: Build
         run: go env && go run github.com/leizongmin/jssh build.js
 
-      - name: Test tar
-        run: cd release && export target=$(ls *.tar.gz | awk '{ print $1 }' | head -1 | sed 's/jssh-//;s/.tar.gz//') && cd $target && tar -czvf ../jssh-test-$target.tar.gz *
-
       - name: List files
         run: ls -Rl release
         if: ${{ runner.os != 'Windows' }}
 
       - name: Accidently upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v2
+        if: ${{ runner.os != 'Darwin' }}
         with:
           path: ./release/*.tar.gz
+
+      - name: Accidently upload to the same artifact via multiple jobs
+        uses: actions/upload-artifact@v2
+        if: ${{ runner.os == 'Darwin' }}
+        with:
+          path: ./release/*.zip
 
   release:
     runs-on: ubuntu-latest
@@ -90,6 +94,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifact/jssh-osx.tar.gz
-          asset_name: jssh-osx.tar.gz
-          asset_content_type: application/x-gzip
+          asset_path: artifact/jssh-osx.zip
+          asset_name: jssh-osx.zip
+          asset_content_type: application/zip
