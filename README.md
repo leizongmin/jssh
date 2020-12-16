@@ -16,22 +16,15 @@
 
 ## 安装
 
-安装预构建的版本（仅支持 Linux amd64 和 macOS amd64 两种版本）：
+安装预构建的版本（仅支持 Linux amd64、macOS amd64 和 Windows amd64 三种版本）：
 
-```bash
-curl https://jssh.leizm.com/get.sh | bash
-```
+[Releases 页面](https://github.com/leizongmin/jssh/releases)
 
-其他系统通过 Go 命令行工具安装最新版本（暂不支持 Windows）：
+其他系统通过 Go 命令行工具安装最新版本：
 
 ```bash
 GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
 ```
-
-下载预构建的压缩包：
-
-- macOS amd64: https://cdn.itoutiao.co/jssh/v0.2/jssh-osx.tar.gz
-- Linux amd64: https://cdn.itoutiao.co/jssh/v0.2/jssh-linux.tar.gz
 
 **若要卸载 jssh，直接删除 jssh 二进制文件即可**。可尝试以下命令：
 
