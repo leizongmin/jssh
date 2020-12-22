@@ -47,21 +47,21 @@ func Main() {
 	}
 	first := os.Args[1]
 
-	if first == "-h" || first == "--help" {
+	if first == "help" || first == "--help" {
 		printUsage(codeOK)
 		return
 	}
-	if first == "-v" || first == "--version" {
+	if first == "version" || first == "--version" {
 		fmt.Printf("%s %s\n", pkginfo.Name, pkginfo.LongVersion)
 		return
 	}
 
-	if first == "-i" {
+	if first == "repl" || first == "--repl" {
 		run("", os.Args[1], true, nil, nil)
 		return
 	}
 
-	if first == "-s" {
+	if first == "build" || first == "--build" {
 		if len(os.Args) < 3 {
 			printExitMessage("missing script file", codeFileError, true)
 			return
@@ -105,7 +105,7 @@ func Main() {
 		return
 	}
 
-	if first == "-c" || first == "-x" {
+	if first == "exec" || first == "--exec" || first == "eval" || first == "--eval" {
 		if len(os.Args) < 3 {
 			printUsage(codeFileError)
 			return

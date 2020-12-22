@@ -36,11 +36,11 @@ rm $(which jssh)
 ## 命令行工具使用
 
 - 执行脚本：`jssh file.js`；
-- 进入 REPL：`jssh -i`；
-- 执行命令行参数指定的脚本代码：`jssh -c "js code"`；
-- 执行命令行参数指定的脚本代码，并将结果作为字符串输出：`jssh -x "js code"`；
-- 将 JS 源码编译为二进制可执行文件（仅限当前操作系统）：`jssh -s file.js`；
-- 显示帮助信息：`jssh -h`；
+- 进入 REPL：`jssh repl`；
+- 执行命令行参数指定的脚本代码：`jssh exec "js code"`；
+- 执行命令行参数指定的脚本代码，并将结果作为字符串输出：`jssh eval "js code"`；
+- 将 JS 源码编译为二进制可执行文件（仅限当前操作系统）：`jssh build file.js`；
+- 显示帮助信息：`jssh help`；
 
 ## 配置
 
