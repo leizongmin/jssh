@@ -2,21 +2,15 @@
 
 updateBuiltinJS();
 
+const goVersion = getGoVersion();
+log.info(`当前Go版本号%s`, goVersion);
 const packageName = `github.com/leizongmin/jssh`;
 const binName = `jssh`;
-const goBuild = `go build -v -ldflags "-s -w"`;
+const goBuild = `go build -v -ldflags "-s -w ${getReleaseLdflags()}"`;
 const goProxy = `https://goproxy.cn`;
 
 const releaseDir = path.join(__dirname, `release`);
 const cacheDir = path.join(releaseDir, `cross_compile_cache`);
-
-const goVersionOutput = exec2(`go version`).output.match(/go version go(.*) /);
-if (!goVersionOutput) {
-  log.error(`无法通过命令[go version]获得Go版本号`);
-  exit(1);
-}
-const goVersion = goVersionOutput[1];
-log.info(`当前Go版本号%s`, goVersion);
 
 setenv(`GO111MODULE`, `on`);
 if (!__env.GOPROXY) {
@@ -33,18 +27,27 @@ fs.readdir(releaseDir).forEach((s) => {
 
 //**********************************************************************************************************************
 
-updateReleasePkgInfo();
+// updateReleasePkgInfo();
 buildHostOSVersion();
 if (__os === `darwin`) {
   buildLinuxVersionOnDocker();
 }
 buildReleaseFiles();
-restoreReleasePkgInfo();
 
 //**********************************************************************************************************************
 
-function updateReleasePkgInfo() {
-  log.info(`更新版本信息`);
+function getGoVersion() {
+  const goVersionOutput = exec2(`go version`).output.match(
+    /go version go(.*) /
+  );
+  if (!goVersionOutput) {
+    log.error(`无法通过命令[go version]获得Go版本号`);
+    exit(1);
+  }
+  return goVersionOutput[1];
+}
+
+function getReleaseLdflags() {
   const date = exec2(`date +%Y%m%d`).output.trim();
   const time = exec2(`date +%H%M`).output.trim();
   const commitHash = exec2(`git rev-parse --short HEAD`).output.trim();
@@ -57,20 +60,11 @@ function updateReleasePkgInfo() {
     log.error(`无法获取date和commit信息`);
     exit(1);
   }
-  const file = path.join(__dirname, `internal/pkginfo/build_info.go`);
-  const data = `
-package pkginfo
-
-const CommitHash = "${commitHash}"
-const CommitDate = "${commitDate}"
-const BuildGoVersion = "${goVersion}"
-`.trimLeft();
-  fs.writefile(file, data);
-  log.info(data);
-}
-
-function restoreReleasePkgInfo() {
-  exec(`git checkout internal/pkginfo/build_info.go`);
+  const list = [];
+  list.push(`-X '${packageName}/internal/pkginfo.CommitHash=${commitHash}'`);
+  list.push(`-X '${packageName}/internal/pkginfo.CommitDate=${commitDate}'`);
+  list.push(`-X '${packageName}/internal/pkginfo.GoVersion=${goVersion}'`);
+  return list.join(" ");
 }
 
 function getNormalOSType() {
@@ -131,14 +125,12 @@ function buildReleaseFiles() {
       cd(p);
       if (__os === "darwin") {
         // macOS系统使用zip压缩，解决github action的runner用tar打包出来的文件损坏问题
-        exec(`zip --version`);
         const zipFile = `${binName}-${s.name}.zip`;
         const cmd = `zip ../${zipFile} *`;
         log.info(cmd);
         exec(cmd);
         log.info(`输出压缩包%s`, zipFile);
       } else {
-        exec(`tar --version`);
         const tarFile = `${binName}-${s.name}.tar.gz`;
         const cmd = `tar -czvf ../${tarFile} *`;
         log.info(cmd);
