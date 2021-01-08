@@ -203,6 +203,11 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 ./build.js
 ```
 
+## 感谢
+
+- 感谢 [JetBrains](https://www.jetbrains.com/?from=jssh) 提供免费的 Goland 开发工具；
+- 感谢 [bellard](https://bellard.org/) 开发的 [QuickJS](https://github.com/bellard/quickjs) 引擎；
+
 ## License
 
 ```text
