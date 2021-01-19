@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "jssh",
+  "version": "0.2.0",
+  "description": "一款使用JS编写命令行小工具的神器。",
+  "main": "build.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "scripts": {
+    "reformat": "prettier --write '**/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leizongmin/jssh.git"
+  },
+  "keywords": [
+    "runtime",
+    "quickjs"
+  ],
+  "author": "Zongmin Lei <leizongmin@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leizongmin/jssh/issues"
+  },
+  "homepage": "https://github.com/leizongmin/jssh#readme",
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  }
+}
