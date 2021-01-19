@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "reformat": "prettier --write '**/*.js'"
+    "reformat": "prettier --write '**/*.js' && prettier --write '**/*.ts'"
   },
   "repository": {
     "type": "git",

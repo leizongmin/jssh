@@ -82,6 +82,16 @@ declare function evalfile(filename: string, content?: string): any;
 declare function bytesize(data: string): number;
 
 /**
+ * 读取标准输入的内容，返回字符串
+ */
+declare function stdin(): string;
+
+/**
+ * 读取标准输入的内容，返回 Uint8Array
+ */
+declare function stdinbytes(): Uint8Array;
+
+/**
  * 格式化文本内容
  * @param format 模板，支持%s等格式
  * @param args 参数列表

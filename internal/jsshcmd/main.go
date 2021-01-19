@@ -515,6 +515,8 @@ func getJsGlobal(file string) typeutil.H {
 	global["stderrlog"] = jsFnStderrlog(global)
 	global["evalfile"] = jsFnEvalfile(global)
 	global["bytesize"] = jsFnBytesize(global)
+	global["stdin"] = jsFnStdin(global)
+	global["stdinbytes"] = jsFnStdinbytes(global)
 
 	global["sleep"] = jsFnSleep(global)
 	global["exit"] = jsFnExit(global)

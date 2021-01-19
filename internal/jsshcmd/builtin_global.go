@@ -169,3 +169,25 @@ func jsFnBytesize(global typeutil.H) jsexecutor.JSFunction {
 		return ctx.Int32(int32(len(b)))
 	}
 }
+
+func jsFnStdin(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		b, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.String(string(b))
+	}
+}
+
+func jsFnStdinbytes(global typeutil.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		b, err := ioutil.ReadAll(os.Stdin)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return jsexecutor.AnyToJSValue(ctx, b)
+	}
+}
