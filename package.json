@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/leizongmin/jssh#readme",
   "devDependencies": {
-    "prettier": "^2.2.1"
+    "prettier": "2.2.1"
   }
 }
