@@ -87,7 +87,7 @@ function buildHostOSVersion() {
   log.info(cmd);
   exec(cmd);
   log.info(`构建输出到%s`, binPath);
-  const version = exec2(`${fixFilePath(binPath)} -v`).output.trim();
+  const version = exec2(`${fixFilePath(binPath)} version`).output.trim();
   log.info(`已构建的jssh版本：${version}`);
 }
 
