@@ -11,5 +11,5 @@ require (
 	github.com/peterh/liner v1.2.1
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
-	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72
+	golang.org/x/term v0.0.0-20210422114643-f5beecf764ed
 )
