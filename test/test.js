@@ -20,8 +20,8 @@ function test(title, handler) {
   log.info(`test [${title}] succeed`);
 }
 
-test(`jssh -x`, function () {
-  eq(`579`, jssh(`-x 123+456`));
-  eq(`hello`, jssh(`-x "'hello'"`));
-  eq(`123`, jssh(`-x "a=1,b=2,c=3,format('%v%v%v',a,b,c)"`));
+test(`jssh eval`, function () {
+  eq(`579`, jssh(`eval 123+456`));
+  eq(`hello`, jssh(`eval "'hello'"`));
+  eq(`123`, jssh(`eval "a=1,b=2,c=3,format('%v%v%v',a,b,c)"`));
 });
