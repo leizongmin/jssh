@@ -1,7 +1,5 @@
 #!/usr/bin/env go run github.com/leizongmin/jssh
 
-updateBuiltinJS();
-
 const goVersion = getGoVersion();
 log.info(`当前Go版本号%s`, goVersion);
 const packageName = `github.com/leizongmin/jssh`;
@@ -140,39 +138,6 @@ function buildReleaseFiles() {
       cd(__dirname);
     }
   });
-}
-
-function updateBuiltinJS() {
-  log.info(`更新内置JS模块`);
-  const dir = path.join(__dirname, `internal`, `jsbuiltin`);
-  const list = [];
-  fs.readdir(dir)
-    .sort()
-    .forEach((s) => {
-      const f = path.join(dir, s.name);
-      if (!s.isdir && f.endsWith(`.js`)) {
-        log.info(`JS模块%s`, f);
-        const code = JSON.stringify(JSON.stringify(fs.readfile(f)));
-        list.push(`	// ${s.name}`);
-        list.push(
-          `	modules = append(modules, JsModule{File: "${s.name}", Code: ${code}})`
-        );
-        list.push(``);
-      }
-    });
-  const goFile = path.join(__dirname, `internal`, `jsbuiltin`, `all.go`);
-  fs.writefile(
-    goFile,
-    `
-package jsbuiltin
-
-var modules []JsModule
-
-func init() {
-	${list.join(`\n`).trim()}
-}
-`.trimLeft()
-  );
 }
 
 function fixFilePath(p) {
