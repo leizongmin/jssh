@@ -33,7 +33,7 @@ func getSelfContainedBoundary() string {
 	return "\n----" + fixedSelfContainedBoundary + "-" + pkginfo.CommitHash + "-" + pkginfo.CommitDate + "----\n"
 }
 
-// 主入口函数
+// Main 主入口函数
 func Main() {
 	runtime.LockOSThread()
 
