@@ -10,6 +10,6 @@ require (
 	github.com/lithdew/quickjs v0.0.0-20200714182134-aaa42285c9d2
 	github.com/peterh/liner v1.2.1
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b
+	golang.org/x/crypto 3497b51f5e64
 	golang.org/x/term v0.0.0-20210422114643-f5beecf764ed
 )
