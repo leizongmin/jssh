@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/leizongmin/go/textutil"
 	"github.com/leizongmin/go/typeutil"
-	"github.com/lithdew/quickjs"
+	"github.com/leizongmin/jssh/quickjs"
 	"reflect"
 )
 

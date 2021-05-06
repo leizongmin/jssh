@@ -9,7 +9,7 @@ import (
 	"github.com/leizongmin/jssh/internal/jsbuiltin"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
-	"github.com/lithdew/quickjs"
+	"github.com/leizongmin/jssh/quickjs"
 	"github.com/peterh/liner"
 	"io/ioutil"
 	"os"
