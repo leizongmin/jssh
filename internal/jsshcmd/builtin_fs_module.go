@@ -2,11 +2,13 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 func fileInfoToMap(s os.FileInfo) typeutil.H {

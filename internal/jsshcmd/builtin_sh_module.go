@@ -3,11 +3,13 @@ package jsshcmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"os"
 	"os/exec"
 	"sync"
+
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {

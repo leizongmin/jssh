@@ -2,11 +2,13 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"github.com/leizongmin/jssh/internal/pkginfo"
 	"log"
 	"os"
+
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/pkginfo"
 )
 
 var logPrefix = fmt.Sprintf("[%s] ", pkginfo.Name)

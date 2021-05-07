@@ -2,9 +2,10 @@ package jsexecutor
 
 import (
 	"fmt"
+	"testing"
+
 	"github.com/leizongmin/go/typeutil"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestJS(t *testing.T) {

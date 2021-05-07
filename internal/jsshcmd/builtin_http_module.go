@@ -3,17 +3,19 @@ package jsshcmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/leizongmin/go/httputil"
-	"github.com/leizongmin/go/randutil"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"github.com/leizongmin/jssh/internal/pkginfo"
 	"io"
 	"math"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/leizongmin/go/httputil"
+	"github.com/leizongmin/go/randutil"
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/pkginfo"
 )
 
 var httpGlobalHeaders map[string]string

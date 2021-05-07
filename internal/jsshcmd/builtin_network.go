@@ -1,9 +1,11 @@
 package jsshcmd
 
 import (
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"net"
+
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 func jsFnNetworkinterfaces(global typeutil.H) jsexecutor.JSFunction {

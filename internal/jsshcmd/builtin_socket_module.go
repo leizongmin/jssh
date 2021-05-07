@@ -2,11 +2,13 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"io/ioutil"
 	"net"
 	"time"
+
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 var socketGlobalTimeout int64 = 60_000

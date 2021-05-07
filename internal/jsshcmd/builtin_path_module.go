@@ -1,9 +1,11 @@
 package jsshcmd
 
 import (
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"path/filepath"
+
+	"github.com/leizongmin/go/typeutil"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 func jsFnPathJoin(global typeutil.H) jsexecutor.JSFunction {

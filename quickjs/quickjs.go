@@ -87,11 +87,11 @@ func restoreFuncPtr(ptr int64) funcEntry {
 	return funcPtrStore[ptr]
 }
 
-//func freeFuncPtr(ptr int64) {
+// func freeFuncPtr(ptr int64) {
 //	funcPtrLock.Lock()
 //	defer funcPtrLock.Unlock()
 //	delete(funcPtrStore, ptr)
-//}
+// }
 
 //export proxy
 func proxy(ctx *C.JSContext, thisVal C.JSValueConst, argc C.int, argv *C.JSValueConst) C.JSValue {

@@ -3,21 +3,24 @@ package jsshcmd
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/gookit/color"
-	jsoniter "github.com/json-iterator/go"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsbuiltin"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"github.com/leizongmin/jssh/internal/pkginfo"
-	"github.com/leizongmin/jssh/quickjs"
-	"github.com/peterh/liner"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
 	"runtime"
 	"strings"
+
+	"github.com/gookit/color"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/leizongmin/go/typeutil"
+	"github.com/peterh/liner"
+
+	"github.com/leizongmin/jssh/internal/jsbuiltin"
+	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/pkginfo"
+	"github.com/leizongmin/jssh/quickjs"
 )
 
 const (
@@ -214,7 +217,12 @@ func createSelfContainedBinary(source string, targetFile string) {
 		printExitMessage(err.Error(), codeFileError, false)
 		return
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(f)
 	if _, err := f.Write(data); err != nil {
 		printExitMessage(err.Error(), codeFileError, false)
 	}
@@ -277,7 +285,12 @@ func run(file string, content string, interactive bool, customGlobal typeutil.H,
 
 		jsGlobals := ctx.Globals()
 		repl := liner.NewLiner()
-		defer repl.Close()
+		defer func(repl *liner.State) {
+			err := repl.Close()
+			if err != nil {
+				log.Println(err)
+			}
+		}(repl)
 		repl.SetCtrlCAborts(true)
 		repl.SetCompleter(func(line string) (c []string) {
 			if names, err := jsGlobals.PropertyNames(); err != nil {

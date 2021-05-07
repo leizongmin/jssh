@@ -2,9 +2,11 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/gookit/color"
-	"github.com/leizongmin/jssh/internal/pkginfo"
 	"os"
+
+	"github.com/gookit/color"
+
+	"github.com/leizongmin/jssh/internal/pkginfo"
 )
 
 func printAuthorInfo() {

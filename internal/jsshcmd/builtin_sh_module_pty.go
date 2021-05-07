@@ -4,15 +4,17 @@ package jsshcmd
 
 import (
 	"fmt"
-	"github.com/creack/pty"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"golang.org/x/term"
 	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"syscall"
+
+	"github.com/creack/pty"
+	"github.com/leizongmin/go/typeutil"
+	"golang.org/x/term"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 func jsFnShPty(global typeutil.H) jsexecutor.JSFunction {

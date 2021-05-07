@@ -4,8 +4,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/leizongmin/jssh/quickjs"
 	"strings"
+
+	"github.com/leizongmin/jssh/quickjs"
 )
 
 func check(err error) {

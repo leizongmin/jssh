@@ -3,9 +3,6 @@ package jsshcmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
-	"golang.org/x/crypto/ssh"
 	"io"
 	"io/ioutil"
 	"net"
@@ -14,6 +11,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/leizongmin/go/typeutil"
+	"golang.org/x/crypto/ssh"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
 )
 
 var globalSshClient *ssh.Client

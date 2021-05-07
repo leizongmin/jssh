@@ -3,10 +3,11 @@ package quickjs
 import (
 	"errors"
 	"fmt"
-	"github.com/stretchr/testify/require"
 	stdruntime "runtime"
 	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestObject(t *testing.T) {
