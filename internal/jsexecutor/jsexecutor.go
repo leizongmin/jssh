@@ -169,6 +169,9 @@ func mapToJSValue(ctx *quickjs.Context, m typeutil.H) quickjs.Value {
 
 // AnyToJSValue 将interface{}转换为JSValue
 func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
+	if value == nil {
+		return ctx.Undefined()
+	}
 	v := reflect.ValueOf(value)
 	vt := v.Type()
 	switch vt.Kind().String() {
