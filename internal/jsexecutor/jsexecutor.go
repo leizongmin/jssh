@@ -139,10 +139,7 @@ func JSValueIsUint8Array(value JSValue) bool {
 	}
 	name := constructor.Get("name")
 	defer name.Free()
-	if name.String() != "Uint8Array" {
-		return false
-	}
-	return true
+	return name.String() == "Uint8Array"
 }
 
 // JSValueUint8ArrayToByteSlice 将Uint8Array转换为[]byte
