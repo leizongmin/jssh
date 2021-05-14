@@ -22,10 +22,7 @@ func NewJSRuntime() JSRuntime {
 
 // IsGoFunction 判断是否为Go的函数类型
 func IsGoFunction(f interface{}) bool {
-	if reflect.TypeOf(f).Kind().String() == "func" {
-		return true
-	}
-	return false
+	return reflect.TypeOf(f).Kind().String() == "func"
 }
 
 // MergeMapToJSObject 将map类型的值合并到一个JSObject中
