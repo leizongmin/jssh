@@ -529,10 +529,7 @@ interface HttpModule {
    * @param headers 请求头
    * @return 响应结果
    */
-  get(
-    url: String,
-    headers?: Record<string, string>,
-  ): HttpResponse;
+  get(url: String, headers?: Record<string, string>): HttpResponse;
 
   /**
    * 发送HTTP HEAD请求
@@ -540,10 +537,7 @@ interface HttpModule {
    * @param headers 请求头
    * @return 响应结果
    */
-  head(
-    url: String,
-    headers?: Record<string, string>,
-  ): HttpResponse;
+  head(url: String, headers?: Record<string, string>): HttpResponse;
 
   /**
    * 发送HTTP OPTIONS请求
@@ -551,10 +545,7 @@ interface HttpModule {
    * @param headers 请求头
    * @return 响应结果
    */
-  options(
-    url: String,
-    headers?: Record<string, string>,
-  ): HttpResponse;
+  options(url: String, headers?: Record<string, string>): HttpResponse;
 
   /**
    * 发送HTTP POST请求

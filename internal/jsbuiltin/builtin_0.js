@@ -2,9 +2,12 @@ const global = globalThis || this;
 
 {
   const removeShebangLine = (data) => {
+    if (typeof data !== "string") throw new Error(`unexpected input: ${data}`);
     if (!data.startsWith("#!")) return data;
     return data.replace(/^#![^\n]*/, "");
   };
+
+  const isHttpUrl = (s) => /^https?:\/\//gi.test(s);
 
   const resolveWithExtension = (name) => {
     const extension = [".json", ".js"];
@@ -13,7 +16,7 @@ const global = globalThis || this;
         // 如果是目录，尝试 ${name}/package.json
         const pkgFile = path.join(name, "package.json");
         if (fs.exist(pkgFile)) {
-          const pkg = loadJsonModule(pkgFile);
+          const pkg = loadModuleFromJsonContent(pkgFile, fs.readfile(pkgFile));
           if (pkg.main) {
             return resolveWithExtension(path.join(name, pkg.main));
           }
@@ -54,8 +57,16 @@ const global = globalThis || this;
 
   const resolveModulePath = (name, dir) => {
     if (name === "." || name.startsWith("/") || name.startsWith("./")) {
-      return resolveWithExtension(path.join(dir, name));
+      if (isHttpUrl(dir)) {
+        return path.abs(path.join(dir, name));
+      }
+      return path.abs(resolveWithExtension(path.join(dir, name)));
     }
+
+    if (isHttpUrl(name)) {
+      return name;
+    }
+
     const paths = [];
     let d = dir;
     while (true) {
@@ -70,7 +81,7 @@ const global = globalThis || this;
     }
     for (const p of paths) {
       const ret = resolveWithExtension(path.join(p, name));
-      if (ret) return ret;
+      if (ret) return path.abs(ret);
     }
   };
 
@@ -85,21 +96,35 @@ const global = globalThis || this;
       throw new TypeError(`empty module dir`);
     }
 
-    let file = resolveModulePath(name, dir);
+    const file = resolveModulePath(name, dir);
     if (!file) {
       throw new Error(`cannot resolve module "${name}" on path "${dir}"`);
     }
-    file = path.abs(file);
+
+    if (require.cache[file]) {
+      return require.cache[file];
+    }
 
     try {
-      if (file.endsWith(".json")) {
-        return loadJsonModule(file);
+      let content = "";
+      if (isHttpUrl(file)) {
+        const res = http.get(file);
+        if (res.status !== 200) {
+          throw new Error(`http status "${res.status}"`);
+        }
+        content = res.body;
       } else {
-        const content = fs.readfile(file);
-        return loadJsModule(file, path.dir(file), removeShebangLine(content));
+        content = fs.readfile(file);
+      }
+      if (file.endsWith(".json")) {
+        return loadModuleFromJsonContent(file);
+      } else {
+        return loadModuleFromJsContent(file, path.dir(file), content);
       }
     } catch (err) {
-      const err2 = new Error(`cannot load module "${name}": ${err.message}`);
+      const err2 = new Error(
+        `cannot load module "${name}": ${err.message}\n${err.stack}`
+      );
       err2.moduleName = name;
       err2.resolvedFilename = file;
       err2.originError = err;
@@ -107,18 +132,12 @@ const global = globalThis || this;
     }
   };
 
-  const loadJsonModule = (filename) => {
-    if (require.cache[filename]) {
-      return require.cache[filename];
-    }
-    return (require.cache[filename] = JSON.parse(fs.readfile(filename)));
+  const loadModuleFromJsonContent = (filename, content) => {
+    return (require.cache[filename] = JSON.parse(content));
   };
 
-  const loadJsModule = (filename, dirname, content) => {
-    if (require.cache[filename]) {
-      return require.cache[filename];
-    }
-
+  const loadModuleFromJsContent = (filename, dirname, content) => {
+    content = removeShebangLine(content);
     const wrapped = `
 (function (require, module, __dirname, __filename) { var exports = module.exports; ${content}
 return module;
@@ -132,9 +151,7 @@ return module;
   const require = (name) => {
     return requiremodule(name, __dirname);
   };
-
   require.cache = {};
-
   global.require = require;
   global.requiremodule = requiremodule;
 }
