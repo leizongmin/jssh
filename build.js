@@ -35,9 +35,8 @@ buildReleaseFiles();
 //**********************************************************************************************************************
 
 function getGoVersion() {
-  const goVersionOutput = exec2(`go version`).output.match(
-    /go version go(.*) /
-  );
+  const goVersionOutput =
+    exec2(`go version`).output.match(/go version go(.*) /);
   if (!goVersionOutput) {
     log.error(`无法通过命令[go version]获得Go版本号`);
     exit(1);

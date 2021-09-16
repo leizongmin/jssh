@@ -30,6 +30,9 @@ var codeBuiltinGlobal string
 //go:embed builtin_log.js
 var codeBuiltinLog string
 
+//go:embed builtin_http.js
+var codeBuiltinHttp string
+
 func init() {
 	modules = append(modules, JsModule{File: "builtin_0.js", Code: codeBuiltin0})
 	modules = append(modules, JsModule{File: "builtin_assert.js", Code: codeBuiltinAssert})
@@ -39,4 +42,5 @@ func init() {
 	modules = append(modules, JsModule{File: "builtin_fs.js", Code: codeBuiltinFs})
 	modules = append(modules, JsModule{File: "builtin_global.js", Code: codeBuiltinGlobal})
 	modules = append(modules, JsModule{File: "builtin_log.js", Code: codeBuiltinLog})
+	modules = append(modules, JsModule{File: "builtin_http.js", Code: codeBuiltinHttp})
 }
