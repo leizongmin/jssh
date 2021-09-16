@@ -118,7 +118,7 @@ func Main() {
 		} else {
 			run("", "return "+os.Args[2], false, nil, func(ret jsexecutor.JSValue) {
 				if !ret.IsUndefined() && !ret.IsNull() {
-					printJsValue(ret)
+					printJsValue(ret, false)
 				}
 			})
 		}
@@ -350,7 +350,7 @@ func run(file string, content string, interactive bool, customGlobal typeutil.H,
 				if ret, err := ctx.Eval(content); err != nil {
 					fmt.Println(color.FgRed.Render(formatJsError(err)))
 				} else {
-					printJsValue(ret)
+					printJsValue(ret, true)
 					if onEnd != nil {
 						onEnd(ret)
 					}
@@ -593,7 +593,7 @@ func getCurrentAbsoluteBinPath() string {
 	return ret2
 }
 
-func printJsValue(ret quickjs.Value) {
+func printJsValue(ret quickjs.Value, coloured bool) {
 	jsonPrint := false
 	if ret.IsArray() {
 		jsonPrint = true
@@ -605,16 +605,32 @@ func printJsValue(ret quickjs.Value) {
 	if jsonPrint {
 		a, err := jsexecutor.JSValueToAny(ret)
 		if err != nil {
-			fmt.Println(color.FgRed.Render(err))
+			if coloured {
+				fmt.Println(color.FgRed.Render(err))
+			} else {
+				fmt.Println(err)
+			}
 			return
 		}
 		s, err := jsoniter.MarshalToString(a)
 		if err != nil {
-			fmt.Println(color.FgRed.Render(err))
+			if coloured {
+				fmt.Println(color.FgRed.Render(err))
+			} else {
+				fmt.Println(err)
+			}
 			return
 		}
-		fmt.Println(color.FgLightBlue.Render(s))
+		if coloured {
+			fmt.Println(color.FgLightBlue.Render(s))
+		} else {
+			fmt.Println(s)
+		}
 	} else {
-		fmt.Println(color.FgLightBlue.Render(ret.String()))
+		if coloured {
+			fmt.Println(color.FgLightBlue.Render(ret.String()))
+		} else {
+			fmt.Println(ret.String())
+		}
 	}
 }
