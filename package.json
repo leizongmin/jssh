@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/leizongmin/jssh#readme",
   "devDependencies": {
-    "lodash": "^4.17.21",
+    "lodash": "4.17.21",
     "prettier": "2.4.1",
-    "xss": "^1.0.9"
+    "xss": "1.0.9"
   }
 }
