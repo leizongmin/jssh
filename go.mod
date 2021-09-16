@@ -9,6 +9,6 @@ require (
 	github.com/leizongmin/go v1.9.5
 	github.com/peterh/liner v1.2.1
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+	golang.org/x/crypto v0.0.0-20210915214749-c084706c2272
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
 )
