@@ -60,7 +60,11 @@ const global = globalThis || this;
       if (isHttpUrl(dir)) {
         return path.abs(path.join(dir, name));
       }
-      return path.abs(resolveWithExtension(path.join(dir, name)));
+      const ret = resolveWithExtension(path.join(dir, name));
+      if (ret) {
+        return path.abs(ret);
+      }
+      return path.abs(name);
     }
 
     if (isHttpUrl(name)) {
@@ -109,10 +113,17 @@ const global = globalThis || this;
       let content = "";
       if (isHttpUrl(file)) {
         const res = http.get(file);
-        if (res.status !== 200) {
-          throw new Error(`http status "${res.status}"`);
+        if (res.status === 200) {
+          content = res.body;
+        } else {
+          // FIXME: 尝试加上 .js 后缀，以后优化此方法
+          const res2 = http.get(file + ".js");
+          if (res2.status === 200) {
+            content = res2.body;
+          } else {
+            throw new Error(`http get "${file}" status "${res.status}"`);
+          }
         }
-        content = res.body;
       } else {
         content = fs.readfile(file);
       }
