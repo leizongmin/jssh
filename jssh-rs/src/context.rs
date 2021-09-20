@@ -8,14 +8,15 @@ pub struct JsContext {
 
 impl JsContext {
     pub fn new() -> Result<JsContext, AnyError> {
+        let context = Context::new().map_err(|e| generic_error(e.to_string()))?;
         Ok(JsContext {
-            quick_js_context: Context::new().map_err(|e| generic_error(e.to_string()))?,
+            quick_js_context: context,
         })
     }
 
     pub fn load_std(&self) -> Result<(), AnyError> {
         self.quick_js_context.add_callback("print", std_print);
-        self.quick_js_context.add_callback("println", std_print);
+        self.quick_js_context.add_callback("println", std_println);
         Ok(())
     }
 
@@ -28,6 +29,8 @@ fn std_print(args: Arguments) {
     for a in args.into_vec() {
         if let Some(s) = a.as_str() {
             print!("{}", s)
+        } else {
+            print!("{:?}", a)
         }
     }
 }
