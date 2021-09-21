@@ -1,3 +1,5 @@
+cargo-features = ["strip"]
+
 [package]
 name = "jssh"
 version = "0.1.0"
@@ -10,5 +12,10 @@ quick-js = { version = "0.4.1", features = ["bigint", "patched", "num-traits", "
 clap = "3.0.0-beta.4"
 anyhow = "1.0.44"
 
-[profile.release.package.quick-js]
-opt-level = 3
+# See https://github.com/johnthagen/min-sized-rust
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
