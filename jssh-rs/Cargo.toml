@@ -11,6 +11,8 @@ edition = "2021"
 quick-js = { version = "0.4.1", features = ["bigint", "patched", "num-traits", "num-bigint", "log", "chrono"] }
 clap = "3.0.0-beta.4"
 anyhow = "1.0.44"
+log = "0.4.14"
+simplelog = "0.10.0"
 
 # See https://github.com/johnthagen/min-sized-rust
 [profile.release]

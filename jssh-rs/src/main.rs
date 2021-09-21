@@ -5,11 +5,21 @@ use quick_js::{Context, ExecutionError, JsValue};
 
 use crate::context::JsContext;
 use crate::error::{execution_error, uri_error, AnyError};
+use log::debug;
+use simplelog::{ColorChoice, CombinedLogger, Config, LevelFilter, TermLogger, TerminalMode};
 
 mod context;
 mod error;
 
 fn main() {
+    CombinedLogger::init(vec![TermLogger::new(
+        LevelFilter::Trace,
+        Config::default(),
+        TerminalMode::Mixed,
+        ColorChoice::Auto,
+    )])
+    .unwrap();
+
     let mut app = App::new("jssh")
         .version("0.0.0-alpha")
         .author("Zongmin Lei <leizongmin@gmail.com>")
