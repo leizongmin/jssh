@@ -7,8 +7,8 @@ try {
     jssh.op[n] = globalThis[k];
     Object.defineProperty(jssh.op, n, {configurable: false})
     delete globalThis[k];
-  })
-  Object.defineProperty(jssh, "builtin", {configurable: false});
+  });
+  Object.defineProperty(jssh, "op", {configurable: false});
 } catch (err) {
   console.error(err.message + "\n" + err.stack);
   throw err;
