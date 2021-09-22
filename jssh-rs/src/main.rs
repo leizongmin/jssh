@@ -58,7 +58,7 @@ fn main() {
 
 fn eval_js(code: String) -> Result<JsValue, AnyError> {
     let context = JsContext::new()?;
-    context.load_std();
+    context.load_std()?;
     context.eval(&code)
 }
 

@@ -20,8 +20,8 @@ impl JsContext {
 
     pub fn load_std(&self) -> Result<(), AnyError> {
         self.quick_js_context
-            .add_callback("__builtin_op_stdout_write", builtin_op_stdout_write);
-        self.quick_js_context.eval(include_str!("runtime/js/core.js"));
+            .add_callback("__builtin_op_stdout_write", builtin_op_stdout_write)?;
+        self.quick_js_context.eval(include_str!("runtime/js/core.js"))?;
         Ok(())
     }
 
