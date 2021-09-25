@@ -128,17 +128,17 @@
 
 可以通过环境变量 `JSSH_LOG=<DEBUG|INFO|ERROR>` 来控制日志输出等级，默认 `JSS_LOG=INFO`。
 
-- `log.debug(template, ...args)`：输出 DEBUG 信息（绿色文字），格式同 `format()` 函数；
-- `log.info(template, ...args)`：输出 INFO 信息（绿色文字），格式同 `format()` 函数；
-- `log.warn(template, ...args)`：输出 WARN 信息（黄色文字），格式同 `format()` 函数；
-- `log.error(template, ...args)`：输出 ERROR 信息（红色文字），格式同 `format()` 函数；
-- `log.fatal(template, ...args)`：输出 FATAL 信息（红色文字）并结束进程，格式同 `format()` 函数；
+- ✅ `log.debug(template, ...args)`：输出 DEBUG 信息（绿色文字），格式同 `format()` 函数；
+- ✅ `log.info(template, ...args)`：输出 INFO 信息（绿色文字），格式同 `format()` 函数；
+- ✅ `log.warn(template, ...args)`：输出 WARN 信息（黄色文字），格式同 `format()` 函数；
+- ✅ `log.error(template, ...args)`：输出 ERROR 信息（红色文字），格式同 `format()` 函数；
+- ✅ `log.fatal(template, ...args)`：输出 FATAL 信息（红色文字）并结束进程，格式同 `format()` 函数；
 
 #### 网络连接操作
 
-- `socket.timeout(ms)`：设置操作超时毫秒时间，默认为 `60000`；
-- `socket.tcpsend(host, port, data)`：往指定主机端口发送一段数据，并返回结果；
-- `socket.tcptest(host, port)`：测试指定主机端口是否可连接；
+- ✅ `socket.timeout(ms)`：设置操作超时毫秒时间，默认为 `60000`；
+- ✅ `socket.tcpsend(host, port, data)`：往指定主机端口发送一段数据，并返回结果；
+- ✅ `socket.tcptest(host, port)`：测试指定主机端口是否可连接；
 
 
 #### 断言及测试操作

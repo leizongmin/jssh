@@ -16,4 +16,16 @@ log.info("hello, %s, %d", "world", 123);
 console.log("env=", __env);
 console.log("args=", __args);
 
+console.log(socket.timeout());
+console.log(socket.timeout(5000));
+console.log(socket.tcptest("123.151.137.18", 81));
+console.log(socket.tcptest("123.151.137.18", 80));
+console.log(
+  socket.tcpsend(
+    "123.151.137.18",
+    80,
+    "GET / HTTP/1.1\r\nHost: qq.com\r\nConnection: Close\r\n\r\n"
+  )
+);
+
 exit(1);

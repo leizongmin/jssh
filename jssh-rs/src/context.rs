@@ -1,12 +1,15 @@
 use std::collections::HashMap;
-use std::io::Write;
+use std::io::{Read, Write};
+use std::net::{SocketAddr, TcpStream};
 use std::ops::Deref;
+use std::str::FromStr;
+use std::time::Duration;
 
 use anyhow::Result;
 use quick_js::console::LogConsole;
 use quick_js::{Arguments, Context, JsValue};
 
-use crate::error::{execution_error, generic_error};
+use crate::error::{execution_error, generic_error, invalid_argument_error};
 
 pub struct JsContext {
   qjs_ctx: Context,
@@ -25,9 +28,13 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_env", builtin_op_env)?;
     self.qjs_ctx.add_callback("__builtin_op_args", builtin_op_args)?;
 
+    self.qjs_ctx.add_callback("__builtin_op_tcp_send", builtin_op_tcp_send)?;
+    self.qjs_ctx.add_callback("__builtin_op_tcp_test", builtin_op_tcp_test)?;
+
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_log.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/20_socket.js"))?;
 
     Ok(())
   }
@@ -96,4 +103,57 @@ fn builtin_op_env(_args: Arguments) -> JsValue {
 
 fn builtin_op_args(_args: Arguments) -> JsValue {
   JsValue::Array(std::env::args().map(JsValue::String).collect())
+}
+
+fn tcp_send(addr: String, data: Option<&[u8]>, timeout: Duration) -> Result<Vec<u8>> {
+  let addr = SocketAddr::from_str(&addr)?;
+  let mut stream = TcpStream::connect_timeout(&addr, timeout)?;
+  stream.set_nodelay(true)?;
+  stream.set_read_timeout(Some(timeout))?;
+  stream.set_write_timeout(Some(timeout))?;
+  if let Some(data) = data {
+    stream.write(data)?;
+  }
+  let mut output = Vec::new();
+  stream.read_to_end(&mut output)?;
+  Ok(output)
+}
+
+fn builtin_op_tcp_send(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let host = args.get(0).ok_or(invalid_argument_error("missing argument: host"))?;
+  let port = args.get(1).ok_or(invalid_argument_error("missing argument: port"))?;
+  let data = args.get(2).ok_or(invalid_argument_error("missing argument: data"))?;
+  let timeout_ms = args.get(3).ok_or(invalid_argument_error("missing argument: timeout"))?;
+
+  let host = get_string_from_js_value(host).ok_or(invalid_argument_error("invalid argument: host expected a string"))?;
+  let port = get_i32_from_js_value(port).ok_or(invalid_argument_error("invalid argument: host expected a number"))?;
+  let data = get_string_from_js_value(data).ok_or(invalid_argument_error("invalid argument: data expected a string"))?;
+  let timeout_ms = get_i32_from_js_value(timeout_ms).ok_or(invalid_argument_error("invalid argument: timeout expected a number"))?;
+
+  let output = tcp_send(format!("{}:{}", host, port), Some(data.as_bytes()), Duration::from_millis(timeout_ms as u64))?;
+  let output = String::from_utf8_lossy(output.as_slice());
+  Ok(JsValue::String(output.to_string()))
+}
+
+fn tcp_test(addr: String, timeout: Duration) -> Result<()> {
+  let addr = SocketAddr::from_str(&addr)?;
+  TcpStream::connect_timeout(&addr, timeout)?;
+  Ok(())
+}
+
+fn builtin_op_tcp_test(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let host = args.get(0).ok_or(invalid_argument_error("missing argument: host"))?;
+  let port = args.get(1).ok_or(invalid_argument_error("missing argument: port"))?;
+  let timeout_ms = args.get(2).ok_or(invalid_argument_error("missing argument: timeout"))?;
+
+  let host = get_string_from_js_value(host).ok_or(invalid_argument_error("invalid argument: host expected a string"))?;
+  let port = get_i32_from_js_value(port).ok_or(invalid_argument_error("invalid argument: host expected a number"))?;
+  let timeout_ms = get_i32_from_js_value(timeout_ms).ok_or(invalid_argument_error("invalid argument: timeout expected a number"))?;
+
+  let ok = tcp_test(format!("{}:{}", host, port), Duration::from_millis(timeout_ms as u64))
+    .map(|_| true)
+    .unwrap_or(false);
+  Ok(JsValue::Bool(ok))
 }
