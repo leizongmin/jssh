@@ -19,6 +19,7 @@ globalThis.jssh = jssh;
 Object.defineProperty(globalThis, "jssh", { configurable: false });
 
 const __env = jssh.op.env();
+const __args = jssh.op.args();
 
 function exit(code = 0) {
   jssh.op.exit(code);

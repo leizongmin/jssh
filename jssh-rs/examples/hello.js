@@ -12,6 +12,8 @@ log.info("this is info message");
 log.warn("this is warn message");
 log.error("this is error message");
 log.info("hello, %s, %d", "world", 123);
-log.info("hello, %s", __env, __env);
+
+console.log("env=", __env);
+console.log("args=", __args);
 
 exit(1);

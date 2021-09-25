@@ -23,6 +23,7 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_stderr_write", builtin_op_stderr_write)?;
     self.qjs_ctx.add_callback("__builtin_op_exit", builtin_op_exit)?;
     self.qjs_ctx.add_callback("__builtin_op_env", builtin_op_env)?;
+    self.qjs_ctx.add_callback("__builtin_op_args", builtin_op_args)?;
 
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
@@ -91,4 +92,8 @@ fn builtin_op_env(_args: Arguments) -> JsValue {
     env.insert(k, JsValue::String(v));
   }
   JsValue::Object(env)
+}
+
+fn builtin_op_args(_args: Arguments) -> JsValue {
+  JsValue::Array(std::env::args().map(JsValue::String).collect())
 }
