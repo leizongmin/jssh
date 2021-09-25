@@ -13,7 +13,7 @@ use crate::error::uri_error;
 mod context;
 mod error;
 
-fn main() {
+fn main() -> Result<()> {
   env_logger::builder().filter_level(log::LevelFilter::Trace).init();
 
   let mut app = App::new("jssh")
@@ -41,15 +41,36 @@ fn main() {
       } else if let Some(args) = matches.subcommand_matches("run") {
         let file = args.value_of("file").expect("missing script file");
         println!("Run script file: {}", file);
-        eval_js_file(file.to_string()).unwrap();
+        eval_js_file(file.to_string())?;
       } else {
-        app.print_long_help().unwrap();
+        app.print_long_help()?;
       }
     }
     Err(e) => {
       e.exit();
     }
-  }
+  };
+
+  // let module_wat = r#"
+  //   (module
+  //   (type $t0 (func (param i32) (result i32)))
+  //   (func $add_one (export "add_one") (type $t0) (param $p0 i32) (result i32)
+  //       get_local $p0
+  //       i32.const 1
+  //       i32.add))
+  //   "#;
+  //
+  // let store = wasmer::Store::default();
+  // let module = wasmer::Module::new(&store, &module_wat)?;
+  // // The module doesn't import anything, so we create an empty import object.
+  // let import_object = wasmer::imports! {};
+  // let instance = wasmer::Instance::new(&module, &import_object)?;
+  //
+  // let add_one = instance.exports.get_function("add_one")?;
+  // let result = add_one.call(&[wasmer::Value::I32(42)])?;
+  // assert_eq!(result[0], wasmer::Value::I32(43));
+
+  Ok(())
 }
 
 fn eval_js(code: String) -> Result<JsValue> {
