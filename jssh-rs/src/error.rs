@@ -10,23 +10,23 @@ pub type AnyError = anyhow::Error;
 
 /// Creates a new error with a caller-specified error class name and message.
 pub fn custom_error(class: &'static str, message: impl Into<Cow<'static, str>>) -> AnyError {
-    CustomError {
-        class,
-        message: message.into(),
-    }
-    .into()
+  CustomError {
+    class,
+    message: message.into(),
+  }
+  .into()
 }
 
 pub fn generic_error(message: impl Into<Cow<'static, str>>) -> AnyError {
-    custom_error("Error", message)
+  custom_error("Error", message)
 }
 
 pub fn execution_error(err: ExecutionError) -> AnyError {
-    custom_error("ExecutionError", err.to_string())
+  custom_error("ExecutionError", err.to_string())
 }
 
 pub fn uri_error(message: impl Into<Cow<'static, str>>) -> AnyError {
-    custom_error("URIError", message)
+  custom_error("URIError", message)
 }
 
 /// A simple error type that lets the creator specify both the error message and
@@ -35,14 +35,14 @@ pub fn uri_error(message: impl Into<Cow<'static, str>>) -> AnyError {
 /// `CustomError`, use the function `get_custom_error_class()`.
 #[derive(Debug)]
 struct CustomError {
-    class: &'static str,
-    message: Cow<'static, str>,
+  class: &'static str,
+  message: Cow<'static, str>,
 }
 
 impl Display for CustomError {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        f.write_str((&self.message).as_ref())
-    }
+  fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+    f.write_str((&self.message).as_ref())
+  }
 }
 
 impl Error for CustomError {}
