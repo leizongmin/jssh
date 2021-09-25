@@ -18,7 +18,7 @@ console.log("args=", __args);
 
 console.log(socket.timeout());
 console.log(socket.timeout(5000));
-console.log(socket.tcptest("123.151.137.18", 81));
+// console.log(socket.tcptest("123.151.137.18", 81));
 console.log(socket.tcptest("123.151.137.18", 80));
 console.log(
   socket.tcpsend(
@@ -27,5 +27,12 @@ console.log(
     "GET / HTTP/1.1\r\nHost: qq.com\r\nConnection: Close\r\n\r\n"
   )
 );
+
+try {
+  assert(true, "test aaa");
+  assert(false, "test bbb");
+} catch (err) {
+  console.log(err.message, err.stack);
+}
 
 exit(1);

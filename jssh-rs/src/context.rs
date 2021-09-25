@@ -33,6 +33,7 @@ impl JsContext {
 
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/20_assert.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_log.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_socket.js"))?;
 
