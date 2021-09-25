@@ -34,5 +34,10 @@ try {
 } catch (err) {
   console.log(err.message, err.stack);
 }
+{
+  console.log(cli.args(), cli.opts());
+  // const name = cli.prompt("what's your name? ");
+  // console.log("Your name is", name);
+}
 
 exit(1);

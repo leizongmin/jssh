@@ -25,8 +25,16 @@ function exit(code = 0) {
   jssh.op.exit(code);
 }
 
+function print(...args) {
+  jssh.op.stdout_write(args.map((v) => v.toString()).join(" "));
+}
+
 function println(...args) {
   jssh.op.stdout_write(args.map((v) => v.toString()).join(" ") + "\n");
+}
+
+function readline() {
+  return jssh.op.stdin_read_line();
 }
 
 function stdoutlog(...args) {

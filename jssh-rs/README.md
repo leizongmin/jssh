@@ -25,13 +25,13 @@
 
 - `require(modulename)`：加载 CommonJS 模块（**注意：仍然有 Bug，慎用**）；
 - `evalfile(filename, content?)`：以 `eval` 方式执行指定脚本文件（本地文件路径或 URL），若指定参数 `content` 则不需要实际读取文件内容；
-- `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
-- `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同 `format()` 函数；
-- `stdoutlog(message)`：在 `stdout` 中输出一行日志；
-- `stderrlog(message)`：在 `stderr` 中输出一行日志；
-- `readline()`：从控制台获取用户一行的字符串输入；
+- ✅ `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
+- ✅ `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同 `format()` 函数；
+- ✅ `stdoutlog(message)`：在 `stdout` 中输出一行日志；
+- ✅ `stderrlog(message)`：在 `stderr` 中输出一行日志；
+- ✅ `readline()`：从控制台获取用户一行的字符串输入；
 - `sleep(ms)`：等待指定毫秒时间；
-- `exit(code)`：结束进程；
+- ✅ `exit(code)`：结束进程；
 - `loadconfig(filename, format?)`：加载配置文件，支持 JSON、YAML、TOML 格式；
 - `networkinterfaces()`：获得网络接口信息；
 - `bytesize(data)`：获取指定字符串的字节长度；
@@ -103,14 +103,14 @@
 
 #### 命令行参数操作
 
-- `cli.get(flagname)`：获取指定命令行选项值，支持 `-name=value`、`--name=value` 两种方式；
-- `cli.get(index)`：获取指定索引的命令行参数，从 `0` 开始；
-- `cli.bool(flagname)`：获取指定命令行选项的布尔值，当为 `-name=0`、`-name=false`、`-name=f` 或不存在时结果为 `false`；
-- `cli.args()`：获取所有命令行参数；
-- `cli.opts()`：获取所有命令行选项；
-- `cli.prompt(message?)`：获取用户输入的内容，按 `[Enter]` 键结束输入；
-- `cli.subcommand(name, callback)`：注册子命令处理函数，当 `name=*` 表示其他情况；
-- `cli.subcommandstart()`：开始解析执行子命令；
+- ✅ `cli.get(flagname)`：获取指定命令行选项值，支持 `-name=value`、`--name=value` 两种方式；
+- ✅ `cli.get(index)`：获取指定索引的命令行参数，从 `0` 开始；
+- ✅ `cli.bool(flagname)`：获取指定命令行选项的布尔值，当为 `-name=0`、`-name=false`、`-name=f` 或不存在时结果为 `false`；
+- ✅ `cli.args()`：获取所有命令行参数；
+- ✅ `cli.opts()`：获取所有命令行选项；
+- ✅ `cli.prompt(message?)`：获取用户输入的内容，按 `[Enter]` 键结束输入；
+- ✅ `cli.subcommand(name, callback)`：注册子命令处理函数，当 `name=*` 表示其他情况；
+- ✅ `cli.subcommandstart()`：开始解析执行子命令；
 
 #### HTTP 操作
 

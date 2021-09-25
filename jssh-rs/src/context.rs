@@ -24,6 +24,7 @@ impl JsContext {
   pub fn load_std(&self) -> Result<()> {
     self.qjs_ctx.add_callback("__builtin_op_stdout_write", builtin_op_stdout_write)?;
     self.qjs_ctx.add_callback("__builtin_op_stderr_write", builtin_op_stderr_write)?;
+    self.qjs_ctx.add_callback("__builtin_op_stdin_read_line", builtin_op_stdin_read_line)?;
     self.qjs_ctx.add_callback("__builtin_op_exit", builtin_op_exit)?;
     self.qjs_ctx.add_callback("__builtin_op_env", builtin_op_env)?;
     self.qjs_ctx.add_callback("__builtin_op_args", builtin_op_args)?;
@@ -34,6 +35,7 @@ impl JsContext {
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_assert.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/20_cli.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_log.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_socket.js"))?;
 
@@ -45,31 +47,43 @@ impl JsContext {
   }
 }
 
-fn builtin_op_stdout_write(args: Arguments) {
+fn builtin_op_stdout_write(args: Arguments) -> Result<JsValue> {
+  let mut stdout = std::io::stdout();
   for a in args.into_vec() {
     if let Some(s) = a.as_str() {
-      print!("{}", s)
+      write!(stdout, "{}", s)?;
     } else {
-      print!("{:?}", a)
+      write!(stdout, "{:?}", a)?;
     }
   }
+  stdout.flush()?;
+  Ok(JsValue::Undefined)
 }
 
-fn builtin_op_stderr_write(args: Arguments) {
+fn builtin_op_stderr_write(args: Arguments) -> Result<JsValue> {
   let mut stderr = std::io::stderr();
   for a in args.into_vec() {
     if let Some(s) = a.as_str() {
-      write!(stderr, "{}", s);
+      write!(stderr, "{}", s)?;
     } else {
-      write!(stderr, "{:?}", a);
+      write!(stderr, "{:?}", a)?;
     }
   }
+  stderr.flush()?;
+  Ok(JsValue::Undefined)
+}
+
+fn builtin_op_stdin_read_line(_args: Arguments) -> Result<JsValue> {
+  let mut line = String::new();
+  let mut stdin = std::io::stdin();
+  stdin.read_line(&mut line)?;
+  Ok(JsValue::String(line))
 }
 
 fn builtin_op_exit(args: Arguments) {
   if let Some(a) = args.into_vec().get(0) {
     if let Some(code) = get_i32_from_js_value(a) {
-      return std::process::exit(code);
+      std::process::exit(code);
     }
   }
   std::process::exit(0);
