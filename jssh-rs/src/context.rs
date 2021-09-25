@@ -1,14 +1,15 @@
+use anyhow::Result;
 use quick_js::console::LogConsole;
 use quick_js::{Arguments, Context, JsValue};
 
-use crate::error::{execution_error, generic_error, AnyError};
+use crate::error::{execution_error, generic_error};
 
 pub struct JsContext {
     quick_js_context: Context,
 }
 
 impl JsContext {
-    pub fn new() -> Result<JsContext, AnyError> {
+    pub fn new() -> Result<JsContext> {
         let context = Context::builder()
             .console(LogConsole {})
             .build()
@@ -18,14 +19,14 @@ impl JsContext {
         })
     }
 
-    pub fn load_std(&self) -> Result<(), AnyError> {
+    pub fn load_std(&self) -> Result<()> {
         self.quick_js_context
             .add_callback("__builtin_op_stdout_write", builtin_op_stdout_write)?;
         self.quick_js_context.eval(include_str!("runtime/js/core.js"))?;
         Ok(())
     }
 
-    pub fn eval(&self, code: &str) -> Result<JsValue, AnyError> {
+    pub fn eval(&self, code: &str) -> Result<JsValue> {
         Ok(self.quick_js_context.eval(code).map_err(|e| execution_error(e))?)
     }
 }

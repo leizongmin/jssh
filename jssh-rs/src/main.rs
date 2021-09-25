@@ -1,11 +1,9 @@
-use std::error::Error;
-
+use anyhow::Result;
 use clap::{App, Arg};
-use quick_js::{Context, ExecutionError, JsValue};
+use quick_js::JsValue;
 
 use crate::context::JsContext;
-use crate::error::{execution_error, uri_error, AnyError};
-use log::debug;
+use crate::error::uri_error;
 use simplelog::{ColorChoice, CombinedLogger, Config, LevelFilter, TermLogger, TerminalMode};
 
 mod context;
@@ -56,13 +54,13 @@ fn main() {
     }
 }
 
-fn eval_js(code: String) -> Result<JsValue, AnyError> {
+fn eval_js(code: String) -> Result<JsValue> {
     let context = JsContext::new()?;
     context.load_std()?;
     context.eval(&code)
 }
 
-fn eval_js_file(file: String) -> Result<JsValue, AnyError> {
+fn eval_js_file(file: String) -> Result<JsValue> {
     let code = std::fs::read_to_string(&file).map_err(|e| uri_error(format!("{}: {}", e, &file)))?;
     eval_js(code)
 }
