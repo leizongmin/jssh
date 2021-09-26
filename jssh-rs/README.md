@@ -95,11 +95,11 @@
 
 #### 路径操作
 
-- `path.join(...paths)`：拼接多个子路径；
-- `path.abs(filepath)`：取得绝对路径；
-- `path.base(filepath)`：取得文件名；
-- `path.ext(filename)`：取得文件扩展名；
-- `path.dir(filepath)`：取得路径所在的目录名；
+- ✅ `path.join(...paths)`：拼接多个子路径；
+- ✅ `path.abs(filepath)`：取得绝对路径；
+- ✅ `path.base(filepath)`：取得文件名；
+- ✅ `path.ext(filename)`：取得文件扩展名；
+- ✅ `path.dir(filepath)`：取得路径所在的目录名；
 
 #### 命令行参数操作
 

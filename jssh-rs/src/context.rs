@@ -40,6 +40,12 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_file_stat", builtin_op_file_stat)?;
     self.qjs_ctx.add_callback("__builtin_op_file_exist", builtin_op_file_exist)?;
 
+    self.qjs_ctx.add_callback("__builtin_op_path_join", builtin_op_path_join)?;
+    self.qjs_ctx.add_callback("__builtin_op_path_abs", builtin_op_path_abs)?;
+    self.qjs_ctx.add_callback("__builtin_op_path_base", builtin_op_path_base)?;
+    self.qjs_ctx.add_callback("__builtin_op_path_ext", builtin_op_path_ext)?;
+    self.qjs_ctx.add_callback("__builtin_op_path_dir", builtin_op_path_dir)?;
+
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_assert.js"))?;
@@ -47,6 +53,7 @@ impl JsContext {
     self.qjs_ctx.eval(include_str!("runtime/js/20_log.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_socket.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_fs.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/20_path.js"))?;
 
     Ok(())
   }
@@ -260,4 +267,54 @@ fn builtin_op_file_exist(args: Arguments) -> Result<JsValue> {
   let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
   let exist = std::fs::try_exists(&path)?;
   Ok(JsValue::Bool(exist))
+}
+
+fn builtin_op_path_join(args: Arguments) -> Result<JsValue> {
+  let args: Vec<_> = args.into_vec();
+  let first = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let first = get_string_from_js_value(first).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let mut path = std::path::Path::new(&first).to_path_buf();
+  for item in &args[1..] {
+    let item = get_string_from_js_value(item).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+    path = path.join(&item);
+  }
+  Ok(JsValue::String(path.to_string_lossy().to_string()))
+}
+
+fn builtin_op_path_ext(args: Arguments) -> Result<JsValue> {
+  let args: Vec<_> = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let ext = std::path::Path::new(&path)
+    .extension()
+    .ok_or(invalid_argument_error("invalid argument: path is not a valid file path"))?;
+  Ok(JsValue::String(ext.to_string_lossy().to_string()))
+}
+
+fn builtin_op_path_base(args: Arguments) -> Result<JsValue> {
+  let args: Vec<_> = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let base = std::path::Path::new(&path)
+    .file_name()
+    .ok_or(invalid_argument_error("invalid argument: path is not a valid file path"))?;
+  Ok(JsValue::String(base.to_string_lossy().to_string()))
+}
+
+fn builtin_op_path_dir(args: Arguments) -> Result<JsValue> {
+  let args: Vec<_> = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let dir = std::path::Path::new(&path)
+    .parent()
+    .ok_or(invalid_argument_error("invalid argument: path is not a valid file path"))?;
+  Ok(JsValue::String(dir.to_string_lossy().to_string()))
+}
+
+fn builtin_op_path_abs(args: Arguments) -> Result<JsValue> {
+  let args: Vec<_> = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let abs = std::fs::canonicalize(&path)?;
+  Ok(JsValue::String(abs.to_string_lossy().to_string()))
 }

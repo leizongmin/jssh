@@ -48,4 +48,15 @@ console.log(fs.exist("."), fs.exist("aaaaa"));
 // console.log(fs.writefile("tmp.txt", "456"), fs.readfile("tmp.txt"));
 // console.log(fs.appendfile("tmp.txt", "aaa"), fs.readfile("tmp.txt"));
 
+console.log(
+  path.join("a"),
+  path.join("a", "b", "c"),
+  path.join("a", "/b", "./c/d"),
+  path.join("https://example.com", "./html", "./index.html")
+);
+console.log(path.dir("/a/b/c"), path.dir("a/c"));
+console.log(path.base("/a/b/c"), path.base("a/c"));
+console.log(path.ext("/a/b/c.j"), path.ext("a/c.xx"));
+console.log(path.abs("build.sh"));
+
 exit(1);
