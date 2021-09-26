@@ -46,6 +46,8 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_path_ext", builtin_op_path_ext)?;
     self.qjs_ctx.add_callback("__builtin_op_path_dir", builtin_op_path_dir)?;
 
+    self.qjs_ctx.add_callback("__builtin_op_http_request", builtin_op_http_request)?;
+
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_assert.js"))?;
@@ -54,6 +56,7 @@ impl JsContext {
     self.qjs_ctx.eval(include_str!("runtime/js/20_socket.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_fs.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_path.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/20_http.js"))?;
 
     Ok(())
   }
@@ -91,7 +94,7 @@ fn builtin_op_stderr_write(args: Arguments) -> Result<JsValue> {
 
 fn builtin_op_stdin_read_line(_args: Arguments) -> Result<JsValue> {
   let mut line = String::new();
-  let mut stdin = std::io::stdin();
+  let stdin = std::io::stdin();
   stdin.read_line(&mut line)?;
   Ok(JsValue::String(line))
 }
@@ -317,4 +320,99 @@ fn builtin_op_path_abs(args: Arguments) -> Result<JsValue> {
   let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
   let abs = std::fs::canonicalize(&path)?;
   Ok(JsValue::String(abs.to_string_lossy().to_string()))
+}
+
+fn http_request(
+  method: &str,
+  url: &str,
+  headers: Option<HashMap<String, Vec<String>>>,
+  body: Option<String>,
+  timeout: Duration,
+) -> Result<reqwest::blocking::Response> {
+  let client = reqwest::blocking::Client::builder().build()?;
+  let mut req = client.request(reqwest::Method::from_bytes(method.as_bytes())?, url).timeout(timeout);
+  if let Some(headers) = headers {
+    let mut h = reqwest::header::HeaderMap::new();
+    for (key, values) in headers {
+      for value in values {
+        h.append(reqwest::header::HeaderName::from_str(&key)?, reqwest::header::HeaderValue::from_str(&value)?);
+      }
+    }
+    req = req.headers(h);
+  }
+  if let Some(body) = body {
+    req = req.body(body);
+  }
+  log::debug!("http_request: method={} url={} timeout={:?}", method, url, timeout);
+  let res = req.send()?;
+  Ok(res)
+}
+
+fn builtin_op_http_request(args: Arguments) -> Result<JsValue> {
+  let args: Vec<_> = args.into_vec();
+
+  let method = args.get(0).ok_or(invalid_argument_error("missing argument: method"))?;
+  let url = args.get(1).ok_or(invalid_argument_error("missing argument: url"))?;
+  let headers = args.get(2).ok_or(invalid_argument_error("missing argument: headers"))?;
+  let body = args.get(3).ok_or(invalid_argument_error("missing argument: body"))?;
+  let timeout_ms = args.get(4).ok_or(invalid_argument_error("missing argument: timeout"))?;
+
+  let method = get_string_from_js_value(method).ok_or(invalid_argument_error("invalid argument: method expected a string"))?;
+  let url = get_string_from_js_value(url).ok_or(invalid_argument_error("invalid argument: url expected a string"))?;
+  let headers = match headers {
+    JsValue::Null | JsValue::Undefined => None,
+    JsValue::Object(obj) => {
+      let mut headers = HashMap::new();
+      for (k, v) in obj {
+        match v {
+          JsValue::Array(arr) => {
+            let mut values = Vec::new();
+            for item in arr {
+              let v = get_string_from_js_value(item).ok_or(invalid_argument_error("invalid argument: headers expected string key and value"))?;
+              values.push(v);
+            }
+            headers.insert(k.clone(), values);
+          }
+          _ => {
+            let v = get_string_from_js_value(v).ok_or(invalid_argument_error("invalid argument: headers expected string key and value"))?;
+            headers.insert(k.clone(), vec![v]);
+          }
+        }
+      }
+      Some(headers)
+    }
+    _ => return Err(invalid_argument_error("invalid argument: headers expected an object or null")),
+  };
+  let body = get_string_from_js_value(body);
+  let timeout_ms = get_i32_from_js_value(timeout_ms).ok_or(invalid_argument_error("invalid argument: timeout expected a number"))?;
+
+  let res = http_request(&method, &url, headers, body, Duration::from_millis(timeout_ms as u64))?;
+  let mut result = HashMap::new();
+  result.insert("status".to_string(), JsValue::Int(res.status().as_u16() as i32));
+  let mut headers = HashMap::new();
+  for (k, v) in res.headers() {
+    let name = k.to_string();
+    match headers.get(&name) {
+      Some(old_value) => match old_value {
+        JsValue::String(s) => {
+          headers.insert(name, JsValue::Array(vec![JsValue::String(s.clone()), JsValue::String(v.to_str()?.to_string())]));
+        }
+        JsValue::Array(arr) => {
+          let mut arr = arr.clone();
+          arr.push(JsValue::String(v.to_str()?.to_string()));
+          headers.insert(name, JsValue::Array(arr));
+        }
+        _ => {
+          headers.insert(name, JsValue::String(v.to_str()?.to_string()));
+        }
+      },
+      None => {
+        headers.insert(name, JsValue::String(v.to_str()?.to_string()));
+      }
+    }
+  }
+  result.insert("headers".to_string(), JsValue::Object(headers));
+  result.insert("body".to_string(), JsValue::String(String::from_utf8_lossy(res.bytes()?.as_ref()).to_string()));
+
+  Ok(JsValue::Object(result))
 }

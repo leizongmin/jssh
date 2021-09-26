@@ -59,4 +59,6 @@ console.log(path.base("/a/b/c"), path.base("a/c"));
 console.log(path.ext("/a/b/c.j"), path.ext("a/c.xx"));
 console.log(path.abs("build.sh"));
 
+console.log(http.get("https://example.com/", { a: 123, b: ["x", "b"] }));
+
 exit(1);
