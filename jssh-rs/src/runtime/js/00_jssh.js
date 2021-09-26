@@ -17,6 +17,7 @@ try {
 }
 globalThis.jssh = jssh;
 Object.defineProperty(globalThis, "jssh", { configurable: false });
+const global = globalThis;
 
 const __env = jssh.op.env();
 const __args = jssh.op.args();
@@ -25,15 +26,15 @@ const __homedir = jssh.op.dir_home();
 const __downloaddir = jssh.op.dir_download();
 
 function exit(code = 0) {
-  jssh.op.exit(code);
+  return jssh.op.exit(code);
 }
 
 function print(...args) {
-  jssh.op.stdout_write(args.map((v) => v.toString()).join(" "));
+  return jssh.op.stdout_write(args.map((v) => v.toString()).join(" "));
 }
 
 function println(...args) {
-  jssh.op.stdout_write(args.map((v) => v.toString()).join(" ") + "\n");
+  return jssh.op.stdout_write(args.map((v) => v.toString()).join(" ") + "\n");
 }
 
 function readline() {
@@ -41,9 +42,13 @@ function readline() {
 }
 
 function stdoutlog(...args) {
-  jssh.op.stdout_write(args.map((v) => v.toString()).join(" ") + "\n");
+  return jssh.op.stdout_write(args.map((v) => v.toString()).join(" ") + "\n");
 }
 
 function stderrlog(...args) {
-  jssh.op.stderr_write(args.map((v) => v.toString()).join(" ") + "\n");
+  return jssh.op.stderr_write(args.map((v) => v.toString()).join(" ") + "\n");
+}
+
+function sleep(ms) {
+  return jssh.op.sleep(ms);
 }

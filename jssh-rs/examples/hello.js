@@ -68,4 +68,7 @@ console.log(formatdate("Y-m-d H:i:s"));
 console.log(randomstring(10, "0123456789"));
 console.log(deepmerge({ a: 123 }, { b: 456 }));
 
+console.log(global);
+console.log(sleep(1000));
+
 exit(1);

@@ -32,6 +32,7 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_dir_temp", builtin_op_dir_temp)?;
     self.qjs_ctx.add_callback("__builtin_op_dir_home", builtin_op_dir_home)?;
     self.qjs_ctx.add_callback("__builtin_op_dir_download", builtin_op_dir_download)?;
+    self.qjs_ctx.add_callback("__builtin_op_sleep", builtin_op_sleep)?;
 
     self.qjs_ctx.add_callback("__builtin_op_tcp_send", builtin_op_tcp_send)?;
     self.qjs_ctx.add_callback("__builtin_op_tcp_test", builtin_op_tcp_test)?;
@@ -435,4 +436,12 @@ fn builtin_op_http_request(args: Arguments) -> Result<JsValue> {
   result.insert("body".to_string(), JsValue::String(String::from_utf8_lossy(res.bytes()?.as_ref()).to_string()));
 
   Ok(JsValue::Object(result))
+}
+
+fn builtin_op_sleep(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let sleep_ms = args.get(0).ok_or(invalid_argument_error("missing argument: sleep_ms"))?;
+  let sleep_ms = get_i32_from_js_value(sleep_ms).ok_or(invalid_argument_error("invalid argument: sleep_ms expected a number"))?;
+  std::thread::sleep(Duration::from_millis(sleep_ms as u64));
+  Ok(JsValue::Undefined)
 }

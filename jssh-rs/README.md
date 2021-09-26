@@ -1,6 +1,6 @@
 #### 全局变量列表
 
-- `global`：全局变量；
+- ✅ `global`：全局变量；
 - `__selfcontained`：是否 self-contained 方式执行；
 - `__cpucount`：CPU 数量；
 - `__os`：操作系统类型，如 `darwin`、`freebsd`、`linux`、`windows`；
@@ -30,7 +30,7 @@
 - ✅ `stdoutlog(message)`：在 `stdout` 中输出一行日志；
 - ✅ `stderrlog(message)`：在 `stderr` 中输出一行日志；
 - ✅ `readline()`：从控制台获取用户一行的字符串输入；
-- `sleep(ms)`：等待指定毫秒时间；
+- ✅ `sleep(ms)`：等待指定毫秒时间；
 - ✅ `exit(code)`：结束进程；
 - `loadconfig(filename, format?)`：加载配置文件，支持 JSON、YAML、TOML 格式；
 - `networkinterfaces()`：获得网络接口信息；
