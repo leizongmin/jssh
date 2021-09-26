@@ -1,7 +1,4 @@
-#[macro_use]
-extern crate log;
-
-use std::io::Write;
+#![feature(path_try_exists)]
 
 use anyhow::Result;
 use clap::{App, Arg};

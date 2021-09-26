@@ -40,4 +40,12 @@ try {
   // console.log("Your name is", name);
 }
 
+console.log(fs.readdir("."));
+console.log(fs.readfile("build.sh"));
+console.log(fs.stat("."), fs.stat("build.sh"));
+console.log(fs.exist("."), fs.exist("aaaaa"));
+// console.log(fs.writefile("tmp.txt", "123"), fs.readfile("tmp.txt"));
+// console.log(fs.writefile("tmp.txt", "456"), fs.readfile("tmp.txt"));
+// console.log(fs.appendfile("tmp.txt", "aaa"), fs.readfile("tmp.txt"));
+
 exit(1);

@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+use std::fs::{DirEntry, Metadata};
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream};
-use std::ops::Deref;
+use std::os::unix::fs::MetadataExt;
 use std::str::FromStr;
 use std::time::Duration;
 
@@ -9,7 +10,7 @@ use anyhow::Result;
 use quick_js::console::LogConsole;
 use quick_js::{Arguments, Context, JsValue};
 
-use crate::error::{execution_error, generic_error, invalid_argument_error};
+use crate::error::{execution_error, generic_error, invalid_argument_error, system_error};
 
 pub struct JsContext {
   qjs_ctx: Context,
@@ -17,8 +18,8 @@ pub struct JsContext {
 
 impl JsContext {
   pub fn new() -> Result<JsContext> {
-    let context = Context::builder().console(LogConsole {}).build().map_err(|e| generic_error(e.to_string()))?;
-    Ok(JsContext { qjs_ctx: context })
+    let qjs_ctx = Context::builder().console(LogConsole {}).build().map_err(|e| generic_error(e.to_string()))?;
+    Ok(JsContext { qjs_ctx })
   }
 
   pub fn load_std(&self) -> Result<()> {
@@ -32,12 +33,20 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_tcp_send", builtin_op_tcp_send)?;
     self.qjs_ctx.add_callback("__builtin_op_tcp_test", builtin_op_tcp_test)?;
 
+    self.qjs_ctx.add_callback("__builtin_op_file_read", builtin_op_file_read)?;
+    self.qjs_ctx.add_callback("__builtin_op_dir_read", builtin_op_dir_read)?;
+    self.qjs_ctx.add_callback("__builtin_op_file_write", builtin_op_file_write)?;
+    self.qjs_ctx.add_callback("__builtin_op_file_append", builtin_op_file_append)?;
+    self.qjs_ctx.add_callback("__builtin_op_file_stat", builtin_op_file_stat)?;
+    self.qjs_ctx.add_callback("__builtin_op_file_exist", builtin_op_file_exist)?;
+
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_assert.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_cli.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_log.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_socket.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/20_fs.js"))?;
 
     Ok(())
   }
@@ -171,4 +180,84 @@ fn builtin_op_tcp_test(args: Arguments) -> Result<JsValue> {
     .map(|_| true)
     .unwrap_or(false);
   Ok(JsValue::Bool(ok))
+}
+
+fn builtin_op_file_read(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let data = std::fs::read_to_string(&path)?;
+  Ok(JsValue::String(data))
+}
+
+fn file_metadata_to_js_value(meta: &Metadata, file_name: &str) -> Result<JsValue> {
+  let mut item = HashMap::new();
+  let file_type = meta.file_type();
+  item.insert("file_name".to_string(), JsValue::String(file_name.to_string()));
+  item.insert("is_file".to_string(), JsValue::Bool(file_type.is_file()));
+  item.insert("is_dir".to_string(), JsValue::Bool(file_type.is_dir()));
+  item.insert("is_symlink".to_string(), JsValue::Bool(file_type.is_symlink()));
+  item.insert("size".to_string(), JsValue::Int(meta.size() as i32));
+  item.insert("atime".to_string(), JsValue::Int(meta.atime() as i32));
+  item.insert("ctime".to_string(), JsValue::Int(meta.ctime() as i32));
+  item.insert("mtime".to_string(), JsValue::Int(meta.mtime() as i32));
+  Ok(JsValue::Object(item))
+}
+
+fn builtin_op_dir_read(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let entries: Vec<_> = std::fs::read_dir(&path)?.collect();
+  let mut list = Vec::new();
+  for entry in entries {
+    let entry = entry?;
+    let meta = entry.metadata()?;
+    let item = file_metadata_to_js_value(&meta, entry.file_name().to_str().ok_or(system_error("cannot get file_name"))?)?;
+    list.push(item);
+  }
+  Ok(JsValue::Array(list))
+}
+
+fn builtin_op_file_write(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let data = args.get(1).ok_or(invalid_argument_error("missing argument: data"))?;
+
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let data = get_string_from_js_value(data).ok_or(invalid_argument_error("invalid argument: data expected a string"))?;
+
+  std::fs::write(&path, data.as_bytes())?;
+  Ok(JsValue::Undefined)
+}
+
+fn builtin_op_file_append(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let data = args.get(1).ok_or(invalid_argument_error("missing argument: data"))?;
+
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let data = get_string_from_js_value(data).ok_or(invalid_argument_error("invalid argument: data expected a string"))?;
+
+  // std::fs::(&path, data.as_bytes())?;
+  let mut file = std::fs::OpenOptions::new().write(true).append(true).open(&path)?;
+  file.write_all(data.as_bytes())?;
+  Ok(JsValue::Undefined)
+}
+
+fn builtin_op_file_stat(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let meta = std::fs::metadata(&path)?;
+  let data = file_metadata_to_js_value(&meta, &path)?;
+  Ok(data)
+}
+
+fn builtin_op_file_exist(args: Arguments) -> Result<JsValue> {
+  let args = args.into_vec();
+  let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
+  let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
+  let exist = std::fs::try_exists(&path)?;
+  Ok(JsValue::Bool(exist))
 }
