@@ -20,6 +20,9 @@ Object.defineProperty(globalThis, "jssh", { configurable: false });
 
 const __env = jssh.op.env();
 const __args = jssh.op.args();
+const __tmpdir = jssh.op.dir_temp();
+const __homedir = jssh.op.dir_home();
+const __downloaddir = jssh.op.dir_download();
 
 function exit(code = 0) {
   jssh.op.exit(code);

@@ -82,5 +82,17 @@ const http = {};
   ) {
     return jssh.op.http_request("TRACE", url, headers, body, timeout);
   };
+
+  http.download = function (
+    url,
+    saveToPath = path.join(
+      __downloaddir,
+      `jssh-http-download-${Date.now()}-${randomstring(6)}`
+    )
+  ) {
+    const res = http.get(url);
+    fs.writefile(saveToPath, res.body);
+    return saveToPath;
+  };
 }
 Object.freeze(http);

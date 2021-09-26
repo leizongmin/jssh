@@ -29,6 +29,9 @@ impl JsContext {
     self.qjs_ctx.add_callback("__builtin_op_exit", builtin_op_exit)?;
     self.qjs_ctx.add_callback("__builtin_op_env", builtin_op_env)?;
     self.qjs_ctx.add_callback("__builtin_op_args", builtin_op_args)?;
+    self.qjs_ctx.add_callback("__builtin_op_dir_temp", builtin_op_dir_temp)?;
+    self.qjs_ctx.add_callback("__builtin_op_dir_home", builtin_op_dir_home)?;
+    self.qjs_ctx.add_callback("__builtin_op_dir_download", builtin_op_dir_download)?;
 
     self.qjs_ctx.add_callback("__builtin_op_tcp_send", builtin_op_tcp_send)?;
     self.qjs_ctx.add_callback("__builtin_op_tcp_test", builtin_op_tcp_test)?;
@@ -50,6 +53,8 @@ impl JsContext {
 
     self.qjs_ctx.eval(include_str!("runtime/js/00_jssh.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/10_format.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/10_string.js"))?;
+    self.qjs_ctx.eval(include_str!("runtime/js/10_deepmerge.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_assert.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_cli.js"))?;
     self.qjs_ctx.eval(include_str!("runtime/js/20_log.js"))?;
@@ -133,6 +138,21 @@ fn builtin_op_env(_args: Arguments) -> JsValue {
     env.insert(k, JsValue::String(v));
   }
   JsValue::Object(env)
+}
+
+fn builtin_op_dir_temp(_args: Arguments) -> JsValue {
+  let dir = std::env::temp_dir();
+  JsValue::String(dir.to_string_lossy().to_string())
+}
+
+fn builtin_op_dir_home(_args: Arguments) -> Result<JsValue> {
+  let dir = dirs::home_dir().ok_or(system_error("cannot get home dir"))?;
+  Ok(JsValue::String(dir.to_string_lossy().to_string()))
+}
+
+fn builtin_op_dir_download(_args: Arguments) -> Result<JsValue> {
+  let dir = dirs::download_dir().ok_or(system_error("cannot get download dir"))?;
+  Ok(JsValue::String(dir.to_string_lossy().to_string()))
 }
 
 fn builtin_op_args(_args: Arguments) -> JsValue {

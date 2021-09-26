@@ -8,8 +8,8 @@
 - `__version`：jssh 版本号；
 - `__bin`：jssh 二进制文件路径；
 - `__pid`：当前进程 PID；
-- `__tmpdir`：临时目录；
-- `__homedir`：用户 Home 目录；
+- ✅ `__tmpdir`：临时目录；
+- ✅ `__homedir`：用户 Home 目录；
 - `__user`：当前用户名；
 - `__hostname`：当前主机名；
 - `__dirname`：当前脚本文件的目录；
@@ -40,10 +40,10 @@
 
 #### 字符串操作
 
-- `format(template, ...args)`：格式化字符串，如 `format("a=%d, b=%s", 123, "xxx")`；
-- `randomstring(size, chars?)`：生成随机字符串；
-- `formatdate(format, timestamp?)`：格式化日期时间，格式参考PHP的 `date()` 函数，文档参考 https://locutus.io/php/datetime/date/ ；
-- `deepmerge(target, src)`：深度合并两个对象；
+- ✅ `format(template, ...args)`：格式化字符串，如 `format("a=%d, b=%s", 123, "xxx")`；
+- ✅ `randomstring(size, chars?)`：生成随机字符串；
+- ✅ `formatdate(format, timestamp?)`：格式化日期时间，格式参考PHP的 `date()` 函数，文档参考 https://locutus.io/php/datetime/date/ ；
+- ✅ `deepmerge(target, src)`：深度合并两个对象；
 
 #### 编码解码操作
 
@@ -116,7 +116,7 @@
 
 - ✅ `http.timeout(ms)`：设置操作超时毫秒时间，默认为 `60000`；
 - ✅ `http.request(method, url, headers?, body?)`：发送 HTTP 请求，返回结果包括 `{ status, headers, body }`；
-- `http.download(url, filename?)`：通过 HTTP 下载文件；
+- ✅ `http.download(url, filename?)`：通过 HTTP 下载文件；
 - ✅ `http.get(url, headers?)`：发送 HTTP GET 请求，返回结果格式同 `http.request`；
 - ✅ `http.head(url, headers?)`：发送 HTTP HEAD 请求，返回结果格式同 `http.request`；
 - ✅ `http.options(url, headers?)`：发送 HTTP OPTIONS 请求，返回结果格式同 `http.request`；

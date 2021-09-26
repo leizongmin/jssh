@@ -61,4 +61,11 @@ console.log(path.abs("build.sh"));
 
 console.log(http.get("https://example.com/", { a: 123, b: ["x", "b"] }));
 
+console.log(http.download("https://example.com"));
+console.log(__tmpdir, __homedir, __downloaddir);
+
+console.log(formatdate("Y-m-d H:i:s"));
+console.log(randomstring(10, "0123456789"));
+console.log(deepmerge({ a: 123 }, { b: 456 }));
+
 exit(1);
