@@ -11,7 +11,7 @@ edition = "2021"
 quick-js = { version = "0.4.1", features = ["bigint", "patched", "num-traits", "num-bigint", "log", "chrono"] }
 clap = "3.0.0-beta.4"
 anyhow = "1.0.57"
-log = "0.4.14"
+log = "0.4.17"
 env_logger = "0.9.0"
 wasmer = "2.0.0"
 reqwest = { version = "0.11.4", features = ["blocking"] }
