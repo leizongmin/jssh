@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::fs::{DirEntry, Metadata};
+use std::fs::{try_exists, Metadata};
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpStream};
 use std::os::unix::fs::MetadataExt;
@@ -289,7 +289,7 @@ fn builtin_op_file_exist(args: Arguments) -> Result<JsValue> {
   let args = args.into_vec();
   let path = args.get(0).ok_or(invalid_argument_error("missing argument: path"))?;
   let path = get_string_from_js_value(path).ok_or(invalid_argument_error("invalid argument: path expected a string"))?;
-  let exist = std::fs::try_exists(&path)?;
+  let exist = try_exists(&path)?;
   Ok(JsValue::Bool(exist))
 }
 

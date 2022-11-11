@@ -9,12 +9,12 @@ edition = "2021"
 
 [dependencies]
 quick-js = { version = "0.4.1", features = ["bigint", "patched", "num-traits", "num-bigint", "log", "chrono"] }
-clap = "3.2.15"
-anyhow = "1.0.58"
+clap = "3.2.23"
+anyhow = "1.0.66"
 log = "0.4.17"
-env_logger = "0.9.0"
+env_logger = "0.9.3"
 wasmer = "2.3.0"
-reqwest = { version = "0.11.11", features = ["blocking"] }
+reqwest = { version = "0.11.12", features = ["blocking"] }
 dirs = "4.0.0"
 
 # See https://github.com/johnthagen/min-sized-rust
@@ -23,4 +23,4 @@ strip = true
 opt-level = "z"
 lto = true
 codegen-units = 1
-panic = "abort"
+# panic = "abort"

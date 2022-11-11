@@ -1,4 +1,4 @@
-#![feature(path_try_exists)]
+#![feature(fs_try_exists)]
 
 use anyhow::Result;
 use clap::{App, Arg};
@@ -21,7 +21,7 @@ fn main() -> Result<()> {
       App::new("run").about("Run script file").arg(
         Arg::new("file")
           .required(true)
-          .about("local file path or URL, e.g. file:///path/to/file.js, https://example.com/file.js"),
+          .help("local file path or URL, e.g. file:///path/to/file.js, https://example.com/file.js"),
       ),
     )
     .subcommand(App::new("exec").about("Run script from argument"))
