@@ -16,7 +16,7 @@ func GetJs() []JsModule {
 	for _, m := range modules {
 		// 仅返回内置的模块
 		if strings.HasPrefix(m.File, "builtin_") {
-			retModules = append(retModules, JsModule{File: m.File, Code: m.Code})
+			retModules = append(retModules, m)
 		}
 	}
 	return retModules
