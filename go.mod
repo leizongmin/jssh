@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/creack/pty v1.1.18
-	github.com/gookit/color v1.5.1
+	github.com/gookit/color v1.5.3
 	github.com/json-iterator/go v1.1.12
 	github.com/leizongmin/go v1.9.5
 	github.com/peterh/liner v1.2.2
