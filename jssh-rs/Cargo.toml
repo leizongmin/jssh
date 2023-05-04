@@ -10,7 +10,7 @@ edition = "2021"
 [dependencies]
 quick-js = { version = "0.4.1", features = ["bigint", "patched", "num-traits", "num-bigint", "log", "chrono"] }
 clap = "3.2.25"
-anyhow = "1.0.66"
+anyhow = "1.0.71"
 log = "0.4.17"
 env_logger = "0.9.3"
 wasmer = "2.3.0"
