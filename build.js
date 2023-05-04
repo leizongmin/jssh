@@ -1,10 +1,12 @@
 #!/usr/bin/env -S go run github.com/leizongmin/jssh
 
+// https://github.com/xaionaro/documentation/blob/master/golang/reduce-binary-size.md
+
 const goVersion = getGoVersion();
 log.info(`当前Go版本号%s`, goVersion);
 const packageName = `github.com/leizongmin/jssh`;
 const binName = `jssh`;
-const goBuild = `go build -v -ldflags "-s -w ${getReleaseLdflags()}"`;
+const goBuild = `go build -v -a -gcflags=all="-l -B" -ldflags "-s -w ${getReleaseLdflags()}"`;
 const goProxy = `https://goproxy.cn`;
 
 const releaseDir = path.join(__dirname, `release`);
