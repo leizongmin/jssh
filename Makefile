@@ -1,3 +1,5 @@
+OS := $(shell uname -s | tr '[:upper:]' '[:lower:]')
+
 .PHONY: all
 all: jssh
 
@@ -5,6 +7,11 @@ all: jssh
 jssh:
 	@./build.js
 	@ls -alh release/*
+
+.PHONY: jssh_m
+jssh_m: jssh
+	@cp release/$(OS)/jssh release/$(OS)/jssh_m
+	@upx --best --lzma release/$(OS)/jssh_m
 
 .PHONY: go-nm
 go-nm:
