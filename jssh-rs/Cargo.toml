@@ -14,7 +14,7 @@ anyhow = "1.0.66"
 log = "0.4.17"
 env_logger = "0.9.3"
 wasmer = "2.3.0"
-reqwest = { version = "0.11.12", features = ["blocking"] }
+reqwest = { version = "0.11.17", features = ["blocking"] }
 dirs = "4.0.0"
 
 # See https://github.com/johnthagen/min-sized-rust
