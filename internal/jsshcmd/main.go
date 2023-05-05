@@ -2,6 +2,7 @@ package jsshcmd
 
 import (
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -14,7 +15,6 @@ import (
 	"strings"
 
 	"github.com/gookit/color"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/leizongmin/go/typeutil"
 	"github.com/peterh/liner"
 
@@ -625,7 +625,7 @@ func printJsValue(ret quickjs.Value, coloured bool) {
 			}
 			return
 		}
-		s, err := jsoniter.MarshalToString(a)
+		b, err := json.Marshal(a)
 		if err != nil {
 			if coloured {
 				fmt.Println(color.FgRed.Render(err))
@@ -635,9 +635,9 @@ func printJsValue(ret quickjs.Value, coloured bool) {
 			return
 		}
 		if coloured {
-			fmt.Println(color.FgLightBlue.Render(s))
+			fmt.Println(color.FgLightBlue.Render(string(b)))
 		} else {
-			fmt.Println(s)
+			fmt.Println(string(b))
 		}
 	} else {
 		if coloured {
