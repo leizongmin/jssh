@@ -3,6 +3,7 @@ package jsshcmd
 import (
 	"encoding/binary"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -334,8 +335,11 @@ func run(file string, content string, interactive bool, customGlobal typeutil.H,
 		for {
 			code, err := repl.Prompt(prompt)
 			if err != nil {
-				if err == liner.ErrPromptAborted {
-					fmt.Println(color.FgRed.Render("Aborted"))
+				if err == io.EOF {
+					fmt.Println("Bye")
+					break
+				} else if err == liner.ErrPromptAborted {
+					fmt.Println(color.FgYellow.Render("Aborted"))
 					break
 				} else {
 					fmt.Println(color.FgRed.Render(fmt.Sprintf("Error reading line: %s", err)))
