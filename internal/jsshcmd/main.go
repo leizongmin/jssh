@@ -332,15 +332,22 @@ func run(file string, content string, interactive bool, customGlobal typeutil.H,
 		}
 
 		bufLines := make([]string, 0)
+		abortedCounter := 0
 		for {
 			code, err := repl.Prompt(prompt)
 			if err != nil {
 				if err == io.EOF {
-					fmt.Println("Bye")
+					fmt.Println("\nBye")
 					break
 				} else if err == liner.ErrPromptAborted {
-					fmt.Println(color.FgYellow.Render("Aborted"))
-					break
+					abortedCounter++
+					if abortedCounter < 2 {
+						fmt.Println(color.FgYellow.Render("(To exit, press Ctrl+C again or Ctrl+D)"))
+						continue
+					} else {
+						fmt.Println("Bye")
+						break
+					}
 				} else {
 					fmt.Println(color.FgRed.Render(fmt.Sprintf("Error reading line: %s", err)))
 				}
@@ -361,6 +368,8 @@ func run(file string, content string, interactive bool, customGlobal typeutil.H,
 					ret.Free()
 				}
 			}
+
+			abortedCounter = 0
 		}
 
 		if isEnableHistoryFile {
