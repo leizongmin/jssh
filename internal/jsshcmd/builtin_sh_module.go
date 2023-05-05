@@ -7,12 +7,11 @@ import (
 	"os/exec"
 	"sync"
 
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
-func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShSetenv(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("setenv: missing env name")
@@ -30,7 +29,7 @@ func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
 		}
 		value := args[1].String()
 
-		env := global["__env"].(typeutil.H)
+		env := global["__env"].(utils.H)
 		env[name] = value
 		global["__env"] = env
 		jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
@@ -39,7 +38,7 @@ func jsFnShSetenv(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnShChdir(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShChdir(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("chdir: missing dir name")
@@ -56,7 +55,7 @@ func jsFnShChdir(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnShCwd(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShCwd(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		dir, err := os.Getwd()
 		if err != nil {
@@ -66,7 +65,7 @@ func jsFnShCwd(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShExec(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("exec: missing exec command")
@@ -76,7 +75,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 		}
 		cmd := args[0].String()
 
-		env := cloneMap(global["__env"].(typeutil.H))
+		env := cloneMap(global["__env"].(utils.H))
 		if len(args) >= 2 {
 			if args[1].IsNull() || args[1].IsUndefined() {
 			} else {
@@ -87,7 +86,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 				if err != nil {
 					return ctx.ThrowError(err)
 				}
-				env2, ok := second.(typeutil.H)
+				env2, ok := second.(utils.H)
 				if !ok {
 					return ctx.ThrowTypeError("exec: second argument expected an object")
 				}
@@ -200,7 +199,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 		global["__code"] = code
 		jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
-		return jsexecutor.AnyToJSValue(ctx, typeutil.H{
+		return jsexecutor.AnyToJSValue(ctx, utils.H{
 			"pid":         pid,
 			"code":        code,
 			"output":      global["__output"],
@@ -209,7 +208,7 @@ func jsFnShExec(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShBgexec(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("bgexec: missing exec command")
@@ -219,7 +218,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 		}
 		cmd := args[0].String()
 
-		env := cloneMap(global["__env"].(typeutil.H))
+		env := cloneMap(global["__env"].(utils.H))
 		if len(args) >= 2 {
 			if args[1].IsNull() || args[1].IsUndefined() {
 			} else {
@@ -230,7 +229,7 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 				if err != nil {
 					return ctx.ThrowError(err)
 				}
-				env2, ok := second.(typeutil.H)
+				env2, ok := second.(utils.H)
 				if !ok {
 					return ctx.ThrowTypeError("bgexec: second argument expected an object")
 				}
@@ -333,6 +332,6 @@ func jsFnShBgexec(global typeutil.H) jsexecutor.JSFunction {
 		if sh.Process != nil {
 			pid = sh.Process.Pid
 		}
-		return jsexecutor.AnyToJSValue(ctx, typeutil.H{"pid": pid})
+		return jsexecutor.AnyToJSValue(ctx, utils.H{"pid": pid})
 	}
 }

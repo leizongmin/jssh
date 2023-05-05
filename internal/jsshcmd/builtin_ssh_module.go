@@ -12,18 +12,18 @@ import (
 	"sync"
 	"time"
 
-	"github.com/leizongmin/go/typeutil"
 	"golang.org/x/crypto/ssh"
 
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
 var globalSshClient *ssh.Client
 var globalSshEnv map[string]string
-var globalSshConfig typeutil.H
+var globalSshConfig utils.H
 
 func init() {
-	globalSshConfig = typeutil.H{
+	globalSshConfig = utils.H{
 		"user":    mustGetCurrentUsername(),
 		"auth":    "key",
 		"key":     filepath.Join(mustGetHomeDir(), ".ssh/id_rsa"),
@@ -33,7 +33,7 @@ func init() {
 	}
 }
 
-func jsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshSet(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.set: missing name")
@@ -77,7 +77,7 @@ func jsFnSshSet(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshOpen(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.open: missing host")
@@ -157,7 +157,7 @@ func jsFnSshOpen(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSshClose(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshClose(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if globalSshClient != nil {
 			if err := globalSshClient.Close(); err != nil {
@@ -170,7 +170,7 @@ func jsFnSshClose(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSshSetenv(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshSetenv(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.setenv: missing env name")
@@ -197,7 +197,7 @@ func jsFnSshSetenv(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSshExec(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("ssh.exec: missing exec command")
@@ -221,7 +221,7 @@ func jsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 				if err != nil {
 					return ctx.ThrowError(err)
 				}
-				env2, ok := second.(typeutil.H)
+				env2, ok := second.(utils.H)
 				if !ok {
 					return ctx.ThrowTypeError("ssh.exec: second argument expected an object")
 				}
@@ -340,7 +340,7 @@ func jsFnSshExec(global typeutil.H) jsexecutor.JSFunction {
 			}
 		}
 
-		return jsexecutor.AnyToJSValue(ctx, typeutil.H{
+		return jsexecutor.AnyToJSValue(ctx, utils.H{
 			"code":        code,
 			"output":      string(output),
 			"outputbytes": len(output),

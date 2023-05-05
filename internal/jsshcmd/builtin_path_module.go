@@ -1,13 +1,14 @@
 package jsshcmd
 
 import (
-	"github.com/leizongmin/go/typeutil"
-	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"path/filepath"
 	"strings"
+
+	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
-func jsFnPathJoin(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPathJoin(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.String("")
@@ -27,7 +28,7 @@ func jsFnPathJoin(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnPathAbs(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPathAbs(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.abs: missing path name")
@@ -49,7 +50,7 @@ func jsFnPathAbs(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnPathBase(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPathBase(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.base: missing path name")
@@ -63,7 +64,7 @@ func jsFnPathBase(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnPathExt(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPathExt(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.ext: missing path name")
@@ -77,7 +78,7 @@ func jsFnPathExt(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnPathDir(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPathDir(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("path.dir: missing path name")

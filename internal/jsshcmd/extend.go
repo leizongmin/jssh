@@ -1,11 +1,11 @@
 package jsshcmd
 
-import "github.com/leizongmin/go/typeutil"
+import "github.com/leizongmin/jssh/internal/utils"
 
-var registeredGlobal typeutil.H
+var registeredGlobal utils.H
 
 func init() {
-	registeredGlobal = make(typeutil.H)
+	registeredGlobal = make(utils.H)
 }
 
 // RegisterGlobal 注册全局变量

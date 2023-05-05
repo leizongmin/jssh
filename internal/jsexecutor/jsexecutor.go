@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/leizongmin/go/textutil"
-	"github.com/leizongmin/go/typeutil"
-
+	"github.com/leizongmin/jssh/internal/utils"
 	"github.com/leizongmin/jssh/quickjs"
 )
 
@@ -26,7 +24,7 @@ func IsGoFunction(f interface{}) bool {
 }
 
 // MergeMapToJSObject 将map类型的值合并到一个JSObject中
-func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars typeutil.H) quickjs.Value {
+func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars utils.H) quickjs.Value {
 	for n, v := range vars {
 		if IsGoFunction(v) {
 			obj.SetFunction(n, v.(JSFunction))
@@ -38,7 +36,7 @@ func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars typeutil.H
 }
 
 // EvalJS 执行JS代码并返回JSValue结果
-func EvalJS(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (quickjs.Value, error) {
+func EvalJS(jsRuntime quickjs.Runtime, code string, vars utils.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
 	defer ctx.Free()
 	MergeMapToJSObject(ctx, ctx.Globals(), vars)
@@ -46,7 +44,7 @@ func EvalJS(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (quickjs.Va
 }
 
 // EvalJSFile 执行JS文件并返回JSValue结果
-func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars typeutil.H) (quickjs.Value, error) {
+func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars utils.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
 	defer ctx.Free()
 	MergeMapToJSObject(ctx, ctx.Globals(), vars)
@@ -54,7 +52,7 @@ func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars ty
 }
 
 // EvalJSAndGetResult 执行JS并返回并返回interface{}结果
-func EvalJSAndGetResult(jsRuntime quickjs.Runtime, code string, vars typeutil.H) (interface{}, error) {
+func EvalJSAndGetResult(jsRuntime quickjs.Runtime, code string, vars utils.H) (interface{}, error) {
 	ret, err := EvalJS(jsRuntime, code, vars)
 	if err != nil {
 		return nil, err
@@ -94,7 +92,7 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 		size := int(value.Len())
 		arr := make([]interface{}, 0)
 		for i := 0; i < size; i++ {
-			v, err := JSValueToAny(value.Get(textutil.AnythingToString(i)))
+			v, err := JSValueToAny(value.Get(utils.AnythingToString(i)))
 			if err != nil {
 				return nil, err
 			}
@@ -110,7 +108,7 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		m := make(typeutil.H)
+		m := make(utils.H)
 		for _, p := range props {
 			if p.IsEnumerable {
 				k := p.Atom.Value()
@@ -147,13 +145,13 @@ func JSValueUint8ArrayToByteSlice(value quickjs.Value) ([]byte, error) {
 	size := int(value.Len())
 	arr := make([]byte, 0)
 	for i := 0; i < size; i++ {
-		v := value.Get(textutil.AnythingToString(i))
+		v := value.Get(utils.AnythingToString(i))
 		arr = append(arr, byte(v.Uint32()))
 	}
 	return arr, nil
 }
 
-func mapToJSValue(ctx *quickjs.Context, m typeutil.H) quickjs.Value {
+func mapToJSValue(ctx *quickjs.Context, m utils.H) quickjs.Value {
 	obj := ctx.Object()
 	for n, v := range m {
 		obj.Set(n, AnyToJSValue(ctx, v))
@@ -174,7 +172,7 @@ func AnyToJSValue(ctx *quickjs.Context, value interface{}) quickjs.Value {
 			return mapToJSValue(ctx, m)
 		}
 		if m, ok := value.(map[interface{}]interface{}); ok {
-			m2 := make(typeutil.H)
+			m2 := make(utils.H)
 			for k, v := range m {
 				m2[fmt.Sprintf("%v", k)] = v
 			}

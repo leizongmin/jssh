@@ -3,26 +3,25 @@ package jsshcmd
 import (
 	"net"
 
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
-func jsFnNetworkinterfaces(global typeutil.H) jsexecutor.JSFunction {
+func jsFnNetworkinterfaces(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		interfaces, err := net.Interfaces()
 		if err != nil {
 			return ctx.ThrowError(err)
 		}
 
-		ret := make(typeutil.H)
+		ret := make(utils.H)
 		for _, item := range interfaces {
 			addrs, err := item.Addrs()
 			if err != nil {
 				return ctx.ThrowError(err)
 			}
 
-			list := make([]typeutil.H, 0)
+			list := make([]utils.H, 0)
 			for _, addr := range addrs {
 				ip, ok := addr.(*net.IPNet)
 				if ok {
@@ -30,7 +29,7 @@ func jsFnNetworkinterfaces(global typeutil.H) jsexecutor.JSFunction {
 					if ip.IP.To16() != nil {
 						family = "IPv6"
 					}
-					list = append(list, typeutil.H{
+					list = append(list, utils.H{
 						"address":     ip.IP.String(),
 						"netmask":     ip.Mask.String(),
 						"family":      family,
@@ -42,7 +41,7 @@ func jsFnNetworkinterfaces(global typeutil.H) jsexecutor.JSFunction {
 				}
 			}
 
-			ret[item.Name] = typeutil.H{
+			ret[item.Name] = utils.H{
 				"index": item.Index,
 				"mac":   item.HardwareAddr.String(),
 				"list":  list,

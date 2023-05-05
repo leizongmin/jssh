@@ -8,15 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/leizongmin/go/configloader"
-	_ "github.com/leizongmin/go/configloader/toml" // toml格式的配置支持
-	_ "github.com/leizongmin/go/configloader/yaml" // yaml格式的配置支持
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
+	"github.com/leizongmin/jssh/internal/utils/configloader"
 )
 
-func jsFnExit(global typeutil.H) jsexecutor.JSFunction {
+func jsFnExit(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			os.Exit(0)
@@ -31,7 +28,7 @@ func jsFnExit(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSleep(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSleep(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sleep: missing millisecond argument")
@@ -60,7 +57,7 @@ func isSupportedConfigFormat(t string) bool {
 	return false
 }
 
-func jsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
+func jsFnLoadconfig(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("loadconfig: missing name")
@@ -96,7 +93,7 @@ func jsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
 			return ctx.ThrowError(err)
 		}
 
-		data := make(typeutil.H)
+		data := make(utils.H)
 		if err := configloader.Load(format, content, &data); err != nil {
 			return ctx.ThrowError(err)
 		}
@@ -105,7 +102,7 @@ func jsFnLoadconfig(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnReadline(global typeutil.H) jsexecutor.JSFunction {
+func jsFnReadline(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		var line string
 		_, err := fmt.Scanln(&line)
@@ -119,7 +116,7 @@ func jsFnReadline(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnEvalfile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnEvalfile(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("evalfile: missing filename")
@@ -157,7 +154,7 @@ func jsFnEvalfile(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnBytesize(global typeutil.H) jsexecutor.JSFunction {
+func jsFnBytesize(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("bytesize: missing data")
@@ -172,7 +169,7 @@ func jsFnBytesize(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnStdin(global typeutil.H) jsexecutor.JSFunction {
+func jsFnStdin(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		b, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {
@@ -183,7 +180,7 @@ func jsFnStdin(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnStdinbytes(global typeutil.H) jsexecutor.JSFunction {
+func jsFnStdinbytes(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		b, err := ioutil.ReadAll(os.Stdin)
 		if err != nil {

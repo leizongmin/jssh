@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/leizongmin/go/httputil"
-	"github.com/leizongmin/go/typeutil"
+	"github.com/leizongmin/jssh/internal/utils"
+	"github.com/leizongmin/jssh/internal/utils/httputil"
 )
 
 func mustGetHomeDir() string {
@@ -30,8 +30,8 @@ func mustGetCurrentUsername() string {
 	return u.Username
 }
 
-func getEnvMap() typeutil.H {
-	env := make(typeutil.H)
+func getEnvMap() utils.H {
+	env := make(utils.H)
 	for _, line := range os.Environ() {
 		splits := strings.Split(line, "=")
 		k := splits[0]
@@ -41,16 +41,16 @@ func getEnvMap() typeutil.H {
 	return env
 }
 
-func cloneMap(a typeutil.H) typeutil.H {
-	b := make(typeutil.H)
+func cloneMap(a utils.H) utils.H {
+	b := make(utils.H)
 	for n, v := range a {
 		b[n] = v
 	}
 	return b
 }
 
-func getHeaderMap(header http.Header) typeutil.H {
-	ret := make(typeutil.H)
+func getHeaderMap(header http.Header) utils.H {
+	ret := make(utils.H)
 	for name, values := range header {
 		name = strings.ToLower(name)
 		if len(values) > 1 {

@@ -6,13 +6,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
-func fileInfoToMap(s os.FileInfo) typeutil.H {
-	return typeutil.H{
+func fileInfoToMap(s os.FileInfo) utils.H {
+	return utils.H{
 		"name":    s.Name(),
 		"isdir":   s.IsDir(),
 		"mode":    uint32(s.Mode()),
@@ -21,7 +20,7 @@ func fileInfoToMap(s os.FileInfo) typeutil.H {
 	}
 }
 
-func jsFnFsReaddir(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsReaddir(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readdir: missing dir name")
@@ -35,7 +34,7 @@ func jsFnFsReaddir(global typeutil.H) jsexecutor.JSFunction {
 		if err != nil {
 			return ctx.ThrowError(err)
 		}
-		retList := make([]typeutil.H, 0)
+		retList := make([]utils.H, 0)
 		for _, item := range list {
 			retList = append(retList, fileInfoToMap(item))
 		}
@@ -43,7 +42,7 @@ func jsFnFsReaddir(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsReadfile(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readfile: missing path name")
@@ -62,7 +61,7 @@ func jsFnFsReadfile(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnFsReadfilebytes(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsReadfilebytes(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.readfile: missing path name")
@@ -81,7 +80,7 @@ func jsFnFsReadfilebytes(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsExist(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.exist: missing path name")
@@ -101,7 +100,7 @@ func jsFnFsExist(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnFsStat(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsStat(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.stat: missing path name")
@@ -120,7 +119,7 @@ func jsFnFsStat(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsWritefile(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.writefile: missing file name")
@@ -163,7 +162,7 @@ func jsFnFsWritefile(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnFsAppendfile(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFsAppendfile(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("fs.appendfile: missing file name")

@@ -6,14 +6,13 @@ import (
 	"net"
 	"time"
 
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
 var socketGlobalTimeout int64 = 60_000
 
-func jsFnSocketTimeout(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSocketTimeout(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("socket.timeout: missing timeout millisecond")
@@ -27,7 +26,7 @@ func jsFnSocketTimeout(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSocketTcpsend(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSocketTcpsend(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("socket.tcpsend: missing host")
@@ -79,7 +78,7 @@ func jsFnSocketTcpsend(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSocketTcptest(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSocketTcptest(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("socket.tcpsend: missing host")

@@ -15,12 +15,12 @@ import (
 	"strings"
 
 	"github.com/gookit/color"
-	"github.com/leizongmin/go/typeutil"
 	"github.com/peterh/liner"
 
 	"github.com/leizongmin/jssh/internal/jsbuiltin"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
+	"github.com/leizongmin/jssh/internal/utils"
 	"github.com/leizongmin/jssh/quickjs"
 )
 
@@ -194,7 +194,7 @@ func tryRunSelfContainedBoundary() bool {
 		return true
 	}
 
-	run(selfFile, string(content), false, typeutil.H{
+	run(selfFile, string(content), false, utils.H{
 		"__selfcontained": true,
 		"__args":          append([]string{selfFile}, os.Args...),
 	}, nil)
@@ -238,7 +238,7 @@ func createSelfContainedBinary(source string, targetFile string) {
 	fmt.Printf("Created self-contained binary file: %s\n", targetFile)
 }
 
-func run(file string, content string, interactive bool, customGlobal typeutil.H, onEnd func(ret jsexecutor.JSValue)) {
+func run(file string, content string, interactive bool, customGlobal utils.H, onEnd func(ret jsexecutor.JSValue)) {
 	global := getJsGlobal(file)
 	jsRuntime := jsexecutor.NewJSRuntime()
 	defer jsRuntime.Free()
@@ -489,9 +489,9 @@ func tryGetFileStat(name string) os.FileInfo {
 	return s
 }
 
-func getJsGlobal(file string) typeutil.H {
+func getJsGlobal(file string) utils.H {
 	dir := filepath.Dir(file)
-	global := make(typeutil.H)
+	global := make(utils.H)
 
 	global["__selfcontained"] = false
 	global["__cpucount"] = runtime.NumCPU()
@@ -543,7 +543,7 @@ func getJsGlobal(file string) typeutil.H {
 	global["bgexec"] = jsFnShBgexec(global)
 	global["pty"] = jsFnShPty(global)
 
-	sshModule := make(typeutil.H)
+	sshModule := make(utils.H)
 	sshModule["set"] = jsFnSshSet(global)
 	sshModule["open"] = jsFnSshOpen(global)
 	sshModule["close"] = jsFnSshClose(global)
@@ -551,7 +551,7 @@ func getJsGlobal(file string) typeutil.H {
 	sshModule["exec"] = jsFnSshExec(global)
 	global["ssh"] = sshModule
 
-	fsModule := make(typeutil.H)
+	fsModule := make(utils.H)
 	fsModule["readdir"] = jsFnFsReaddir(global)
 	fsModule["readfile"] = jsFnFsReadfile(global)
 	fsModule["stat"] = jsFnFsStat(global)
@@ -561,7 +561,7 @@ func getJsGlobal(file string) typeutil.H {
 	fsModule["readfilebytes"] = jsFnFsReadfilebytes(global)
 	global["fs"] = fsModule
 
-	pathModule := make(typeutil.H)
+	pathModule := make(utils.H)
 	pathModule["join"] = jsFnPathJoin(global)
 	pathModule["abs"] = jsFnPathAbs(global)
 	pathModule["base"] = jsFnPathBase(global)
@@ -569,13 +569,13 @@ func getJsGlobal(file string) typeutil.H {
 	pathModule["dir"] = jsFnPathDir(global)
 	global["path"] = pathModule
 
-	httpModule := make(typeutil.H)
+	httpModule := make(utils.H)
 	httpModule["timeout"] = jsFnHttpTimeout(global)
 	httpModule["request"] = jsFnHttpRequest(global)
 	httpModule["download"] = jsFnHttpDownload(global)
 	global["http"] = httpModule
 
-	socketModule := make(typeutil.H)
+	socketModule := make(utils.H)
 	socketModule["timeout"] = jsFnSocketTimeout(global)
 	socketModule["tcpsend"] = jsFnSocketTcpsend(global)
 	socketModule["tcptest"] = jsFnSocketTcptest(global)

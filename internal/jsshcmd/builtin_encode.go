@@ -7,12 +7,11 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
-func jsFnBase64encode(global typeutil.H) jsexecutor.JSFunction {
+func jsFnBase64encode(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("base64encode: missing data")
@@ -27,7 +26,7 @@ func jsFnBase64encode(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnBase64decode(global typeutil.H) jsexecutor.JSFunction {
+func jsFnBase64decode(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("base64decode: missing data")
@@ -45,7 +44,7 @@ func jsFnBase64decode(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnMd5(global typeutil.H) jsexecutor.JSFunction {
+func jsFnMd5(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("md5: missing data")
@@ -61,7 +60,7 @@ func jsFnMd5(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSha1(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSha1(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sha1: missing data")
@@ -77,7 +76,7 @@ func jsFnSha1(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnSha256(global typeutil.H) jsexecutor.JSFunction {
+func jsFnSha256(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("sha256: missing data")

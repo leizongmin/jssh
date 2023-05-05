@@ -1,3 +1,4 @@
+//go:build !windows
 // +build !windows
 
 package jsshcmd
@@ -11,13 +12,13 @@ import (
 	"syscall"
 
 	"github.com/creack/pty"
-	"github.com/leizongmin/go/typeutil"
 	"golang.org/x/term"
 
 	"github.com/leizongmin/jssh/internal/jsexecutor"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
-func jsFnShPty(global typeutil.H) jsexecutor.JSFunction {
+func jsFnShPty(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("pty: missing exec command")
@@ -27,7 +28,7 @@ func jsFnShPty(global typeutil.H) jsexecutor.JSFunction {
 		}
 		cmd := args[0].String()
 
-		env := cloneMap(global["__env"].(typeutil.H))
+		env := cloneMap(global["__env"].(utils.H))
 		if len(args) >= 2 {
 			if args[1].IsNull() || args[1].IsUndefined() {
 			} else {
@@ -38,7 +39,7 @@ func jsFnShPty(global typeutil.H) jsexecutor.JSFunction {
 				if err != nil {
 					return ctx.ThrowError(err)
 				}
-				env2, ok := second.(typeutil.H)
+				env2, ok := second.(utils.H)
 				if !ok {
 					return ctx.ThrowTypeError("pty: second argument expected an object")
 				}
@@ -98,6 +99,6 @@ func jsFnShPty(global typeutil.H) jsexecutor.JSFunction {
 		if sh.Process != nil {
 			pid = sh.Process.Pid
 		}
-		return jsexecutor.AnyToJSValue(ctx, typeutil.H{"pid": pid})
+		return jsexecutor.AnyToJSValue(ctx, utils.H{"pid": pid})
 	}
 }

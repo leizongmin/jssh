@@ -5,17 +5,16 @@ import (
 	"log"
 	"os"
 
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
+	"github.com/leizongmin/jssh/internal/utils"
 )
 
 var logPrefix = fmt.Sprintf("[%s] ", pkginfo.Name)
 var stdLog = log.New(os.Stdout, logPrefix, log.LstdFlags)
 var errLog = log.New(os.Stderr, logPrefix, log.LstdFlags)
 
-func jsFnFormat(global typeutil.H) jsexecutor.JSFunction {
+func jsFnFormat(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) > 0 {
 			s, err := jsexecutor.JSValueToAny(args[0])
@@ -44,7 +43,7 @@ func jsFnFormat(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnPrint(global typeutil.H) jsexecutor.JSFunction {
+func jsFnPrint(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) > 0 {
 			s, err := jsexecutor.JSValueToAny(args[0])
@@ -71,7 +70,7 @@ func jsFnPrint(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnStdoutlog(global typeutil.H) jsexecutor.JSFunction {
+func jsFnStdoutlog(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowTypeError("stdoutlog: missing log line argument")
@@ -85,7 +84,7 @@ func jsFnStdoutlog(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnStderrlog(global typeutil.H) jsexecutor.JSFunction {
+func jsFnStderrlog(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowTypeError("stderrlog: missing log line argument")

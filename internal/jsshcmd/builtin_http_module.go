@@ -10,12 +10,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/leizongmin/go/httputil"
-	"github.com/leizongmin/go/randutil"
-	"github.com/leizongmin/go/typeutil"
-
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
+	"github.com/leizongmin/jssh/internal/utils"
+	"github.com/leizongmin/jssh/internal/utils/httputil"
 )
 
 var httpGlobalHeaders map[string]string
@@ -26,7 +24,7 @@ func init() {
 	httpGlobalHeaders["user-agent"] = fmt.Sprintf("%s/%s", pkginfo.Name, pkginfo.LongVersion)
 }
 
-func jsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {
+func jsFnHttpTimeout(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.timeout: missing timeout millisecond")
@@ -42,7 +40,7 @@ func jsFnHttpTimeout(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
+func jsFnHttpRequest(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.request: missing request method")
@@ -75,7 +73,7 @@ func jsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 			if err != nil {
 				return ctx.ThrowError(err)
 			}
-			headers, ok := third.(typeutil.H)
+			headers, ok := third.(utils.H)
 			if !ok {
 				return ctx.ThrowTypeError("http.request: third argument expected an object")
 			}
@@ -104,7 +102,7 @@ func jsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 			}
 		}()
 
-		ret := make(typeutil.H)
+		ret := make(utils.H)
 		ret["status"] = res.Status()
 		ret["headers"] = getHeaderMap(res.Header())
 		b, err := res.Body()
@@ -118,7 +116,7 @@ func jsFnHttpRequest(global typeutil.H) jsexecutor.JSFunction {
 	}
 }
 
-func jsFnHttpDownload(global typeutil.H) jsexecutor.JSFunction {
+func jsFnHttpDownload(global utils.H) jsexecutor.JSFunction {
 	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
 		if len(args) < 1 {
 			return ctx.ThrowSyntaxError("http.download: missing request url")
@@ -136,7 +134,7 @@ func jsFnHttpDownload(global typeutil.H) jsexecutor.JSFunction {
 			filename = args[1].String()
 		}
 		if len(filename) < 1 {
-			filename = filepath.Join(os.TempDir(), fmt.Sprintf("jssh-http-download-%d-%d", time.Now().Unix(), randutil.Int63n(math.MaxInt64)))
+			filename = filepath.Join(os.TempDir(), fmt.Sprintf("jssh-http-download-%d-%d", time.Now().Unix(), utils.Int63n(math.MaxInt64)))
 		}
 
 		req := httputil.Request()
