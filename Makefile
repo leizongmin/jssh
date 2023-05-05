@@ -17,4 +17,4 @@ jssh_m: jssh
 .PHONY: go-nm
 go-nm:
 	@go build -o release/jssh .
-	@go tool nm -size -sort size release/jssh 2>/dev/null | head -50
+	@go tool nm -size -sort size -type release/jssh 2>/dev/null | head -500
