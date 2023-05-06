@@ -1,0 +1,17 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "env": {
+        "es6": true
+    },
+    "globals": {
+        "globalThis": "writable",
+        "jssh": "writable",
+        "__filename": "readonly",
+        "__dirname": "readonly"
+    },
+    "rules": {
+        "no-undef": 2
+    }
+}

@@ -241,7 +241,8 @@ func createSelfContainedBinary(source string, targetFile string) {
 func run(file string, content string, interactive bool, customGlobal utils.H, onEnd func(ret jsexecutor.JSValue)) {
 	global := getJsGlobal(file)
 	jsRuntime := jsexecutor.NewJSRuntime()
-	defer jsRuntime.Free()
+	// FIXME: 目前有 bug 导致在 free 的时候会断言失败，目前仅在进程退出时需要 free，因此可以暂时去掉
+	// defer jsRuntime.Free()
 
 	if customGlobal != nil {
 		for n, v := range customGlobal {
@@ -492,98 +493,100 @@ func tryGetFileStat(name string) os.FileInfo {
 func getJsGlobal(file string) utils.H {
 	dir := filepath.Dir(file)
 	global := make(utils.H)
+	jsshNS := make(utils.H)
 
-	global["__selfcontained"] = false
-	global["__cpucount"] = runtime.NumCPU()
-	global["__os"] = runtime.GOOS
-	global["__arch"] = runtime.GOARCH
-	global["__version"] = pkginfo.LongVersion
-	global["__bin"] = getCurrentAbsoluteBinPath()
-	global["__pid"] = os.Getpid()
-	global["__user"] = mustGetCurrentUsername()
-	global["__tmpdir"] = os.TempDir()
-	global["__homedir"] = mustGetHomeDir()
-	global["__hostname"], _ = os.Hostname()
-	global["__dirname"] = dir
-	global["__filename"] = file
-	global["__args"] = os.Args[:]
-	global["__env"] = getEnvMap()
-	global["__output"] = ""
-	global["__outputbytes"] = 0
-	global["__code"] = 0
+	jsshNS["__selfcontained"] = false
+	jsshNS["__cpucount"] = runtime.NumCPU()
+	jsshNS["__os"] = runtime.GOOS
+	jsshNS["__arch"] = runtime.GOARCH
+	jsshNS["__version"] = pkginfo.LongVersion
+	jsshNS["__bin"] = getCurrentAbsoluteBinPath()
+	jsshNS["__pid"] = os.Getpid()
+	jsshNS["__user"] = mustGetCurrentUsername()
+	jsshNS["__tmpdir"] = os.TempDir()
+	jsshNS["__homedir"] = mustGetHomeDir()
+	jsshNS["__hostname"], _ = os.Hostname()
+	jsshNS["__dirname"] = dir
+	jsshNS["__filename"] = file
+	jsshNS["__args"] = os.Args[:]
+	jsshNS["__env"] = getEnvMap()
+	jsshNS["__output"] = ""
+	jsshNS["__outputbytes"] = 0
+	jsshNS["__code"] = 0
 
-	global["format"] = jsFnFormat(global)
-	global["print"] = jsFnPrint(global)
-	global["eprint"] = jsFnEprint(global)
-	global["readline"] = jsFnReadline(global)
-	global["stdoutlog"] = jsFnStdoutlog(global)
-	global["stderrlog"] = jsFnStderrlog(global)
-	global["evalfile"] = jsFnEvalfile(global)
-	global["bytesize"] = jsFnBytesize(global)
-	global["stdin"] = jsFnStdin(global)
-	global["stdinbytes"] = jsFnStdinbytes(global)
+	jsshNS["format"] = jsFnFormat(jsshNS)
+	jsshNS["print"] = jsFnPrint(jsshNS)
+	jsshNS["eprint"] = jsFnEprint(jsshNS)
+	jsshNS["readline"] = jsFnReadline(jsshNS)
+	jsshNS["stdoutlog"] = jsFnStdoutlog(jsshNS)
+	jsshNS["stderrlog"] = jsFnStderrlog(jsshNS)
+	jsshNS["evalfile"] = jsFnEvalfile(jsshNS)
+	jsshNS["bytesize"] = jsFnBytesize(jsshNS)
+	jsshNS["stdin"] = jsFnStdin(jsshNS)
+	jsshNS["stdinbytes"] = jsFnStdinbytes(jsshNS)
 
-	global["sleep"] = jsFnSleep(global)
-	global["exit"] = jsFnExit(global)
-	global["loadconfig"] = jsFnLoadconfig(global)
+	jsshNS["sleep"] = jsFnSleep(jsshNS)
+	jsshNS["exit"] = jsFnExit(jsshNS)
+	jsshNS["loadconfig"] = jsFnLoadconfig(jsshNS)
 
-	global["base64encode"] = jsFnBase64encode(global)
-	global["base64decode"] = jsFnBase64decode(global)
-	global["md5"] = jsFnMd5(global)
-	global["sha1"] = jsFnSha1(global)
-	global["sha256"] = jsFnSha256(global)
+	jsshNS["base64encode"] = jsFnBase64encode(jsshNS)
+	jsshNS["base64decode"] = jsFnBase64decode(jsshNS)
+	jsshNS["md5"] = jsFnMd5(jsshNS)
+	jsshNS["sha1"] = jsFnSha1(jsshNS)
+	jsshNS["sha256"] = jsFnSha256(jsshNS)
 
-	global["networkinterfaces"] = jsFnNetworkinterfaces(global)
+	jsshNS["networkinterfaces"] = jsFnNetworkinterfaces(jsshNS)
 
-	global["setenv"] = jsFnShSetenv(global)
-	global["chdir"] = jsFnShChdir(global)
-	global["cd"] = jsFnShChdir(global)
-	global["cwd"] = jsFnShCwd(global)
-	global["pwd"] = jsFnShCwd(global)
-	global["exec"] = jsFnShExec(global)
-	global["bgexec"] = jsFnShBgexec(global)
-	global["pty"] = jsFnShPty(global)
+	jsshNS["setenv"] = jsFnShSetenv(jsshNS)
+	jsshNS["chdir"] = jsFnShChdir(jsshNS)
+	jsshNS["cd"] = jsFnShChdir(jsshNS)
+	jsshNS["cwd"] = jsFnShCwd(jsshNS)
+	jsshNS["pwd"] = jsFnShCwd(jsshNS)
+	jsshNS["exec"] = jsFnShExec(jsshNS)
+	jsshNS["bgexec"] = jsFnShBgexec(jsshNS)
+	jsshNS["pty"] = jsFnShPty(jsshNS)
 
 	sshModule := make(utils.H)
-	sshModule["set"] = jsFnSshSet(global)
-	sshModule["open"] = jsFnSshOpen(global)
-	sshModule["close"] = jsFnSshClose(global)
-	sshModule["setenv"] = jsFnSshSetenv(global)
-	sshModule["exec"] = jsFnSshExec(global)
-	global["ssh"] = sshModule
+	sshModule["set"] = jsFnSshSet(jsshNS)
+	sshModule["open"] = jsFnSshOpen(jsshNS)
+	sshModule["close"] = jsFnSshClose(jsshNS)
+	sshModule["setenv"] = jsFnSshSetenv(jsshNS)
+	sshModule["exec"] = jsFnSshExec(jsshNS)
+	jsshNS["ssh"] = sshModule
 
 	fsModule := make(utils.H)
-	fsModule["readdir"] = jsFnFsReaddir(global)
-	fsModule["readfile"] = jsFnFsReadfile(global)
-	fsModule["stat"] = jsFnFsStat(global)
-	fsModule["exist"] = jsFnFsExist(global)
-	fsModule["writefile"] = jsFnFsWritefile(global)
-	fsModule["appendfile"] = jsFnFsAppendfile(global)
-	fsModule["readfilebytes"] = jsFnFsReadfilebytes(global)
-    fsModule["mkdir"] = jsFnFsMkdir(global)
-    fsModule["mkdirp"] = jsFnFsMkdirp(global)
-	global["fs"] = fsModule
+	fsModule["readdir"] = jsFnFsReaddir(jsshNS)
+	fsModule["readfile"] = jsFnFsReadfile(jsshNS)
+	fsModule["stat"] = jsFnFsStat(jsshNS)
+	fsModule["exist"] = jsFnFsExist(jsshNS)
+	fsModule["writefile"] = jsFnFsWritefile(jsshNS)
+	fsModule["appendfile"] = jsFnFsAppendfile(jsshNS)
+	fsModule["readfilebytes"] = jsFnFsReadfilebytes(jsshNS)
+	fsModule["mkdir"] = jsFnFsMkdir(jsshNS)
+	fsModule["mkdirp"] = jsFnFsMkdirp(jsshNS)
+	jsshNS["fs"] = fsModule
 
 	pathModule := make(utils.H)
-	pathModule["join"] = jsFnPathJoin(global)
-	pathModule["abs"] = jsFnPathAbs(global)
-	pathModule["base"] = jsFnPathBase(global)
-	pathModule["ext"] = jsFnPathExt(global)
-	pathModule["dir"] = jsFnPathDir(global)
-	global["path"] = pathModule
+	pathModule["join"] = jsFnPathJoin(jsshNS)
+	pathModule["abs"] = jsFnPathAbs(jsshNS)
+	pathModule["base"] = jsFnPathBase(jsshNS)
+	pathModule["ext"] = jsFnPathExt(jsshNS)
+	pathModule["dir"] = jsFnPathDir(jsshNS)
+	jsshNS["path"] = pathModule
 
 	httpModule := make(utils.H)
-	httpModule["timeout"] = jsFnHttpTimeout(global)
-	httpModule["request"] = jsFnHttpRequest(global)
-	httpModule["download"] = jsFnHttpDownload(global)
-	global["http"] = httpModule
+	httpModule["timeout"] = jsFnHttpTimeout(jsshNS)
+	httpModule["request"] = jsFnHttpRequest(jsshNS)
+	httpModule["download"] = jsFnHttpDownload(jsshNS)
+	jsshNS["http"] = httpModule
 
 	socketModule := make(utils.H)
-	socketModule["timeout"] = jsFnSocketTimeout(global)
-	socketModule["tcpsend"] = jsFnSocketTcpsend(global)
-	socketModule["tcptest"] = jsFnSocketTcptest(global)
-	global["socket"] = socketModule
+	socketModule["timeout"] = jsFnSocketTimeout(jsshNS)
+	socketModule["tcpsend"] = jsFnSocketTcpsend(jsshNS)
+	socketModule["tcptest"] = jsFnSocketTcptest(jsshNS)
+	jsshNS["socket"] = socketModule
 
+	global["jssh"] = jsshNS
 	for n, v := range registeredGlobal {
 		global[n] = v
 	}

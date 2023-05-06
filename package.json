@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/leizongmin/jssh#readme",
   "devDependencies": {
+    "eslint": "^8.40.0",
     "lodash": "4.17.21",
     "prettier": "2.8.8",
     "uglify-js": "^3.17.4",

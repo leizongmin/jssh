@@ -18,6 +18,7 @@ var modules []JsModule
 //go:embed dist/01_global.js
 //go:embed dist/01_http.js
 //go:embed dist/01_log.js
+//go:embed dist/99_bootstrap.js
 var jsFs embed.FS
 
 func init() {

@@ -1,5 +1,3 @@
-const global = globalThis || this;
-
 {
   const removeShebangLine = (data) => {
     if (typeof data !== "string") throw new Error(`unexpected input: ${data}`);
@@ -10,29 +8,29 @@ const global = globalThis || this;
   const isHttpUrl = (s) => /^https?:\/\//gi.test(s);
 
   const readUrlContent = (url) => {
-    log.debug("require: read content from %s", url);
-    return http.get(url);
+    jssh.log.debug("require: read content from %s", url);
+    return jssh.http.get(url);
   };
 
   const resolveWithExtension = (name) => {
     const extension = [".json", ".js"];
-    if (fs.exist(name)) {
-      if (fs.stat(name).isdir) {
+    if (jssh.fs.exist(name)) {
+      if (jssh.fs.stat(name).isdir) {
         // 如果是目录，尝试 ${name}/package.json
-        const pkgFile = path.join(name, "package.json");
-        if (fs.exist(pkgFile)) {
-          const pkg = loadModuleFromJsonContent(pkgFile, fs.readfile(pkgFile));
+        const pkgFile = jssh.path.join(name, "package.json");
+        if (jssh.fs.exist(pkgFile)) {
+          const pkg = loadModuleFromJsonContent(pkgFile, jssh.fs.readfile(pkgFile));
           if (pkg.main) {
-            return resolveWithExtension(path.join(name, pkg.main));
+            return resolveWithExtension(jssh.path.join(name, pkg.main));
           }
         }
         // 再尝试 ${name}/index.js, ${name}/index.json
-        const indexFile = path.join(name, "index");
-        if (fs.exist(indexFile)) {
+        const indexFile = jssh.path.join(name, "index");
+        if (jssh.fs.exist(indexFile)) {
           return indexFile;
         }
         for (const ext of extension) {
-          if (fs.exist(indexFile + ext)) {
+          if (jssh.fs.exist(indexFile + ext)) {
             return indexFile + ext;
           }
         }
@@ -43,17 +41,17 @@ const global = globalThis || this;
     } else {
       // 如果文件不存在，尝试 ${name}.js, ${name}.json
       for (const ext of extension) {
-        if (fs.exist(name + ext)) {
+        if (jssh.fs.exist(name + ext)) {
           return name + ext;
         }
       }
       // 再尝试 ${name}/index.js, ${name}/index.json
-      const indexFile = path.join(name, "index");
-      if (fs.exist(indexFile)) {
+      const indexFile = jssh.path.join(name, "index");
+      if (jssh.fs.exist(indexFile)) {
         return indexFile;
       }
       for (const ext of extension) {
-        if (fs.exist(indexFile + ext)) {
+        if (jssh.fs.exist(indexFile + ext)) {
           return indexFile + ext;
         }
       }
@@ -64,9 +62,9 @@ const global = globalThis || this;
     const paths = [];
     let d = dir;
     while (true) {
-      let p = path.abs(path.join(d, "node_modules"));
+      let p = jssh.path.abs(jssh.path.join(d, "node_modules"));
       paths.push(p);
-      const d2 = path.dir(d);
+      const d2 = jssh.path.dir(d);
       if (d2 === d) {
         break;
       } else {
@@ -74,8 +72,8 @@ const global = globalThis || this;
       }
     }
     for (const p of paths) {
-      const ret = resolveWithExtension(path.join(p, name));
-      if (ret) return path.abs(ret);
+      const ret = resolveWithExtension(jssh.path.join(p, name));
+      if (ret) return jssh.path.abs(ret);
     }
   };
 
@@ -88,13 +86,13 @@ const global = globalThis || this;
   const resolveModulePath = (name, dir) => {
     if (name === "." || name.startsWith("/") || name.startsWith("./")) {
       if (isHttpUrl(dir)) {
-        return path.abs(path.join(dir, name));
+        return jssh.path.abs(jssh.path.join(dir, name));
       }
-      const ret = resolveWithExtension(path.join(dir, name));
+      const ret = resolveWithExtension(jssh.path.join(dir, name));
       if (ret) {
-        return path.abs(ret);
+        return jssh.path.abs(ret);
       }
-      return path.abs(name);
+      return jssh.path.abs(name);
     }
 
     if (isHttpUrl(name)) {
@@ -116,7 +114,7 @@ const global = globalThis || this;
   };
 
   const requiremodule = (name, dir = __dirname) => {
-    log.debug("require: name=%s, dir=%s", name, dir);
+    jssh.log.debug("require: name=%s, dir=%s", name, dir);
 
     if (typeof name !== "string") {
       throw new TypeError(`module name expected string type`);
@@ -155,12 +153,12 @@ const global = globalThis || this;
           }
         }
       } else {
-        content = fs.readfile(file);
+        content = jssh.fs.readfile(file);
       }
       if (file.endsWith(".json")) {
         return loadModuleFromJsonContent(file);
       } else {
-        return loadModuleFromJsContent(file, path.dir(file), content);
+        return loadModuleFromJsContent(file, jssh.path.dir(file), content);
       }
     } catch (err) {
       const err2 = new Error(
@@ -186,13 +184,13 @@ return module;
   return requiremodule(name, "${dirname}");
 }, {exports:{},parent:this}, "${dirname}", "${filename}")
 `.trimStart();
-    return (require.cache[__filename] = evalfile(__filename, wrapped).exports);
+    return (require.cache[__filename] = jssh.evalfile(__filename, wrapped).exports);
   };
 
   const require = (name) => {
     return requiremodule(name, __dirname);
   };
   require.cache = {};
-  global.require = require;
-  global.requiremodule = requiremodule;
+  jssh.require = require;
+  jssh.requiremodule = requiremodule;
 }

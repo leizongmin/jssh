@@ -1,6 +1,6 @@
-const cli = {};
 
 {
+  const cli = {};
   const _args = (cli._args = []);
   const _opts = (cli._opts = {});
 
@@ -13,9 +13,9 @@ const cli = {};
     }
   };
 
-  for (let i = 2; i < __args.length; i++) {
-    const v = __args[i];
-    const v2 = __args[i + 1];
+  for (let i = 2; i < jssh.__args.length; i++) {
+    const v = jssh.__args[i];
+    const v2 = jssh.__args[i + 1];
     if (v.startsWith("-")) {
       const r = v.match(/^--?([\w\-_]+)=(.*)$/);
       if (r) {
@@ -61,8 +61,8 @@ const cli = {};
   };
 
   cli.prompt = function prompt(message) {
-    if (message) print(message);
-    return readline();
+    if (message) jssh.print(message);
+    return jssh.readline();
   };
 
   cli._subcommand = {};
@@ -88,6 +88,6 @@ const cli = {};
     throw new Error(`unrecognized subcommand ${name}`);
   };
 
+  jssh.cli = cli;
+  Object.freeze(cli);
 }
-
-Object.freeze(cli);

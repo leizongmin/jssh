@@ -1,25 +1,26 @@
-const console = {};
-
 {
+  const console = {};
+
   console.trace = function trace(...args) {
-    println(format(...args));
+    jssh.println(jssh.format(...args));
   };
 
   console.log = function log(...args) {
-    println(format(...args));
+    jssh.println(jssh.format(...args));
   };
 
   console.info = function info(...args) {
-    println(format(...args));
+    jssh.println(jssh.format(...args));
   };
 
   console.warn = function warn(...args) {
-    eprintln(format(...args));
+    jssh.eprintln(jssh.format(...args));
   };
 
   console.error = function error(...args) {
-    eprintln(format(...args));
+    jssh.eprintln(jssh.format(...args));
   };
-}
 
-Object.freeze(console);
+  jssh.console = console;
+  Object.freeze(console);
+}
