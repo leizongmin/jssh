@@ -1,5 +1,5 @@
 RELEASE_TARGET := $(shell go run . eval "__os + '-' + __arch" 2>/dev/null)
-JSBUILTIN_FILES := $(shell cd internal/jsbuiltin/src && find -type f -name '*.js' -print0 | xargs -0)
+JSBUILTIN_FILES := $(shell cd internal/jsbuiltin/src && find . -type f -name '*.js' -print0 | xargs -0)
 
 .PHONY: all
 all: jssh jssh_m
