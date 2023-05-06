@@ -60,6 +60,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 #### 全局变量列表
 
 - `global`：全局变量；
+- `globalThis`：全局变量，同 `global`；
 - `__selfcontained`：是否 self-contained 方式执行；
 - `__cpucount`：CPU 数量；
 - `__os`：操作系统类型，如 `darwin`、`freebsd`、`linux`、`windows`；
