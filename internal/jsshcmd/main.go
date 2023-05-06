@@ -514,6 +514,7 @@ func getJsGlobal(file string) utils.H {
 
 	global["format"] = jsFnFormat(global)
 	global["print"] = jsFnPrint(global)
+	global["eprint"] = jsFnEprint(global)
 	global["readline"] = jsFnReadline(global)
 	global["stdoutlog"] = jsFnStdoutlog(global)
 	global["stderrlog"] = jsFnStderrlog(global)

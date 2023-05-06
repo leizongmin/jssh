@@ -3,6 +3,11 @@ function println(...args) {
   print("\n");
 }
 
+function eprintln(...args) {
+  eprint(...args);
+  eprint("\n");
+}
+
 const log = {};
 {
   const levels = { ERROR: 1, WARN: 2, INFO: 3, DEBUG: 4 };

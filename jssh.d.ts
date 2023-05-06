@@ -100,7 +100,7 @@ declare function stdinbytes(): Uint8Array;
 declare function format(format: any, ...args: any[]): string;
 
 /**
- * 输出到控制台
+ * 在stdout输出到控制台
  * @param format 模板，支持%s等格式
  * @param args 参数列表
  * @return 是否成功
@@ -108,12 +108,28 @@ declare function format(format: any, ...args: any[]): string;
 declare function print(format: any, ...args: any[]): boolean;
 
 /**
- * 输出一行到控制台
+ * 在stdout输出一行到控制台
  * @param format 模板，支持%s等格式
  * @param args 参数列表
  * @return 是否成功
  */
 declare function println(format: any, ...args: any[]): boolean;
+
+/**
+ * 在stderr输出到控制台
+ * @param format 模板，支持%s等格式
+ * @param args 参数列表
+ * @return 是否成功
+ */
+declare function eprint(format: any, ...args: any[]): boolean;
+
+/**
+ * 在stderr输出一行到控制台
+ * @param format 模板，支持%s等格式
+ * @param args 参数列表
+ * @return 是否成功
+ */
+declare function eprintln(format: any, ...args: any[]): boolean;
 
 /**
  * 在stdout输出一行日志

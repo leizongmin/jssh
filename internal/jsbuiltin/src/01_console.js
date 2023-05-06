@@ -14,11 +14,11 @@ const console = {};
   };
 
   console.warn = function warn(...args) {
-    println(format(...args));
+    eprintln(format(...args));
   };
 
   console.error = function error(...args) {
-    println(format(...args));
+    eprintln(format(...args));
   };
 }
 

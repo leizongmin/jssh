@@ -84,8 +84,10 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 
 - `require(modulename)`：加载 CommonJS 模块（**注意：仍然有 Bug，慎用**）；
 - `evalfile(filename, content?)`：以 `eval` 方式执行指定脚本文件（本地文件路径或 URL），若指定参数 `content` 则不需要实际读取文件内容；
-- `print(template, ...args)`：格式化字符串并输出，格式同`format()`函数；
-- `println(template, ...args)`：格式化字符串并输出，末尾加换行符，格式同 `format()` 函数；
+- `print(template, ...args)`：在 `stdout` 格式化字符串并输出，格式同`format()`函数；
+- `println(template, ...args)`：在 `stdout` 格式化字符串并输出，末尾加换行符，格式同 `format()` 函数；
+- `eprint(template, ...args)`：在 `stderr` 格式化字符串并输出，格式同`format()`函数；
+- `eprintln(template, ...args)`：在 `stderr` 格式化字符串并输出，末尾加换行符，格式同 `format()` 函数；
 - `stdoutlog(message)`：在 `stdout` 中输出一行日志；
 - `stderrlog(message)`：在 `stderr` 中输出一行日志；
 - `readline()`：从控制台获取用户一行的字符串输入；
