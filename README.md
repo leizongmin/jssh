@@ -154,6 +154,8 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 - `fs.exist(filepath)`：判断文件是否存在；
 - `fs.writefile(filename, data)`：覆盖写入文件，`data`可以为字符串或 `Uint8Array`；
 - `fs.appendfile(filename, data)`：追加内容到文件末尾，`data` 可以为字符串或 `Uint8Array`；
+- `fs.mkdir(filepath)`：创建目录，如果目录已存在将返回 `false`；
+- `fs.mkdirp(filepath)`：创建目录，如果父目录不存在将一并创建，如果目录已存在将返回 `false`；
 
 #### 路径操作
 

@@ -560,6 +560,8 @@ func getJsGlobal(file string) utils.H {
 	fsModule["writefile"] = jsFnFsWritefile(global)
 	fsModule["appendfile"] = jsFnFsAppendfile(global)
 	fsModule["readfilebytes"] = jsFnFsReadfilebytes(global)
+    fsModule["mkdir"] = jsFnFsMkdir(global)
+    fsModule["mkdirp"] = jsFnFsMkdirp(global)
 	global["fs"] = fsModule
 
 	pathModule := make(utils.H)

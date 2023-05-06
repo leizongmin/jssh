@@ -402,6 +402,20 @@ interface FsModule {
    * @return 是否成功
    */
   appendfile(path: string, data: string | Uint8Array): boolean;
+
+  /**
+   * 创建目录，如果目录已存在将返回 false
+   * @param path 路径
+   * @return 是否成功
+   */
+  mkdir(path: string): boolean;
+
+  /**
+   * 创建目录，如果目录不存在则创建，如果目录已存在将返回 false
+   * @param path 路径
+   * @return 是否成功
+   */
+  mkdirp(path: string): boolean;
 }
 
 interface FileStat {

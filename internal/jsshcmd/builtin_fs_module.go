@@ -213,3 +213,51 @@ func jsFnFsAppendfile(global utils.H) jsexecutor.JSFunction {
 		return ctx.Bool(true)
 	}
 }
+
+func jsFnFsMkdir(global utils.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.mkdir: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.mkdir: first argument expected string type")
+		}
+		file := args[0].String()
+
+		stat, _ := os.Stat(file)
+		if stat != nil && stat.IsDir() {
+			return ctx.Bool(false)
+		}
+
+		err := os.Mkdir(file, 0755)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.Bool(true)
+	}
+}
+
+func jsFnFsMkdirp(global utils.H) jsexecutor.JSFunction {
+	return func(ctx *jsexecutor.JSContext, this jsexecutor.JSValue, args []jsexecutor.JSValue) jsexecutor.JSValue {
+		if len(args) < 1 {
+			return ctx.ThrowSyntaxError("fs.mkdir: missing path name")
+		}
+		if !args[0].IsString() {
+			return ctx.ThrowTypeError("fs.mkdir: first argument expected string type")
+		}
+		file := args[0].String()
+
+		stat, _ := os.Stat(file)
+		if stat != nil && stat.IsDir() {
+			return ctx.Bool(false)
+		}
+
+		err := os.MkdirAll(file, 0755)
+		if err != nil {
+			return ctx.ThrowError(err)
+		}
+
+		return ctx.Bool(true)
+	}
+}
