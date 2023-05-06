@@ -13,3 +13,5 @@ ssh.exec1 = function exec1(cmd, env = {}) {
 ssh.exec2 = function exec2(cmd, env = {}) {
   return ssh.exec(cmd, env, 2);
 };
+
+Object.freeze(ssh);

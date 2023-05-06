@@ -55,3 +55,5 @@ const log = {};
     exit(1);
   };
 }
+
+Object.freeze(log);

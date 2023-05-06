@@ -13,3 +13,5 @@ const console = {};
     printVars(...args);
   };
 }
+
+Object.freeze(console);

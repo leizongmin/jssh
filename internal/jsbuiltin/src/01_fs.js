@@ -4,3 +4,5 @@
     return Uint8Array.from(readfilebytes(filename));
   };
 }
+
+Object.freeze(fs);

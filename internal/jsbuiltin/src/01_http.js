@@ -21,3 +21,5 @@ http.put = function (url, headers = {}, body = "") {
 http.delete = function (url, headers = {}, body = "") {
   return http.request("DELETE", url, headers, body);
 };
+
+Object.freeze(http);

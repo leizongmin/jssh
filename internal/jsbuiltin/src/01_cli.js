@@ -87,4 +87,7 @@ const cli = {};
     }
     throw new Error(`unrecognized subcommand ${name}`);
   };
+
 }
+
+Object.freeze(cli);
