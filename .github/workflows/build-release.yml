@@ -68,32 +68,32 @@ jobs:
           draft: true
           prerelease: true
 
-      - name: Upload Release Asset for Windows version
+      - name: Upload Release Asset for Windows AMD64 version
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifact/jssh-windows.tar.gz
-          asset_name: jssh-windows.tar.gz
+          asset_path: artifact/jssh-windows-amd64.tar.gz
+          asset_name: jssh-windows-amd64.tar.gz
           asset_content_type: application/x-gzip
 
-      - name: Upload Release Asset for Linux version
+      - name: Upload Release Asset for Linux AMD64 version
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifact/jssh-linux.tar.gz
-          asset_name: jssh-linux.tar.gz
+          asset_path: artifact/jssh-linux-amd64.tar.gz
+          asset_name: jssh-linux-amd64.tar.gz
           asset_content_type: application/x-gzip
 
-      - name: Upload Release Asset for macOS version
+      - name: Upload Release Asset for macOS AMD64 version
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifact/jssh-osx.zip
-          asset_name: jssh-osx.zip
+          asset_path: artifact/jssh-darwin-amd64.zip
+          asset_name: jssh-darwin-amd64.zip
           asset_content_type: application/zip
