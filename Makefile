@@ -32,10 +32,13 @@ go-nm:
 	@go tool nm -size -sort size -type release/jssh 2>/dev/null | head -500
 
 .PHONY: jsbuiltin
-jsbuiltin:
+jsbuiltin: node_modules
 	@echo "Building JS builtin files..."
 	@mkdir -p internal/jsbuiltin/dist
 	@for f in $(JSBUILTIN_FILES); do \
 		echo "  $$f"; \
 		npx uglifyjs -c -- internal/jsbuiltin/src/$$f > internal/jsbuiltin/dist/$$f; \
 	done
+
+node_modules: package.json
+	@npm install
