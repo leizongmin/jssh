@@ -27,7 +27,6 @@ fs.readdir(releaseDir).forEach((s) => {
 
 //**********************************************************************************************************************
 
-// updateReleasePkgInfo();
 buildHostOSVersion();
 if (__os === `darwin`) {
   buildLinuxVersionOnDocker();
@@ -67,18 +66,9 @@ function getReleaseLdflags() {
   return list.join(" ");
 }
 
-function getNormalOSType() {
-  switch (__os) {
-    case "darwin":
-      return "osx";
-    default:
-      return __os;
-  }
-}
-
 function buildHostOSVersion() {
   log.info(`构建宿主系统版本`);
-  let binPath = path.join(releaseDir, getNormalOSType(), binName);
+  let binPath = path.join(releaseDir, `${__os}-${__arch}`, binName);
   if (__os === "windows") {
     binPath += ".exe";
   }
