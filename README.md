@@ -10,7 +10,7 @@
 ## 简介
 
 - 基于 [QuickJS](https://github.com/bellard/quickjs) 引擎，**支持 [ES2020](https://tc39.github.io/ecma262/) 语言特性**；
-- 脚本执行引擎仅需一个**约 10MB** 的二进制文件，无需安装其他依赖；
+- 脚本执行引擎仅需一个**约 7 MB** 的二进制文件，无需安装其他依赖；
 - 标准库支持基本的文件操作、执行系统命令、SSH 远程操作、HTTP、Socket、命令行参数解析、日志输出等操作，满足大部分的命令行工具需求；
 - 所有操作均为阻塞函数，无异步操作，**简单易于编写**；
 - **内存占用小，启动速度快（约 10ms）**；
@@ -24,7 +24,7 @@
 其他系统通过 Go 命令行工具安装最新版本：
 
 ```bash
-GOPROXY=https://goproxy.cn go get -u github.com/leizongmin/jssh
+go install github.com/leizongmin/jssh@latest
 ```
 
 **若要卸载 jssh，直接删除 jssh 二进制文件即可**。可尝试执行以下命令：

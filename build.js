@@ -7,15 +7,9 @@ log.info(`当前Go版本号%s`, goVersion);
 const packageName = `github.com/leizongmin/jssh`;
 const binName = `jssh`;
 const goBuild = `go build -v -a -gcflags=all="-l -B" -ldflags "-s -w ${getReleaseLdflags()}"`;
-const goProxy = `https://goproxy.cn`;
 
 const releaseDir = path.join(__dirname, `release`);
 const cacheDir = path.join(releaseDir, `cross_compile_cache`);
-
-setenv(`GO111MODULE`, `on`);
-if (!__env.GOPROXY) {
-  setenv(`GOPROXY`, goProxy);
-}
 
 exec(`mkdir -p ${fixFilePath(releaseDir)}`);
 fs.readdir(releaseDir).forEach((s) => {
