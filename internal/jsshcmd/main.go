@@ -255,7 +255,7 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 
 	builtinModules := jsbuiltin.GetJs()
 	for _, m := range builtinModules {
-		ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal/%s", m.File))
+		ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal:%s", m.File))
 		if err != nil {
 			fmt.Println(color.FgRed.Render(fmt.Sprintf("load builtin js modules fail: %s", formatJsError(err))))
 			return

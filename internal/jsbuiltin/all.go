@@ -2,26 +2,27 @@ package jsbuiltin
 
 import (
 	"embed"
-	_ "embed"
 	"io/fs"
+	"path/filepath"
 	"sort"
 )
 
 var modules []JsModule
 
-//go:embed builtin_0.js
-//go:embed builtin_assert.js
-//go:embed builtin_cli.js
-//go:embed builtin_console.js
-//go:embed builtin_exec.js
-//go:embed builtin_fs.js
-//go:embed builtin_global.js
-//go:embed builtin_log.js
-//go:embed builtin_http.js
-var files embed.FS
+//go:embed dist/00_module.js
+//go:embed dist/01_assert.js
+//go:embed dist/01_cli.js
+//go:embed dist/01_console.js
+//go:embed dist/01_exec.js
+//go:embed dist/01_fs.js
+//go:embed dist/01_global.js
+//go:embed dist/01_http.js
+//go:embed dist/01_log.js
+var jsFs embed.FS
 
 func init() {
-	list, err := files.ReadDir(".")
+	dir := "dist"
+	list, err := jsFs.ReadDir(dir)
 	if err != nil {
 		panic(err)
 	}
@@ -29,7 +30,7 @@ func init() {
 	for _, f := range list {
 		modules = append(modules, JsModule{
 			File: f.Name(),
-			Code: string(mustReadFile(files, f.Name())),
+			Code: string(mustReadFile(jsFs, filepath.Join(dir, f.Name()))),
 		})
 	}
 }
