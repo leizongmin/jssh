@@ -155,7 +155,7 @@ return module;
 })(function require(name) {
   return requiremodule(name, "${dirname}");
 }, {exports:{},parent:this}, "${dirname}", "${filename}")
-`.trimLeft();
+`.trimStart();
     return (require.cache[__filename] = evalfile(__filename, wrapped).exports);
   };
 
