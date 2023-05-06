@@ -81,13 +81,8 @@ const global = globalThis || this;
 
   const httpPkgSites = [
     { prefix: 'unpkg:', getPath: (name) => `https://unpkg.com/${name}` },
-    { prefix: 'jsdelivr:', getPath: (name) => `https://cdn.jsdelivr.net/npm/${name}` },
-    { prefix: 'cdn:', getPath: (name) => `https://cdn.jsdelivr.net/npm/${name}` },
-    { prefix: 'esm:', getPath: (name) => `https://esm.sh/${name}`, es6: true },
-    { prefix: 'esm.run:', getPath: (name) => `https://esm.run/${name}`, es6: true },
-    { prefix: 'jspm:', getPath: (name) => `https://jspm.dev/${name}`, es6: true },
-    { prefix: 'skypack:', getPath: (name) => `https://cdn.skypack.dev/${name}`, es6: true },
-    { prefix: 'pika:', getPath: (name) => `https://cdn.pika.dev/${name}`, es6: true },
+    // { prefix: 'jsdelivr:', getPath: (name) => `https://cdn.jsdelivr.net/npm/${name}` },
+    // { prefix: 'cdn:', getPath: (name) => `https://cdn.jsdelivr.net/npm/${name}` },
   ];
 
   const resolveModulePath = (name, dir) => {
