@@ -590,6 +590,8 @@ interface HttpModule {
 interface HttpResponse {
   /** 状态码 */
   status: number;
+  /** 真实 URL */
+  url: string;
   /** 响应头 */
   headers: Record<string, string | string[]>;
   /** 响应体 */

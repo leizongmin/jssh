@@ -104,6 +104,7 @@ func jsFnHttpRequest(global utils.H) jsexecutor.JSFunction {
 
 		ret := make(utils.H)
 		ret["status"] = res.Status()
+		ret["url"] = res.URL()
 		ret["headers"] = getHeaderMap(res.Header())
 		b, err := res.Body()
 		if err != nil {

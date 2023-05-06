@@ -9,6 +9,11 @@ const global = globalThis || this;
 
   const isHttpUrl = (s) => /^https?:\/\//gi.test(s);
 
+  const readUrlContent = (url) => {
+    log.debug("require: read content from %s", url);
+    return http.get(url);
+  };
+
   const resolveWithExtension = (name) => {
     const extension = [".json", ".js"];
     if (fs.exist(name)) {
@@ -55,22 +60,7 @@ const global = globalThis || this;
     }
   };
 
-  const resolveModulePath = (name, dir) => {
-    if (name === "." || name.startsWith("/") || name.startsWith("./")) {
-      if (isHttpUrl(dir)) {
-        return path.abs(path.join(dir, name));
-      }
-      const ret = resolveWithExtension(path.join(dir, name));
-      if (ret) {
-        return path.abs(ret);
-      }
-      return path.abs(name);
-    }
-
-    if (isHttpUrl(name)) {
-      return name;
-    }
-
+  const resolveNpmModulePath = (name, dir) => {
     const paths = [];
     let d = dir;
     while (true) {
@@ -89,7 +79,50 @@ const global = globalThis || this;
     }
   };
 
+  const httpPkgSites = [
+    { prefix: 'unpkg:', getPath: (name) => `https://unpkg.com/${name}` },
+    { prefix: 'jsdelivr:', getPath: (name) => `https://cdn.jsdelivr.net/npm/${name}` },
+    { prefix: 'cdn:', getPath: (name) => `https://cdn.jsdelivr.net/npm/${name}` },
+    { prefix: 'esm:', getPath: (name) => `https://esm.sh/${name}`, es6: true },
+    { prefix: 'esm.run:', getPath: (name) => `https://esm.run/${name}`, es6: true },
+    { prefix: 'jspm:', getPath: (name) => `https://jspm.dev/${name}`, es6: true },
+    { prefix: 'skypack:', getPath: (name) => `https://cdn.skypack.dev/${name}`, es6: true },
+    { prefix: 'pika:', getPath: (name) => `https://cdn.pika.dev/${name}`, es6: true },
+  ];
+
+  const resolveModulePath = (name, dir) => {
+    if (name === "." || name.startsWith("/") || name.startsWith("./")) {
+      if (isHttpUrl(dir)) {
+        return path.abs(path.join(dir, name));
+      }
+      const ret = resolveWithExtension(path.join(dir, name));
+      if (ret) {
+        return path.abs(ret);
+      }
+      return path.abs(name);
+    }
+
+    if (isHttpUrl(name)) {
+      return name;
+    }
+
+    if (name.startsWith('npm:')) {
+      return resolveNpmModulePath(name.slice('npm:'.length), dir);
+    }
+
+    for (const site of httpPkgSites) {
+      if (name.startsWith(site.prefix)) {
+        const pkgName = name.slice(site.prefix.length);
+        return site.getPath(pkgName);
+      }
+    }
+
+    return resolveNpmModulePath(name, dir);
+  };
+
   const requiremodule = (name, dir = __dirname) => {
+    log.debug("require: name=%s, dir=%s", name, dir);
+
     if (typeof name !== "string") {
       throw new TypeError(`module name expected string type`);
     }
@@ -100,7 +133,7 @@ const global = globalThis || this;
       throw new TypeError(`empty module dir`);
     }
 
-    const file = resolveModulePath(name, dir);
+    let file = resolveModulePath(name, dir);
     if (!file) {
       throw new Error(`cannot resolve module "${name}" on path "${dir}"`);
     }
@@ -112,14 +145,16 @@ const global = globalThis || this;
     try {
       let content = "";
       if (isHttpUrl(file)) {
-        const res = http.get(file);
+        const res = readUrlContent(file);
         if (res.status === 200) {
           content = res.body;
+          file = res.url;
         } else {
           // FIXME: 尝试加上 .js 后缀，以后优化此方法
-          const res2 = http.get(file + ".js");
+          const res2 = readUrlContent(file + ".js");
           if (res2.status === 200) {
             content = res2.body;
+            file = res.url;
           } else {
             throw new Error(`http get "${file}" status "${res.status}"`);
           }

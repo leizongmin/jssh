@@ -174,7 +174,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 #### HTTP 操作
 
 - `http.timeout(ms)`：设置操作超时毫秒时间，默认为 `60000`；
-- `http.request(method, url, headers?, body?)`：发送 HTTP 请求，返回结果包括 `{ status, headers, body }`；
+- `http.request(method, url, headers?, body?)`：发送 HTTP 请求，返回结果包括 `{ status, url, headers, body }`；
 - `http.download(url, filename?)`：通过 HTTP 下载文件；
 - `http.get(url, headers?)`：发送 HTTP GET 请求，返回结果格式同 `http.request`；
 - `http.head(url, headers?)`：发送 HTTP HEAD 请求，返回结果格式同 `http.request`；

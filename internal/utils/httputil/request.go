@@ -238,7 +238,12 @@ func (r *HttpResponse) Status() int {
 	return r.resp.StatusCode
 }
 
-// 响应天
+// 真实 URL（可能会有重定向）
+func (r *HttpResponse) URL() string {
+	return r.resp.Request.URL.String()
+}
+
+// 响应头
 func (r *HttpResponse) Header() http.Header {
 	return r.resp.Header
 }
