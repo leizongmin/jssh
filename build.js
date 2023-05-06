@@ -28,9 +28,6 @@ fs.readdir(releaseDir).forEach((s) => {
 //**********************************************************************************************************************
 
 buildHostOSVersion();
-if (__os === `darwin`) {
-  buildLinuxVersionOnDocker();
-}
 buildReleaseFiles();
 
 //**********************************************************************************************************************
@@ -79,28 +76,6 @@ function buildHostOSVersion() {
   log.info(`构建输出到%s`, binPath);
   const version = exec2(`${fixFilePath(binPath)} version`).output.trim();
   log.info(`已构建的jssh版本：${version}`);
-}
-
-function buildLinuxVersionOnDocker() {
-  if (exec(`which docker`).code !== 0) {
-    log.info(`未安装Docker，无法构建Linux版本`);
-    return;
-  }
-  log.info(`在macOS上通过Docker构建Linux版本`);
-  const binPath = path.join(releaseDir, `linux`, binName);
-  exec(`mkdir -p ${fixFilePath(cacheDir)}`);
-  const ret = exec(
-    `docker run --rm -it -v "${fixFilePath(cacheDir)}:/go" -v ${fixFilePath(
-      __dirname
-    )}:${fixFilePath(__dirname)} -w ${fixFilePath(
-      __dirname
-    )} -e GO111MODULE=on -e GOPROXY=${goProxy} golang:${goVersion} ${goBuild} -o ${fixFilePath(
-      binPath
-    )} ${packageName}`
-  );
-  if (ret.code !== 0) {
-    log.error(`通过Docker构建失败`);
-  }
 }
 
 function buildReleaseFiles() {
