@@ -14,12 +14,14 @@ clean:
 .PHONY: jssh
 jssh:
 	@./build.js
+	@ln -sf $(RELEASE_TARGET)/jssh release/jssh
 	@ls -alh release/*
 
 .PHONY: jssh_m
 jssh_m: jssh
 	@cp release/$(RELEASE_TARGET)/jssh release/$(RELEASE_TARGET)/jssh_m
 	@upx --best --lzma release/$(RELEASE_TARGET)/jssh_m
+	@ln -sf $(RELEASE_TARGET)/jssh_m release/jssh_m
 	@ls -alh release/*
 
 .PHONY: go-nm
