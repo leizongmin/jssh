@@ -1,16 +1,24 @@
 const console = {};
 
 {
-  const printVars = (...vars) => {
-    println(vars.map((v) => String(v)).join(" "));
+  console.trace = function trace(...args) {
+    println(format(...args));
   };
 
   console.log = function log(...args) {
-    printVars(...args);
+    println(format(...args));
+  };
+
+  console.info = function info(...args) {
+    println(format(...args));
+  };
+
+  console.warn = function warn(...args) {
+    println(format(...args));
   };
 
   console.error = function error(...args) {
-    printVars(...args);
+    println(format(...args));
   };
 }
 
