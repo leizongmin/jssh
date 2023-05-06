@@ -9,14 +9,11 @@ const binName = `jssh`;
 const goBuild = `go build -v -a -gcflags=all="-l -B" -ldflags "-s -w ${getReleaseLdflags()}"`;
 
 const releaseDir = path.join(__dirname, `release`);
-const cacheDir = path.join(releaseDir, `cross_compile_cache`);
 
 exec(`mkdir -p ${fixFilePath(releaseDir)}`);
 fs.readdir(releaseDir).forEach((s) => {
   const p = path.join(releaseDir, s.name);
-  if (p !== cacheDir) {
-    exec(`rm -rf ${fixFilePath(p)}`);
-  }
+  exec(`rm -rf ${fixFilePath(p)}`);
 });
 
 //**********************************************************************************************************************
@@ -78,26 +75,24 @@ function buildReleaseFiles() {
   fs.readdir(releaseDir).forEach((s) => {
     if (s.name.startsWith(`.`)) return;
     const p = path.join(releaseDir, s.name);
-    if (p !== cacheDir) {
-      cd(__dirname);
-      exec(`cp -f ${fixFilePath(dtsFile)} ${fixFilePath(p)}`);
-      cd(p);
-      if (__os === "darwin") {
-        // macOS系统使用zip压缩，解决github action的runner用tar打包出来的文件损坏问题
-        const zipFile = `${binName}-${s.name}.zip`;
-        const cmd = `zip ../${zipFile} *`;
-        log.info(cmd);
-        exec(cmd);
-        log.info(`输出压缩包%s`, zipFile);
-      } else {
-        const tarFile = `${binName}-${s.name}.tar.gz`;
-        const cmd = `tar -czvf ../${tarFile} *`;
-        log.info(cmd);
-        exec(cmd);
-        log.info(`输出压缩包%s`, tarFile);
-      }
-      cd(__dirname);
+    cd(__dirname);
+    exec(`cp -f ${fixFilePath(dtsFile)} ${fixFilePath(p)}`);
+    cd(p);
+    if (__os === "darwin") {
+      // macOS系统使用zip压缩，解决github action的runner用tar打包出来的文件损坏问题
+      const zipFile = `${binName}-${s.name}.zip`;
+      const cmd = `zip ../${zipFile} *`;
+      log.info(cmd);
+      exec(cmd);
+      log.info(`输出压缩包%s`, zipFile);
+    } else {
+      const tarFile = `${binName}-${s.name}.tar.gz`;
+      const cmd = `tar -czvf ../${tarFile} *`;
+      log.info(cmd);
+      exec(cmd);
+      log.info(`输出压缩包%s`, tarFile);
     }
+    cd(__dirname);
   });
 }
 
