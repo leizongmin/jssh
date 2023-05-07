@@ -3,27 +3,25 @@ package jsbuiltin
 import (
 	"embed"
 	"io/fs"
-	"path/filepath"
 	"sort"
 )
 
 var modules []JsModule
 
-//go:embed dist/00_module.js
-//go:embed dist/01_assert.js
-//go:embed dist/01_cli.js
-//go:embed dist/01_console.js
-//go:embed dist/01_exec.js
-//go:embed dist/01_fs.js
-//go:embed dist/01_global.js
-//go:embed dist/01_http.js
-//go:embed dist/01_log.js
-//go:embed dist/99_bootstrap.js
+//go:embed 00_module.js
+//go:embed 01_assert.js
+//go:embed 01_cli.js
+//go:embed 01_console.js
+//go:embed 01_exec.js
+//go:embed 01_fs.js
+//go:embed 01_global.js
+//go:embed 01_http.js
+//go:embed 01_log.js
+//go:embed 99_bootstrap.js
 var jsFs embed.FS
 
 func init() {
-	dir := "dist"
-	list, err := jsFs.ReadDir(dir)
+	list, err := jsFs.ReadDir(".")
 	if err != nil {
 		panic(err)
 	}
@@ -31,13 +29,13 @@ func init() {
 	for _, f := range list {
 		modules = append(modules, JsModule{
 			File: f.Name(),
-			Code: string(mustReadFile(jsFs, filepath.Join(dir, f.Name()))),
+			Code: string(mustReadFile(jsFs, f.Name())),
 		})
 	}
 }
 
-func mustReadFile(f embed.FS, name string) []byte {
-	b, err := fs.ReadFile(f, name)
+func mustReadFile(jsFs embed.FS, name string) []byte {
+	b, err := fs.ReadFile(jsFs, name)
 	if err != nil {
 		panic(err)
 	}

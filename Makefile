@@ -34,10 +34,9 @@ go-nm:
 .PHONY: jsbuiltin
 jsbuiltin: node_modules
 	@echo "Building JS builtin files..."
-	@mkdir -p internal/jsbuiltin/dist
 	@for f in $(JSBUILTIN_FILES); do \
 		echo "  $$f"; \
-		npx uglifyjs -c -- internal/jsbuiltin/src/$$f > internal/jsbuiltin/dist/$$f; \
+		npx uglifyjs -c -- internal/jsbuiltin/src/$$f > internal/jsbuiltin/$$f; \
 	done
 
 node_modules: package.json
