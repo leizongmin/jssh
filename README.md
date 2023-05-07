@@ -1,4 +1,4 @@
-# jssh ![CodeQL](https://github.com/leizongmin/jssh/workflows/CodeQL/badge.svg) [![PkgGoDev](https://pkg.go.dev/badge/leizongmin/jssh)](https://pkg.go.dev/github.com/leizongmin/jssh) [![Go Report Card](https://goreportcard.com/badge/leizongmin/jssh)](https://goreportcard.com/report/github.com/leizongmin/jssh) ![GitHub](https://img.shields.io/github/license/leizongmin/jssh)
+# jssh [![Go](https://github.com/leizongmin/jssh/actions/workflows/build-release.yml/badge.svg)](https://github.com/leizongmin/jssh/actions/workflows/build-release.yml) ![CodeQL](https://github.com/leizongmin/jssh/workflows/CodeQL/badge.svg) [![PkgGoDev](https://pkg.go.dev/badge/leizongmin/jssh)](https://pkg.go.dev/github.com/leizongmin/jssh) [![Go Report Card](https://goreportcard.com/badge/leizongmin/jssh)](https://goreportcard.com/report/github.com/leizongmin/jssh) ![GitHub](https://img.shields.io/github/license/leizongmin/jssh)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fleizongmin%2Fjssh.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fleizongmin%2Fjssh?ref=badge_shield)
 
 一款使用 JS 编写命令行小工具的神器。
