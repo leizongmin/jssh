@@ -219,7 +219,7 @@ TypeScript 类型定义参考文件 [jssh.d.ts](https://github.com/leizongmin/js
 执行以下命令构建项目：
 
 ```bash
-make all
+make jssh
 ```
 
 ## 致谢
