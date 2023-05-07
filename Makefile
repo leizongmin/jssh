@@ -15,7 +15,7 @@ clean:
 
 .PHONY: jssh
 jssh: jsbuiltin
-	@./build.js
+	@go run . build.js
 	@ln -sf $(RELEASE_TARGET)/jssh release/jssh
 	@ls -alh release/*
 
