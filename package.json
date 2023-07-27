@@ -28,7 +28,7 @@
   "devDependencies": {
     "eslint": "^8.40.0",
     "lodash": "4.17.21",
-    "prettier": "2.8.8",
+    "prettier": "3.0.0",
     "uglify-js": "^3.17.4",
     "xss": "1.0.14"
   }
