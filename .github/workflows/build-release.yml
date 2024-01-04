@@ -32,13 +32,13 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
 
       - name: Accidentally upload to the same artifact via multiple jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ runner.os != 'macOS' }}
         with:
           path: ./release/*.tar.gz
 
       - name: Accidentally upload to the same artifact via multiple jobs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ runner.os == 'macOS' }}
         with:
           path: ./release/*.zip
