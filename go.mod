@@ -8,7 +8,7 @@ require (
 	github.com/gookit/color v1.5.4
 	github.com/peterh/liner v1.2.2
 	github.com/sanity-io/litter v1.5.5
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.18.0
 	golang.org/x/term v0.16.0
 	gopkg.in/yaml.v3 v3.0.1
