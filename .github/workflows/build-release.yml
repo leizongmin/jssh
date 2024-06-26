@@ -24,7 +24,7 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
 
-      - name: Build on ${runner.os}
+      - name: Build on ${{ runner.os }}
         run: go env && make jssh
 
       - name: List files
@@ -33,20 +33,16 @@ jobs:
 
       - name: Accidentally upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v4
-        if: ${{ runner.os == 'Windows' }}
+        if: ${{ runner.os != 'macOS' }}
         with:
-          path: ./release/*.tar.gz
-
-      - name: Accidentally upload to the same artifact via multiple jobs
-        uses: actions/upload-artifact@v4
-        if: ${{ runner.os == 'Linux' }}
-        with:
+          name: artifact-${{ matrix.runs-on }}
           path: ./release/*.tar.gz
 
       - name: Accidentally upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v4
         if: ${{ runner.os == 'macOS' }}
         with:
+          name: artifact-${{ matrix.runs-on }}
           path: ./release/*.zip
 
   release:
@@ -54,6 +50,12 @@ jobs:
     name: Release
     needs: [ build ]
     steps:
+
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: all-files
+          pattern: artifact-${{ matrix.runs-on }}
 
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -102,4 +104,14 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifact/jssh-darwin-amd64.zip
           asset_name: jssh-darwin-amd64.zip
+          asset_content_type: application/zip
+
+      - name: Upload Release Asset for macOS ARM64 version
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifact/jssh-darwin-arm64.zip
+          asset_name: jssh-darwin-arm64.zip
           asset_content_type: application/zip
