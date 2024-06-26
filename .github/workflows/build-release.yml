@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: all-files
-          pattern: artifact-${{ matrix.os }}
+          pattern: artifact-*
 
       - name: Download artifact
         uses: actions/download-artifact@v4
