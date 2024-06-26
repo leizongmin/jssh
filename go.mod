@@ -3,7 +3,7 @@ module github.com/leizongmin/jssh
 go 1.18
 
 require (
-	github.com/BurntSushi/toml v1.3.2
+	github.com/BurntSushi/toml v1.4.0
 	github.com/creack/pty v1.1.21
 	github.com/gookit/color v1.5.4
 	github.com/peterh/liner v1.2.2
