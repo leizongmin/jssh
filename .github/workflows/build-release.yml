@@ -35,14 +35,14 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ runner.os != 'macOS' }}
         with:
-          name: artifact-${{ matrix.runs-on }}
+          name: artifact-${{ matrix.os }}
           path: ./release/*.tar.gz
 
       - name: Accidentally upload to the same artifact via multiple jobs
         uses: actions/upload-artifact@v4
         if: ${{ runner.os == 'macOS' }}
         with:
-          name: artifact-${{ matrix.runs-on }}
+          name: artifact-${{ matrix.os }}
           path: ./release/*.zip
 
   release:
@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact/merge@v4
         with:
           name: all-files
-          pattern: artifact-${{ matrix.runs-on }}
+          pattern: artifact-${{ matrix.os }}
 
       - name: Download artifact
         uses: actions/download-artifact@v4
