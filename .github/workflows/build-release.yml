@@ -54,7 +54,7 @@ jobs:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: all-files
+          name: artifact
           pattern: artifact-*
 
       - name: Download artifact
@@ -63,7 +63,7 @@ jobs:
           path: .
 
       - name: List files
-        run: mv all-files/* . && ls -Rl
+        run: ls -Rl
 
       - name: Create Release
         id: create_release
