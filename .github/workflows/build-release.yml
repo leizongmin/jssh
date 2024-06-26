@@ -63,7 +63,7 @@ jobs:
           path: .
 
       - name: List files
-        run: ls -Rl
+        run: mv all-files/* . && ls -Rl
 
       - name: Create Release
         id: create_release
