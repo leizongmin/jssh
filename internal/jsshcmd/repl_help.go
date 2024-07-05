@@ -1,9 +1,8 @@
 package jsshcmd
 
 import (
-	"strings"
-
 	"github.com/chzyer/readline"
+	"github.com/leizongmin/jssh/quickjs"
 )
 
 var replApiList = []string{
@@ -17,12 +16,20 @@ var replApiList = []string{
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",
 }
 
-func replCompleter(line string) readline.PrefixCompleterInterface {
-	line = strings.ToLower(line)
+func replCompleter(jsGlobals quickjs.Value) readline.PrefixCompleterInterface {
 	var items []readline.PrefixCompleterInterface
 	for _, n := range replApiList {
-		if strings.HasPrefix(n, line) {
-			items = append(items, readline.PcItem(n))
+		items = append(items, readline.PcItem(n))
+	}
+	if names, err := jsGlobals.PropertyNames(); err == nil {
+		for _, n := range names {
+			a := jsGlobals.GetByAtom(n.Atom)
+			s := n.String()
+			if a.IsFunction() {
+				s += "("
+			}
+			items = append(items, readline.PcItem(s))
+			a.Free()
 		}
 	}
 	return readline.NewPrefixCompleter(items...)

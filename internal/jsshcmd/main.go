@@ -286,9 +286,10 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 		fmt.Println()
 
 		jsGlobals := ctx.Globals()
+		historyFile, _ := getJsshHistoryFilePath()
 		repl, err := readline.NewEx(&readline.Config{
 			Prompt:          fmt.Sprintf("%s> ", pkginfo.Name),
-			HistoryFile:     getJsshHistoryFilePath(),
+			HistoryFile:     historyFile,
 			AutoComplete:    replCompleter(jsGlobals),
 			InterruptPrompt: "^C",
 			EOFPrompt:       "exit",
