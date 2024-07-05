@@ -14,8 +14,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/chzyer/readline"
 	"github.com/gookit/color"
-	"github.com/peterh/liner"
 
 	"github.com/leizongmin/jssh/internal/jsbuiltin"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
@@ -286,61 +286,25 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 		fmt.Println()
 
 		jsGlobals := ctx.Globals()
-		repl := liner.NewLiner()
-		defer func(repl *liner.State) {
-			err := repl.Close()
-			if err != nil {
-				log.Println(err)
-			}
-		}(repl)
-		repl.SetCtrlCAborts(true)
-		repl.SetCompleter(func(line string) (c []string) {
-			if names, err := jsGlobals.PropertyNames(); err != nil {
-				fmt.Println(color.FgRed.Render(err))
-			} else {
-				line := strings.ToLower(line)
-				for _, n := range names {
-					a := jsGlobals.GetByAtom(n.Atom)
-					s := n.String()
-					if a.IsFunction() {
-						s += "("
-					}
-					if strings.HasPrefix(s, line) {
-						c = append(c, s)
-					}
-					a.Free()
-				}
-			}
-			c = append(c, replCompleter(line)...)
-			return c
+		repl, err := readline.NewEx(&readline.Config{
+			Prompt:          fmt.Sprintf("%s> ", pkginfo.Name),
+			HistoryFile:     getJsshHistoryFilePath(),
+			AutoComplete:    replCompleter(jsGlobals),
+			InterruptPrompt: "^C",
+			EOFPrompt:       "exit",
 		})
-		prompt := fmt.Sprintf("%s> ", pkginfo.Name)
-
-		historyFile, isEnableHistoryFile := getJsshHistoryFilePath()
-		if isEnableHistoryFile {
-			if f, err := os.Open(historyFile); err != nil {
-				if !strings.HasSuffix(err.Error(), "no such file or directory") {
-					fmt.Println(color.FgRed.Render(err))
-				}
-			} else {
-				if _, err := repl.ReadHistory(f); err != nil {
-					fmt.Println(color.FgRed.Render(err))
-				}
-				if err := f.Close(); err != nil {
-					fmt.Println(color.FgRed.Render(err))
-				}
-			}
+		if err != nil {
+			fmt.Println(color.FgRed.Render(fmt.Sprintf("Error initializing REPL: %s", err)))
+			return
 		}
+		defer repl.Close()
 
 		bufLines := make([]string, 0)
 		abortedCounter := 0
 		for {
-			code, err := repl.Prompt(prompt)
+			code, err := repl.Readline()
 			if err != nil {
-				if err == io.EOF {
-					fmt.Println("\nBye")
-					break
-				} else if err == liner.ErrPromptAborted {
+				if err == readline.ErrInterrupt {
 					abortedCounter++
 					if abortedCounter < 2 {
 						fmt.Println(color.FgYellow.Render("(To exit, press Ctrl+C again or Ctrl+D)"))
@@ -349,14 +313,18 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 						fmt.Println("Bye")
 						break
 					}
+				} else if err == io.EOF {
+					fmt.Println("\nBye")
+					break
 				} else {
 					fmt.Println(color.FgRed.Render(fmt.Sprintf("Error reading line: %s", err)))
+					continue
 				}
 			}
 			bufLines = append(bufLines, code)
-			repl.AppendHistory(code)
+			repl.SaveHistory(code)
 
-			if strings.HasSuffix(code, ";;") {
+			if isCompleteCode(strings.Join(bufLines, "\n")) {
 				content := strings.Join(bufLines, "\n")
 				bufLines = make([]string, 0)
 				if ret, err := ctx.Eval(content); err != nil {
@@ -371,20 +339,7 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 			}
 
 			abortedCounter = 0
-		}
-
-		if isEnableHistoryFile {
-			if f, err := os.Create(historyFile); err != nil {
-				fmt.Println(color.FgRed.Render(err))
-			} else {
-				if _, err := repl.WriteHistory(f); err != nil {
-					fmt.Println(color.FgRed.Render(err))
-				} else {
-					if err := f.Close(); err != nil {
-						fmt.Println(color.FgRed.Render(err))
-					}
-				}
-			}
+			repl.SetPrompt(fmt.Sprintf("%s> ", pkginfo.Name))
 		}
 	} else {
 
@@ -652,4 +607,17 @@ func printJsValue(ret quickjs.Value, coloured bool) {
 			fmt.Println(ret.String())
 		}
 	}
+}
+
+func isCompleteCode(code string) bool {
+	openBrackets := 0
+	for _, char := range code {
+		switch char {
+		case '{', '[', '(':
+			openBrackets++
+		case '}', ']', ')':
+			openBrackets--
+		}
+	}
+	return openBrackets == 0
 }

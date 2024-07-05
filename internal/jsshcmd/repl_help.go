@@ -2,6 +2,8 @@ package jsshcmd
 
 import (
 	"strings"
+
+	"github.com/chzyer/readline"
 )
 
 var replApiList = []string{
@@ -15,12 +17,13 @@ var replApiList = []string{
 	"socket.timeout(", "socket.tcpsend(", "socket.tcptest(",
 }
 
-func replCompleter(line string) (c []string) {
+func replCompleter(line string) readline.PrefixCompleterInterface {
 	line = strings.ToLower(line)
+	var items []readline.PrefixCompleterInterface
 	for _, n := range replApiList {
 		if strings.HasPrefix(n, line) {
-			c = append(c, n)
+			items = append(items, readline.PcItem(n))
 		}
 	}
-	return c
+	return readline.NewPrefixCompleter(items...)
 }

@@ -4,9 +4,9 @@ go 1.18
 
 require (
 	github.com/BurntSushi/toml v1.4.0
+	github.com/chzyer/readline v0.0.0-20210604071852-2972be24d48e
 	github.com/creack/pty v1.1.21
 	github.com/gookit/color v1.5.4
-	github.com/peterh/liner v1.2.2
 	github.com/sanity-io/litter v1.5.5
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.24.0
