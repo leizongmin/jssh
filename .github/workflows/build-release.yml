@@ -47,10 +47,41 @@ jobs:
           name: artifact-${{ matrix.os }}
           path: ./release/*.zip
 
+  build_linux_arm64:
+    runs-on: ubuntu-latest
+    name: Build on Linux ARM64
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.22
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v4
+
+      - name: Build on Linux ARM64
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          docker buildx create --use
+          docker buildx build --platform linux/arm64 -t jssh:linux-arm64 .
+          docker run --rm -v $(pwd)/release:/release jssh:linux-arm64 cp /path/to/binary /release/jssh-linux-arm64
+
+      - name: List files
+        run: ls -Rl release
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-linux-arm64
+          path: ./release/jssh-linux-arm64.tar.gz
+
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [ build ]
+    needs: [ build, build_linux_arm64 ]
     steps:
 
       - name: Merge Artifacts
@@ -96,6 +127,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifact/jssh-linux-amd64.tar.gz
           asset_name: jssh-linux-amd64.tar.gz
+          asset_content_type: application/x-gzip
+
+      - name: Upload Release Asset for Linux ARM64 version
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifact/jssh-linux-arm64.tar.gz
+          asset_name: jssh-linux-arm64.tar.gz
           asset_content_type: application/x-gzip
 
       - name: Upload Release Asset for macOS AMD64 version
