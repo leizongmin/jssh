@@ -49,15 +49,12 @@ jobs:
 
   build_linux_other_platforms:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [ arm64, riscv64 ]
-    name: Build on Linux ${{ matrix.arch }}
+    name: Build on Linux other platforms
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: ${{ matrix.arch }}
+          platforms: arm64,riscv64
 
       - name: Set up Go 1.x
         uses: actions/setup-go@v5
@@ -67,10 +64,17 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
 
-      - name: Build on Linux ${{ matrix.arch }}
+      - name: Prepare build
         run: |
           make jsbuiltin
-          docker run --rm -v $(pwd):$(pwd) -w $(pwd) -e GOARCH=${{ matrix.arch }} golang bash -c "go env && make jssh-only"
+
+      - name: Build on Linux arm64
+        run: |
+          docker run --platform=arm64 --rm -v $(pwd):$(pwd) -w $(pwd) golang bash -c "go env && make jssh-only"
+
+      - name: Build on Linux riscv64
+        run: |
+          docker run --platform=riscv64 --rm -v $(pwd):$(pwd) -w $(pwd) golang bash -c "go env && make jssh-only"
 
       - name: List files
         run: ls -Rl release
