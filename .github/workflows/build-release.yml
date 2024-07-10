@@ -59,11 +59,17 @@ jobs:
         with:
           platforms: ${{ matrix.arch }}
 
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.22
+
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
 
       - name: Build on Linux ${{ matrix.arch }}
         run: |
+          make jsbuiltin
           docker run --rm -v $(pwd):$(pwd) -w $(pwd) -e GOARCH=${{ matrix.arch }} golang bash -c "go env && make jssh"
 
       - name: List files
