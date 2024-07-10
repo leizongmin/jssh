@@ -89,6 +89,16 @@ jobs:
           asset_name: jssh-windows-amd64.tar.gz
           asset_content_type: application/x-gzip
 
+      - name: Upload Release Asset for Windows ARM64 version
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: artifact/jssh-windows-arm64.tar.gz
+          asset_name: jssh-windows-arm64.tar.gz
+          asset_content_type: application/x-gzip
+
       - name: Upload Release Asset for Linux AMD64 version
         uses: actions/upload-release-asset@v1
         env:
