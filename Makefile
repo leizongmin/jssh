@@ -19,6 +19,12 @@ jssh: jsbuiltin
 	@ln -sf $(RELEASE_TARGET)/jssh release/jssh
 	@ls -alh release/*
 
+.PHONY: jssh-only
+jssh-only:
+	@go run . build.js
+	@ln -sf $(RELEASE_TARGET)/jssh release/jssh
+	@ls -alh release/*
+
 .PHONY: jssh_m
 jssh_m: jssh
 	@cp release/$(RELEASE_TARGET)/jssh release/$(RELEASE_TARGET)/jssh_m
