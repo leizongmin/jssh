@@ -68,13 +68,13 @@ jobs:
         run: |
           make jsbuiltin
 
+      - name: Build on Linux riscv64
+        run: |
+          docker run --rm -v $(pwd):$(pwd) -w $(pwd) riscv64/golang bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
+
       - name: Build on Linux arm64
         run: |
           docker run --platform=arm64 --rm -v $(pwd):$(pwd) -w $(pwd) golang bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
-
-      - name: Build on Linux riscv64
-        run: |
-          docker run --platform=riscv64 --rm -v $(pwd):$(pwd) -w $(pwd) riscv64/golang bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
 
       - name: List files
         run: ls -Rl release
