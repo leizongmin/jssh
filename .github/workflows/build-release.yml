@@ -47,27 +47,24 @@ jobs:
           name: artifact-${{ matrix.os }}
           path: ./release/*.zip
 
-  build_linux_arm64:
+  build_linux_other_platforms:
     runs-on: ubuntu-latest
-    name: Build on Linux ARM64
+    strategy:
+      matrix:
+        arch: [ arm64, riscv64 ]
+    name: Build on Linux ${{ matrix.arch }}
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-
-      - name: Set up Go 1.x
-        uses: actions/setup-go@v5
+        uses: docker/setup-qemu-action@v3
         with:
-          go-version: ^1.22
+          platforms: ${{ matrix.arch }}
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v4
 
-      - name: Build on Linux ARM64
+      - name: Build on Linux ${{ matrix.arch }}
         run: |
-          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-          docker buildx create --use
-          docker buildx build --platform linux/arm64 -t jssh:linux-arm64 .
-          docker run --rm -v $(pwd)/release:/release jssh:linux-arm64 cp /path/to/binary /release/jssh-linux-arm64
+          docker run --rm -v $(pwd):$(pwd) -w $(pwd) -e GOARCH=${{ matrix.arch }} golang bash -c "go env && make jssh"
 
       - name: List files
         run: ls -Rl release
@@ -76,12 +73,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifact-linux-arm64
-          path: ./release/jssh-linux-arm64.tar.gz
+          path: ./release/*.tar.gz
 
   release:
     runs-on: ubuntu-latest
     name: Release
-    needs: [ build, build_linux_arm64 ]
+    needs: [ build, build_linux_other_platforms ]
     steps:
 
       - name: Merge Artifacts
