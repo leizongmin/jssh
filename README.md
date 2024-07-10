@@ -17,7 +17,7 @@
 
 ## 安装
 
-安装预构建的版本（仅支持 Linux amd64、macOS amd64 和 Windows amd64 三种版本）：
+安装预构建的版本（仅支持 Linux amd64、Linux arm64、macOS amd64、macOS arm64 和 Windows amd64 五种版本）：
 
 [Releases 页面](https://github.com/leizongmin/jssh/releases)
 
