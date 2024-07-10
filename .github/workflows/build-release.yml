@@ -70,7 +70,7 @@ jobs:
 
       - name: Build on Linux riscv64
         run: |
-          docker run --rm -v $(pwd):$(pwd) -w $(pwd) riscv64/golang bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
+          docker run --rm -v $(pwd):$(pwd) -w $(pwd) riscv64/golang:1.22-alpine bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
 
       - name: Build on Linux arm64
         run: |
