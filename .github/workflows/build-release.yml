@@ -68,10 +68,6 @@ jobs:
         run: |
           make jsbuiltin
 
-      - name: Build on Linux riscv64
-        run: |
-          docker run --rm -v $(pwd):$(pwd) -w $(pwd) riscv64/golang:1.22-alpine bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
-
       - name: Build on Linux arm64
         run: |
           docker run --platform=arm64 --rm -v $(pwd):$(pwd) -w $(pwd) golang bash -c "git config --global --add safe.directory /home/runner/work/jssh/jssh && go env && make jssh-only"
@@ -144,16 +140,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: artifact/jssh-linux-arm64.tar.gz
           asset_name: jssh-linux-arm64.tar.gz
-          asset_content_type: application/x-gzip
-
-      - name: Upload Release Asset for Linux RISCV64 version
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: artifact/jssh-linux-riscv64.tar.gz
-          asset_name: jssh-linux-riscv64.tar.gz
           asset_content_type: application/x-gzip
 
       - name: Upload Release Asset for macOS AMD64 version
