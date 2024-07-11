@@ -21,7 +21,8 @@ import (
 import "C"
 
 type Runtime struct {
-	ref *C.JSRuntime
+	ref          *C.JSRuntime
+	moduleLoader func(ctx *Context, moduleName string) (string, error)
 }
 
 func NewRuntime() Runtime {
@@ -42,7 +43,26 @@ func (r Runtime) NewContext() *Context {
 	C.JS_AddIntrinsicOperators(ref)
 	C.JS_EnableBignumExt(ref, C.int(1))
 
-	return &Context{ref: ref}
+	ctx := &Context{ref: ref}
+
+	if r.moduleLoader != nil {
+		// typedef JSModuleDef *JSModuleLoaderFunc(JSContext *ctx, const char *module_name, void *opaque);
+		moduleLoaderFunc := func(_ *C.JSContext, cModuleName *C.char, opaque unsafe.Pointer) *C.JSModuleDef {
+			moduleName := C.GoString(cModuleName)
+			source, err := r.moduleLoader(ctx, moduleName)
+			if err != nil {
+				panic(err)
+			}
+			return C.JS_Eval(ctx.ref, C.CString(source), C.size_t(len(source)), cModuleName, C.JS_EVAL_TYPE_MODULE)
+		}
+		C.JS_SetModuleLoaderFunc(r.ref, nil, *C.JSModuleLoaderFunc(moduleLoaderFunc), unsafe.Pointer(ctx))
+	}
+
+	return ctx
+}
+
+func (r *Runtime) SetModuleLoader(loader func(ctx *Context, moduleName string) (string, error)) {
+	r.moduleLoader = loader
 }
 
 func (r Runtime) ExecutePendingJob() (Context, error) {

@@ -15,7 +15,9 @@ type JSFunction = func(ctx *JSContext, this JSValue, args []JSValue) JSValue // 
 
 // NewJSRuntime 创建新的JSRuntime实例
 func NewJSRuntime() JSRuntime {
-	return quickjs.NewRuntime()
+	runtime := quickjs.NewRuntime()
+	runtime.SetModuleLoader(moduleLoader)
+	return runtime
 }
 
 // IsGoFunction 判断是否为Go的函数类型
@@ -238,3 +240,10 @@ func anySliceToJSValue(ctx *quickjs.Context, v reflect.Value, vt reflect.Type) q
 	}
 	return arr
 }
+
+// RegisterModuleLoader 注册模块加载器
+func RegisterModuleLoader(loader func(ctx *JSContext, moduleName string) (string, error)) {
+	moduleLoader = loader
+}
+
+var moduleLoader func(ctx *JSContext, moduleName string) (string, error)
