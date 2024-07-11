@@ -21,8 +21,8 @@ import (
 import "C"
 
 type Runtime struct {
-	ref           *C.JSRuntime
-	moduleLoader  func(ctx *Context, moduleName string) (string, error)
+	ref          *C.JSRuntime
+	moduleLoader func(ctx *Context, moduleName string) (string, error)
 }
 
 func NewRuntime() Runtime {
@@ -46,7 +46,16 @@ func (r Runtime) NewContext() *Context {
 	ctx := &Context{ref: ref}
 
 	if r.moduleLoader != nil {
-		C.JS_SetModuleLoaderFunc(r.ref, nil, (*C.JSModuleLoaderFunc)(C.InvokeModuleLoader), unsafe.Pointer(ctx))
+		// typedef JSModuleDef *JSModuleLoaderFunc(JSContext *ctx, const char *module_name, void *opaque);
+		moduleLoaderFunc := func(_ *C.JSContext, cModuleName *C.char, opaque unsafe.Pointer) *C.JSModuleDef {
+			moduleName := C.GoString(cModuleName)
+			source, err := r.moduleLoader(ctx, moduleName)
+			if err != nil {
+				panic(err)
+			}
+			return C.JS_Eval(ctx.ref, C.CString(source), C.size_t(len(source)), cModuleName, C.JS_EVAL_TYPE_MODULE)
+		}
+		C.JS_SetModuleLoaderFunc(r.ref, nil, *C.JSModuleLoaderFunc(moduleLoaderFunc), unsafe.Pointer(ctx))
 	}
 
 	return ctx
@@ -411,7 +420,7 @@ func (v Value) SetByInt64(idx int64, val Value) {
 }
 
 func (v Value) SetByUint32(idx uint32, val Value) {
-	C.JS_SetPropertyUint32(v.ctx.ref, v.ref, C.uint32_t(idx))
+	C.JS_SetPropertyUint32(v.ctx.ref, v.ref, C.uint32_t(idx), val.ref)
 }
 
 func (v Value) Len() int64 { return v.Get("length").Int64() }
