@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/buke/quickjs-go"
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/utils"
 	"github.com/leizongmin/jssh/internal/utils/configloader"
@@ -146,7 +147,7 @@ func jsFnEvalfile(global utils.H) jsexecutor.JSFunction {
 			content = string(b)
 		}
 
-		ret, err := ctx.EvalFile(content, file)
+		ret, err := ctx.Eval(content, quickjs.EvalFileName(file))
 		if err != nil {
 			return ctx.ThrowError(err)
 		}

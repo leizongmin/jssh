@@ -14,6 +14,8 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/buke/quickjs-go"
+	polyfill "github.com/buke/quickjs-go-polyfill"
 	"github.com/chzyer/readline"
 	"github.com/gookit/color"
 
@@ -21,7 +23,6 @@ import (
 	"github.com/leizongmin/jssh/internal/jsexecutor"
 	"github.com/leizongmin/jssh/internal/pkginfo"
 	"github.com/leizongmin/jssh/internal/utils"
-	"github.com/leizongmin/jssh/quickjs"
 )
 
 const (
@@ -251,12 +252,13 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 	}
 
 	ctx := jsRuntime.NewContext()
-	defer ctx.Free()
+	defer ctx.Close()
+	polyfill.InjectAll(ctx)
 	jsexecutor.MergeMapToJSObject(ctx, ctx.Globals(), global)
 
 	builtinModules := jsbuiltin.GetJs()
 	for _, m := range builtinModules {
-		ret, err := ctx.EvalFile(m.Code, fmt.Sprintf("internal:%s", m.File))
+		ret, err := ctx.Eval(m.Code, quickjs.EvalFileName(fmt.Sprintf("internal:%s", m.File)))
 		if err != nil {
 			fmt.Println(color.FgRed.Render(fmt.Sprintf("load builtin js modules fail: %s", formatJsError(err))))
 			return
@@ -270,7 +272,7 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 			fmt.Println(color.FgRed.Render(err))
 		} else {
 			content := string(b) + "\n;;"
-			if ret, err := ctx.EvalFile(content, f); err != nil {
+			if ret, err := ctx.Eval(content, quickjs.EvalFileName(f)); err != nil {
 				fmt.Println(color.FgRed.Render(formatJsError(err)))
 			} else {
 				ret.Free()
@@ -344,7 +346,7 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 		}
 	} else {
 
-		if ret, err := ctx.EvalFile(wrapJsFile(content), file); err != nil {
+		if ret, err := ctx.Eval(wrapJsFile(content), quickjs.EvalFileName(file)); err != nil {
 			printExitMessage(formatJsError(err), codeScriptError, false)
 		} else {
 			if onEnd != nil {

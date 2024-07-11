@@ -11,7 +11,7 @@ import (
 func TestJS(t *testing.T) {
 	runtime := NewJSRuntime()
 	fmt.Println(runtime)
-	defer runtime.Free()
+	defer runtime.Close()
 
 	eval := func(code string, vars utils.H) interface{} {
 		ret, err := EvalJSAndGetResult(runtime, code, vars)

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/buke/quickjs-go"
+
 	"github.com/leizongmin/jssh/internal/utils"
-	"github.com/leizongmin/jssh/quickjs"
 )
 
 type JSRuntime = quickjs.Runtime                                             // JSRuntime类型
@@ -26,11 +27,7 @@ func IsGoFunction(f interface{}) bool {
 // MergeMapToJSObject 将map类型的值合并到一个JSObject中
 func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars utils.H) quickjs.Value {
 	for n, v := range vars {
-		if IsGoFunction(v) {
-			obj.SetFunction(n, v.(JSFunction))
-		} else {
-			obj.Set(n, AnyToJSValue(ctx, v))
-		}
+		obj.Set(n, AnyToJSValue(ctx, v))
 	}
 	return obj
 }
@@ -38,7 +35,7 @@ func MergeMapToJSObject(ctx *quickjs.Context, obj quickjs.Value, vars utils.H) q
 // EvalJS 执行JS代码并返回JSValue结果
 func EvalJS(jsRuntime quickjs.Runtime, code string, vars utils.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
-	defer ctx.Free()
+	defer ctx.Close()
 	MergeMapToJSObject(ctx, ctx.Globals(), vars)
 	return ctx.Eval(code)
 }
@@ -46,9 +43,9 @@ func EvalJS(jsRuntime quickjs.Runtime, code string, vars utils.H) (quickjs.Value
 // EvalJSFile 执行JS文件并返回JSValue结果
 func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars utils.H) (quickjs.Value, error) {
 	ctx := jsRuntime.NewContext()
-	defer ctx.Free()
+	defer ctx.Close()
 	MergeMapToJSObject(ctx, ctx.Globals(), vars)
-	return ctx.EvalFile(code, filename)
+	return ctx.Eval(code, quickjs.EvalFileName(filename))
 }
 
 // EvalJSAndGetResult 执行JS并返回并返回interface{}结果
@@ -110,18 +107,7 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 		}
 		m := make(utils.H)
 		for _, p := range props {
-			if p.IsEnumerable {
-				k := p.Atom.Value()
-				k2 := p.Atom.Value().String()
-				k.Free()
-				v := value.Get(k2)
-				v2, err := JSValueToAny(v)
-				v.Free()
-				if err != nil {
-					return nil, err
-				}
-				m[p.Atom.String()] = v2
-			}
+			m[p] = value.Get(p)
 		}
 		return m, nil
 	}
@@ -132,7 +118,7 @@ func JSValueToAny(value quickjs.Value) (interface{}, error) {
 func JSValueIsUint8Array(value JSValue) bool {
 	constructor := value.Get("constructor")
 	defer constructor.Free()
-	if !constructor.IsConstructor() {
+	if !constructor.IsFunction() {
 		return false
 	}
 	name := constructor.Get("name")
@@ -228,13 +214,13 @@ func anySliceToJSValue(ctx *quickjs.Context, v reflect.Value, vt reflect.Type) q
 		if vt.String() == "[]byte" {
 			bytes := v.Bytes()
 			for i := 0; i < len(bytes); i++ {
-				arr.SetByUint32(uint32(i), ctx.Uint32(uint32(bytes[i])))
+				arr.Set(int64(i), ctx.Uint32(uint32(bytes[i])))
 			}
 		} else {
 			for i := 0; i < size; i++ {
-				arr.SetByUint32(uint32(i), AnyToJSValue(ctx, v.Index(i).Interface()))
+				arr.Set(int64(i), AnyToJSValue(ctx, v.Index(i).Interface()))
 			}
 		}
 	}
-	return arr
+	return arr.ToValue()
 }

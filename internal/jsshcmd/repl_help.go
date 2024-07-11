@@ -1,8 +1,8 @@
 package jsshcmd
 
 import (
+	"github.com/buke/quickjs-go"
 	"github.com/chzyer/readline"
-	"github.com/leizongmin/jssh/quickjs"
 )
 
 var replApiList = []string{
@@ -23,8 +23,8 @@ func replCompleter(jsGlobals quickjs.Value) readline.PrefixCompleterInterface {
 	}
 	if names, err := jsGlobals.PropertyNames(); err == nil {
 		for _, n := range names {
-			a := jsGlobals.GetByAtom(n.Atom)
-			s := n.String()
+			a := jsGlobals.Get(n)
+			s := n
 			if a.IsFunction() {
 				s += "("
 			}
