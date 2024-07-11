@@ -193,4 +193,25 @@ return module;
   require.cache = {};
   jssh.require = require;
   jssh.requiremodule = requiremodule;
+
+  const importModuleCallbacks = [];
+
+  const registerImportModuleCallback = (callback) => {
+    if (typeof callback !== "function") {
+      throw new TypeError("callback must be a function");
+    }
+    importModuleCallbacks.push(callback);
+  };
+
+  const callImportModuleCallbacks = (name, dir) => {
+    for (const callback of importModuleCallbacks) {
+      const result = callback(name, dir);
+      if (result) {
+        return result;
+      }
+    }
+  };
+
+  jssh.registerImportModuleCallback = registerImportModuleCallback;
+  jssh.callImportModuleCallbacks = callImportModuleCallbacks;
 }

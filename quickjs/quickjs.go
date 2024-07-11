@@ -21,7 +21,8 @@ import (
 import "C"
 
 type Runtime struct {
-	ref *C.JSRuntime
+	ref           *C.JSRuntime
+	moduleLoader  func(ctx *Context, moduleName string) (string, error)
 }
 
 func NewRuntime() Runtime {
@@ -42,7 +43,17 @@ func (r Runtime) NewContext() *Context {
 	C.JS_AddIntrinsicOperators(ref)
 	C.JS_EnableBignumExt(ref, C.int(1))
 
-	return &Context{ref: ref}
+	ctx := &Context{ref: ref}
+
+	if r.moduleLoader != nil {
+		C.JS_SetModuleLoaderFunc(r.ref, nil, (*C.JSModuleLoaderFunc)(C.InvokeModuleLoader), unsafe.Pointer(ctx))
+	}
+
+	return ctx
+}
+
+func (r *Runtime) SetModuleLoader(loader func(ctx *Context, moduleName string) (string, error)) {
+	r.moduleLoader = loader
 }
 
 func (r Runtime) ExecutePendingJob() (Context, error) {
@@ -400,7 +411,7 @@ func (v Value) SetByInt64(idx int64, val Value) {
 }
 
 func (v Value) SetByUint32(idx uint32, val Value) {
-	C.JS_SetPropertyUint32(v.ctx.ref, v.ref, C.uint32_t(idx), val.ref)
+	C.JS_SetPropertyUint32(v.ctx.ref, v.ref, C.uint32_t(idx))
 }
 
 func (v Value) Len() int64 { return v.Get("length").Int64() }
