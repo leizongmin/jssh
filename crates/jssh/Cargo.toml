@@ -5,3 +5,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+clap = { version = "4.5.7", features = ["derive"] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 'z'

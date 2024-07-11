@@ -18,3 +18,8 @@
 /release/
 /node_modules/
 /package-lock.json
+
+
+# Added by cargo
+
+/target

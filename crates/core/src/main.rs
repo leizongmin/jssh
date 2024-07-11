@@ -1,13 +1,13 @@
 use rquickjs::{
-    loader::{
+    Context,
+    Function, loader::{
         BuiltinLoader, BuiltinResolver, FileResolver, ModuleLoader, NativeLoader, ScriptLoader,
-    },
-    Context, Function, Module, Runtime,
+    }, Module, Runtime,
 };
 
-mod bundle;
-
 use bundle::{NativeModule, SCRIPT_MODULE};
+
+mod bundle;
 
 fn print(msg: String) {
     println!("{msg}");
@@ -110,9 +110,6 @@ print(`f(2, 4) = ${f(2, 4)}`);
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
-    fn it_works() {
-    }
+    fn it_works() {}
 }

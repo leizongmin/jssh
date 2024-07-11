@@ -1,11 +1,11 @@
 //#[cfg(not(feature = "macro"))]
+pub use hand_written::NativeModule;
+
+//#[cfg(not(feature = "macro"))]
 mod hand_written;
 
 //#[cfg(feature = "macro")]
 //mod using_macro;
-
-//#[cfg(not(feature = "macro"))]
-pub use hand_written::NativeModule;
 
 //#[cfg(feature = "macro")]
 //pub use using_macro::NativeModule;
