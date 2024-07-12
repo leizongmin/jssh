@@ -8,10 +8,12 @@ use rquickjs::{
 use bundle::{NativeModule, SCRIPT_MODULE};
 
 mod bundle;
+mod runtime;
 
 fn print(msg: String) {
     println!("{msg}");
 }
+
 
 fn main() {
     let resolver = (
