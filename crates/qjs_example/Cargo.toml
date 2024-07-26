@@ -1,6 +1,6 @@
 [package]
 publish = false
-name = "core"
+name = "qjs_example"
 version = "0.1.0"
 edition = "2021"
 

@@ -1,0 +1,10 @@
+[package]
+publish = false
+name = "jssh_core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rquickjs = { version = "0.6.2", features = ["full", "full-async"] }
+tokio = { version = "1.38.0", features = ["full"] }
+anyhow = "1.0.86"

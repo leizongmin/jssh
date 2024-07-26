@@ -1,5 +1,6 @@
 [workspace]
 members = [
-    "crates/core",
+    "crates/jssh_core",
     "crates/jssh",
+    "crates/qjs_example"
 ]
