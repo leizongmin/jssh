@@ -43,7 +43,7 @@ impl RuntimeCore {
         F: FnOnce(Ctx, Promise) -> Result<()> + Send,
     {
         self.ctx.with(|ctx| {
-            let ret = Module::evaluate_def(ctx.clone(), name, source)?;
+            let ret = Module::evaluate(ctx.clone(), name, source)?;
             f(ctx, ret)
         })
     }
