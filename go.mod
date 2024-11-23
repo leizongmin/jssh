@@ -8,7 +8,7 @@ require (
 	github.com/creack/pty v1.1.21
 	github.com/gookit/color v1.5.4
 	github.com/sanity-io/litter v1.5.5
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	golang.org/x/crypto v0.25.0
 	golang.org/x/term v0.22.0
 	gopkg.in/yaml.v3 v3.0.1
