@@ -1,1 +1,1 @@
-Object.freeze(jssh);for(const[name,value]of Object.entries(jssh))globalThis[name]=value;const global=globalThis||this;Object.defineProperty(global,"jssh",{value:jssh,writable:!1});
+Object.freeze(jssh);for(let[name,value]of Object.entries(jssh))globalThis[name]=value;let global=globalThis||this;Object.defineProperty(global,"jssh",{value:jssh,writable:!1});

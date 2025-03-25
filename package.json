@@ -26,10 +26,10 @@
   },
   "homepage": "https://github.com/leizongmin/jssh#readme",
   "devDependencies": {
-    "eslint": "^9.0.0",
+    "eslint": "^9.23.0",
     "lodash": "4.17.21",
-    "prettier": "3.3.2",
-    "uglify-js": "^3.17.4",
-    "xss": "1.0.15"
+    "prettier": "^3.5.3",
+    "uglify-js": "^3.19.3",
+    "xss": "^1.0.15"
   }
 }
