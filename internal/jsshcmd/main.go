@@ -40,6 +40,9 @@ func getSelfContainedBoundary() string {
 func Main() {
 	runtime.LockOSThread()
 
+	// 初始化readline工厂函数
+	InitReadlineFactory()
+
 	if tryRunSelfContainedBoundary() {
 		return
 	}

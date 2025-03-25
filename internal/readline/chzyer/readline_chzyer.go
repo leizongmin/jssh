@@ -1,22 +1,23 @@
-package jsshcmd
+package chzyer
 
 import (
-	"github.com/chzyer/readline"
+	chzyer_readline "github.com/chzyer/readline"
+	"github.com/leizongmin/jssh/internal/readline"
 )
 
 // ChzyerReadline 是基于 github.com/chzyer/readline 的实现
 type ChzyerReadline struct {
-	instance *readline.Instance
+	instance *chzyer_readline.Instance
 }
 
 // NewChzyerReadline 创建一个新的 ChzyerReadline 实例
-func NewChzyerReadline() ReadlineInterface {
+func NewChzyerReadline() readline.Readline {
 	return &ChzyerReadline{}
 }
 
 // Init 初始化 readline 实例
 func (r *ChzyerReadline) Init(prompt string, historyFile string, completer interface{}) error {
-	config := &readline.Config{
+	config := &chzyer_readline.Config{
 		Prompt:          prompt,
 		HistoryFile:     historyFile,
 		InterruptPrompt: "^C",
@@ -25,12 +26,12 @@ func (r *ChzyerReadline) Init(prompt string, historyFile string, completer inter
 
 	// 设置自动完成
 	if completer != nil {
-		if c, ok := completer.(readline.PrefixCompleterInterface); ok {
+		if c, ok := completer.(chzyer_readline.PrefixCompleterInterface); ok {
 			config.AutoComplete = c
 		}
 	}
 
-	instance, err := readline.NewEx(config)
+	instance, err := chzyer_readline.NewEx(config)
 	if err != nil {
 		return err
 	}

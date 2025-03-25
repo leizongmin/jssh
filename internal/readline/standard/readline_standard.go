@@ -1,4 +1,4 @@
-package jsshcmd
+package standard
 
 import (
 	"bufio"
@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/leizongmin/jssh/internal/readline"
 )
 
 // StandardReadline 是基于Go标准库的readline实现
@@ -19,7 +21,7 @@ type StandardReadline struct {
 }
 
 // NewStandardReadline 创建一个新的StandardReadline实例
-func NewStandardReadline() ReadlineInterface {
+func NewStandardReadline() readline.Readline {
 	return &StandardReadline{
 		maxHistory: 1000, // 默认最多保存1000条历史记录
 	}
