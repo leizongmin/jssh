@@ -26,7 +26,11 @@ func (r *ChzyerReadline) Init(prompt string, historyFile string, completer inter
 
 	// 设置自动完成
 	if completer != nil {
-		if c, ok := completer.(chzyer_readline.PrefixCompleterInterface); ok {
+		if c, ok := completer.(completer.PrefixCompleterInterface); ok {
+			// 使用适配器将内部completer适配为chzyer_readline的completer
+			config.AutoComplete = NewCompleterAdapter(c)
+		} else if c, ok := completer.(chzyer_readline.PrefixCompleterInterface); ok {
+			// 兼容直接传入chzyer_readline.PrefixCompleterInterface的情况
 			config.AutoComplete = c
 		}
 	}
