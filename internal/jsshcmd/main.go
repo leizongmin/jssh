@@ -14,7 +14,6 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/chzyer/readline"
 	"github.com/gookit/color"
 
 	"github.com/leizongmin/jssh/internal/jsbuiltin"
@@ -287,13 +286,14 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 
 		jsGlobals := ctx.Globals()
 		historyFile, _ := getJsshHistoryFilePath()
-		repl, err := readline.NewEx(&readline.Config{
-			Prompt:          fmt.Sprintf("%s> ", pkginfo.Name),
-			HistoryFile:     historyFile,
-			AutoComplete:    replCompleter(jsGlobals),
-			InterruptPrompt: "^C",
-			EOFPrompt:       "exit",
-		})
+
+		// 使用ReadlineInterface接口创建readline实例
+		repl := DefaultReadlineFactory()
+		err := repl.Init(
+			fmt.Sprintf("%s> ", pkginfo.Name),
+			historyFile,
+			replCompleter(jsGlobals),
+		)
 		if err != nil {
 			fmt.Println(color.FgRed.Render(fmt.Sprintf("Error initializing REPL: %s", err)))
 			return
@@ -305,7 +305,7 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 		for {
 			code, err := repl.Readline()
 			if err != nil {
-				if err == readline.ErrInterrupt {
+				if err.Error() == "Interrupt" {
 					abortedCounter++
 					if abortedCounter < 2 {
 						fmt.Println(color.FgYellow.Render("(To exit, press Ctrl+C again or Ctrl+D)"))
@@ -314,7 +314,7 @@ func run(file string, content string, interactive bool, customGlobal utils.H, on
 						fmt.Println("Bye")
 						break
 					}
-				} else if err == io.EOF {
+				} else if err == io.EOF || err.Error() == "EOF" {
 					fmt.Println("\nBye")
 					break
 				} else {
