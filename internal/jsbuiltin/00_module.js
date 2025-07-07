@@ -5,4 +5,4 @@ return module;
 })(function require(name) {
   return requiremodule(name, "${dirname}");
 }, {exports:{},parent:this}, "${dirname}", "${filename}")
-`.trimStart();return require.cache[__filename]=jssh.evalfile(__filename,content).exports},require=name=>requiremodule(name,__dirname);require.cache={},jssh.require=require,jssh.requiremodule=requiremodule}
+`.trimStart();return require.cache[__filename]=jssh.evalfile(__filename,content).exports},require=name=>requiremodule(name,__dirname);require.cache={},jssh.require=require,jssh.requiremodule=requiremodule,globalThis.removeShebangLine=removeShebangLine,globalThis.isHttpUrl=isHttpUrl,globalThis.readUrlContent=readUrlContent,globalThis.resolveModulePath=resolveModulePath,globalThis.loadModuleFromJsContent=loadModuleFromJsContent}

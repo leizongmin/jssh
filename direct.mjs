@@ -1,0 +1,1 @@
+export const name = "direct test"; export default 999;

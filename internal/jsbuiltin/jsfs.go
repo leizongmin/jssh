@@ -17,6 +17,7 @@ var modules []JsModule
 //go:embed 01_global.js
 //go:embed 01_http.js
 //go:embed 01_log.js
+//go:embed 98_esmodule.js
 //go:embed 99_bootstrap.js
 var jsFs embed.FS
 

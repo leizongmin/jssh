@@ -222,10 +222,46 @@ func (ctx *Context) evalFile(code, filename string) Value {
 	return Value{ctx: ctx, ref: C.JS_Eval(ctx.ref, codePtr, C.size_t(len(code)), filenamePtr, C.int(0))}
 }
 
+// evalModule evaluates code as an ES module
+func (ctx *Context) evalModule(code, filename string) Value {
+	codePtr := C.CString(code)
+	defer C.free(unsafe.Pointer(codePtr))
+
+	filenamePtr := C.CString(filename)
+	defer C.free(unsafe.Pointer(filenamePtr))
+
+	// Use JS_EVAL_TYPE_MODULE flag to evaluate as ES module
+	return Value{ctx: ctx, ref: C.JS_Eval(ctx.ref, codePtr, C.size_t(len(code)), filenamePtr, C.int(1))} // 1 = JS_EVAL_TYPE_MODULE
+}
+
 func (ctx *Context) Eval(code string) (Value, error) { return ctx.EvalFile(code, "code") }
 
 func (ctx *Context) EvalFile(code, filename string) (Value, error) {
 	val := ctx.evalFile(code, filename)
+	if val.IsException() {
+		return val, ctx.Exception()
+	}
+	return val, nil
+}
+
+// EvalModule evaluates code as an ES module
+func (ctx *Context) EvalModule(code, filename string) (Value, error) {
+	val := ctx.evalModule(code, filename)
+	if val.IsException() {
+		return val, ctx.Exception()
+	}
+	return val, nil
+}
+
+// LoadModule loads an ES module from file
+func (ctx *Context) LoadModule(basename, filename string) (Value, error) {
+	basenamePtr := C.CString(basename)
+	defer C.free(unsafe.Pointer(basenamePtr))
+	
+	filenamePtr := C.CString(filename)
+	defer C.free(unsafe.Pointer(filenamePtr))
+	
+	val := Value{ctx: ctx, ref: C.JS_LoadModule(ctx.ref, basenamePtr, filenamePtr)}
 	if val.IsException() {
 		return val, ctx.Exception()
 	}

@@ -51,6 +51,22 @@ func EvalJSFile(jsRuntime quickjs.Runtime, code string, filename string, vars ut
 	return ctx.EvalFile(code, filename)
 }
 
+// EvalJSModule 执行ES模块并返回JSValue结果
+func EvalJSModule(jsRuntime quickjs.Runtime, code string, filename string, vars utils.H) (quickjs.Value, error) {
+	ctx := jsRuntime.NewContext()
+	defer ctx.Free()
+	MergeMapToJSObject(ctx, ctx.Globals(), vars)
+	return ctx.EvalModule(code, filename)
+}
+
+// LoadJSModule 加载ES模块并返回JSValue结果
+func LoadJSModule(jsRuntime quickjs.Runtime, basename string, filename string, vars utils.H) (quickjs.Value, error) {
+	ctx := jsRuntime.NewContext()
+	defer ctx.Free()
+	MergeMapToJSObject(ctx, ctx.Globals(), vars)
+	return ctx.LoadModule(basename, filename)
+}
+
 // EvalJSAndGetResult 执行JS并返回并返回interface{}结果
 func EvalJSAndGetResult(jsRuntime quickjs.Runtime, code string, vars utils.H) (interface{}, error) {
 	ret, err := EvalJS(jsRuntime, code, vars)
