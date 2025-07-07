@@ -193,4 +193,11 @@ return module;
   require.cache = {};
   jssh.require = require;
   jssh.requiremodule = requiremodule;
+
+  // Expose functions for ES module system compatibility
+  globalThis.removeShebangLine = removeShebangLine;
+  globalThis.isHttpUrl = isHttpUrl;
+  globalThis.readUrlContent = readUrlContent;
+  globalThis.resolveModulePath = resolveModulePath;
+  globalThis.loadModuleFromJsContent = loadModuleFromJsContent;
 }
