@@ -165,13 +165,13 @@
         
         // Transform export default statements
         transformedContent = transformedContent.replace(
-          /export\s+default\s+(.+);?/g, 
+          /export\s+default\s+(.+?)(?:;|$)/gm, 
           'exportDefault($1);'
         );
         
         // Transform named export declarations
         transformedContent = transformedContent.replace(
-          /export\s+(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(.+);?/g,
+          /export\s+(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(.+?)(?:;|$)/gm,
           'const $1 = $2; exportNamed("$1", $1);'
         );
         
@@ -211,19 +211,24 @@
         // Wrap the code in a function and execute it
         const wrappedCode = `
 (function() {
-  const exportDefault = ${exportDefault.toString()};
-  const exportNamed = ${exportNamed.toString()};
+  const moduleExports = {};
+  const exportDefault = function(value) { 
+    moduleExports.default = value; 
+  };
+  const exportNamed = function(name, value) { 
+    moduleExports[name] = value; 
+  };
   
   ${transformedContent}
   
-  return {};
+  return moduleExports;
 })();
         `;
         
         try {
-          jssh.evalfile(finalPath, wrappedCode);
-          moduleCache.set(resolvedPath, moduleExports);
-          return moduleExports;
+          const result = jssh.evalfile(finalPath, wrappedCode);
+          moduleCache.set(resolvedPath, result);
+          return result;
         } catch (evalError) {
           throw new Error(`Failed to execute ES module "${finalPath}": ${evalError.message}`);
         }
@@ -301,7 +306,7 @@
     try {
       pendingModules.set(resolvedPath, true);
       
-      const { content, resolvedPath: finalPath } = await loadESModuleContent(resolvedPath);
+      const { content, resolvedPath: finalPath } = loadESModuleContentSync(resolvedPath);
       
       // Handle JSON modules
       if (finalPath.endsWith('.json')) {
