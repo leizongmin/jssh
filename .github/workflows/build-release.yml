@@ -34,14 +34,14 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
 
       - name: Accidentally upload to the same artifact via multiple jobs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ runner.os != 'macOS' }}
         with:
           name: artifact-${{ matrix.os }}
           path: ./release/*.tar.gz
 
       - name: Accidentally upload to the same artifact via multiple jobs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ runner.os == 'macOS' }}
         with:
           name: artifact-${{ matrix.os }}
@@ -76,7 +76,7 @@ jobs:
         run: ls -Rl release
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: artifact-linux-arm64
           path: ./release/*.tar.gz
@@ -88,13 +88,13 @@ jobs:
     steps:
 
       - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: artifact
           pattern: artifact-*
 
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: .
 
