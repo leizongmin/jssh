@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/chzyer/readline v1.5.1
-	github.com/creack/pty v1.1.21
+	github.com/creack/pty v1.1.24
 	github.com/gookit/color v1.5.4
 	github.com/sanity-io/litter v1.5.5
 	github.com/stretchr/testify v1.9.0
